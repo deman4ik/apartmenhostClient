@@ -1,0 +1,45 @@
+.empty-unit {
+	width: 100%;
+	min-height: 498px;
+	background: url('/aprth/aprth/img/tmp/house.jpg') no-repeat center;
+}
+
+.content_wrapper {
+	/*padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;*/
+}
+
+.content-center {
+	max-width: 800px;
+	margin-left: auto;
+    margin-right: auto;
+}
+
+.inline-message {
+	text-align: center;
+}
+
+.form-group {
+	margin-top: 15px;
+}
+
+.u-btn-regular {
+	padding: 6px 10px;
+	margin-right: 5px;
+	margin-left: 5px;
+	float: right;
+	border-radius: 4px;
+	background: none;
+	color: #00ccc5;
+	font-weight: 400;
+	text-decoration: none;
+}
+
+.u-btn-regular:hover {
+	color: #0be3dc;
+}
+
+.u-form-field.errstate {
+  border: 1px solid #ed5466;
+}

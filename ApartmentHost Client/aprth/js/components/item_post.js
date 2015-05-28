@@ -1,0 +1,108 @@
+/*
+	Элемент списка объявлений
+*/
+var PostItem = React.createClass({
+	//состояние элемента
+	getInitialState: function () {
+		return {
+		};
+	},
+	//обработка нажатия на "Избранное"
+	handleFavorClick: function () {
+		this.props.onFavorChange(this.props.item.id);
+	},
+	//обработка нажатия на карточку объявления
+	handlePostClick: function () {
+		this.props.onItemClick(this.props.item.id);
+	},
+	//инициализация элемента
+	componentDidMount: function () {
+	},
+	//обновление параметров элемента
+	componentWillReceiveProps: function (newProps) {
+	},
+	//генерация представления элемента
+	render: function () {
+		//дополнительные стили
+		var aStyle = {textDecoration: "none"};
+		//дополнительные опции объявления
+		var advOptions;
+		if(this.props.item.apartment.options) {			 
+			var advOptionsItems = this.props.item.apartment.options.split(";").map(function (option, i) {
+				return (
+					<li>
+						{Utils.getStrResource({lang: this.props.language, code: option})}
+					</li>
+				);
+			}, this);
+			advOptions = 	<div>
+								<div className="descr">
+									{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_EXTRAS"})}:
+								</div>
+								<ul className="descr">
+									{advOptionsItems}								
+								</ul>
+							</div>
+		}
+		//кнопка управления избранным
+		var favorText;
+		if(this.props.item.isFavorite) {
+			favorText = Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FAVOR_RM"});
+		} else {
+			favorText = Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FAVOR_ADD"});	
+		}
+		var cFavorBtn = React.addons.classSet;
+		var classesFavorBtn = cFavorBtn({
+			"u-btn": true,
+			"btn-sm": true,
+			"btn-done": (this.props.item.isFavorite)
+		});
+		var favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+							{favorText}
+						</a>
+		//представление элемента
+		return (
+			<div>
+				<div className="w-row u-row-cardlst">
+					<div className="w-col w-col-4 w-col-small-4 u-col-cardlst-img">
+						<a className="w-clearfix w-inline-block u-lnk-cardlst-img" 
+							href="javascript:;" 
+							onClick={this.handlePostClick}>
+							<img className="u-lnk-cardlst-img" src={this.props.item.apartment.img}/>
+							<img className="u-img-author-sm" src={this.props.item.user.img}/>
+						</a>
+					</div>
+					<div className="w-col w-col-4 w-col-small-4 w-clearfix u-col-cardlst-desc">
+						<div>{this.props.item.user.lastName} {this.props.item.user.firstName}</div>
+						<h4>{Utils.getStrResource({lang: this.props.language, code: this.props.item.apartment.type})}</h4>
+						<div className="u-t-price price-sm">
+							<strong>
+								{this.props.item.priceDay}&nbsp;
+								{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
+								{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"})}
+							</strong>
+						</div>
+						<div className="u-t-price2 price-sm">
+							{this.props.item.pricePeriod}&nbsp;
+							{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
+							{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_WEEK"})}
+						</div>
+						{favorBtn}
+					</div>
+					<div className="w-col w-col-4 w-col-small-4 u-col-cardlst-desc">
+						<div>
+							<div></div>
+							<div>
+								{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}:&nbsp;
+								<strong>
+									{Utils.getStrResource({lang: this.props.language, code: this.props.item.residentGender})}
+								</strong>
+							</div>
+							{advOptions}
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+});
