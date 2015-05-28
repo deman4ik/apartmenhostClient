@@ -1,2 +1,3 @@
-# dam
-Apartment Host Client
+# Apartment Host Client
+Client for Apartment Host Server.
+SPA on ReactJS
