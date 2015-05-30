@@ -20,6 +20,9 @@ var langs = [
 		display: true,
 		//валюта для языка
 		CURRENCY: "руб",
+		//код языка каленаря и формат даты
+		CALENDAR: "ru",
+		DATE_FORMAT: "dd.mm.yyyy",
 		//общая ошибка
 		UNDEFINED_RESOURCE: "Неопределенное сообщение!",
 		//ресурсы для пользовательского интерфейса
@@ -166,6 +169,9 @@ var langs = [
 		display: true,
 		//валюта для языка
 		CURRENCY: "USD",
+		//код языка каленаря и формат даты
+		CALENDAR: "en",
+		DATE_FORMAT: "mm/dd/yyyy",
 		//общая ошибка
 		UNDEFINED_RESOURCE: "Undefined message!",
 		//ресурсы для пользовательского интерфейса

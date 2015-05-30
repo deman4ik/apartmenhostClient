@@ -54,11 +54,11 @@ var FilterFactory = function () {
 			if(("sex" in params)&&(params.sex)) {
 				filter.push(buildFilterItemFn("ResidentGender", params.sex, operTypes.COMPARE, cmpsOData.EQS));
 			}
-			if(("dfrom" in params)&&(params.dfrom)) {				
-				filter.push(buildFilterItemFn("DateFrom", params.dfrom, operTypes.COMPARE, cmpsOData.LED));
+			if(("dFrom" in params)&&(params.dFrom)) {				
+				filter.push(buildFilterItemFn("DateFrom", params.dFrom, operTypes.COMPARE, cmpsOData.LED));
 			}
-			if(("dto" in params)&&(params.dto)) {				
-				filter.push(buildFilterItemFn("DateTo", params.dto, operTypes.COMPARE, cmpsOData.GED));
+			if(("dTo" in params)&&(params.dTo)) {				
+				filter.push(buildFilterItemFn("DateTo", params.dTo, operTypes.COMPARE, cmpsOData.GED));
 			}
 			if(("apartType" in params)&&(params.apartType)) {
 				filter.push(buildFilterItemFn("Apartment/Type", params.apartType, operTypes.COMPARE, cmpsOData.EQS)); 

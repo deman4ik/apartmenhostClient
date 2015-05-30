@@ -41,5 +41,10 @@
 }
 
 .u-form-field.errstate {
-  border: 1px solid #ed5466;
+	border: 1px solid #ed5466;
+}
+
+.u-form-body {
+	position: relative;
+	z-index: 400;
 }

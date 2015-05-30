@@ -5,11 +5,13 @@ var PostsFilter = React.createClass({
 	//состояние фильтра
 	getInitialState: function () {
 		return {
-			filterDisplay: false,
-			filterToggle: false,
-			filterPriceFrom: 300,
-			filterPriceTo: 500,
-			noFilterSpecified: false			
+			filterDisplay: false, //фоаг отображения/сокрытия заголовка фильтра
+			filterToggle: false, //флаг отображения/сокрытия тела фильтра
+			filterPriceFrom: 300, //нижняя граница фильтра по цене
+			filterPriceTo: 500, //верхняя граница фильтра по цене
+			noFilterSpecified: false, //флаг отсуствия фильтра
+			dFrom: "", //дата начала периода бронирования
+			dTo: "" //дата коночания периода бронирования		
 		};
 	},
 	//сохранение и сборка фильтра
@@ -23,11 +25,11 @@ var PostsFilter = React.createClass({
 		if((React.findDOMNode(this.refs.sex).value)&&(React.findDOMNode(this.refs.sex).value != "DVAL_ANY")) {
 			filterParams.sex = React.findDOMNode(this.refs.sex).value;
 		}
-		if(React.findDOMNode(this.refs.dfrom).value) {
-			filterParams.dfrom = React.findDOMNode(this.refs.dfrom).value;
+		if(this.state.dFrom) {
+			filterParams.dFrom = this.state.dFrom;
 		}
-		if(React.findDOMNode(this.refs.dto).value) {
-			filterParams.dto = React.findDOMNode(this.refs.dto).value;
+		if(this.state.dTo) {
+			filterParams.dTo = this.state.dTo;
 		}
 		if((React.findDOMNode(this.refs.apartType).value)&&(React.findDOMNode(this.refs.apartType).value != "DVAL_ANY")) {
 			filterParams.apartType = React.findDOMNode(this.refs.apartType).value;
@@ -56,8 +58,8 @@ var PostsFilter = React.createClass({
 		if(filterParams) {
 			if("adress" in filterParams) React.findDOMNode(this.refs.adress).value = filterParams.adress;
 			if("sex" in filterParams) React.findDOMNode(this.refs.sex).value = filterParams.sex;
-			if("dfrom" in filterParams) React.findDOMNode(this.refs.dfrom).value = filterParams.dfrom;
-			if("dto" in filterParams) React.findDOMNode(this.refs.dto).value = filterParams.dto;
+			if("dFrom" in filterParams) this.setState({dFrom: filterParams.dFrom});
+			if("dTo" in filterParams) this.setState({dTo: filterParams.dTo});
 			if("apartType" in filterParams) React.findDOMNode(this.refs.apartType).value = filterParams.apartType;
 			if(("priceFrom" in filterParams)||("priceTo" in filterParams)) {
 				if(filterParams.priceTo == React.findDOMNode(this.refs.price1).value * 1 - 1)
@@ -73,6 +75,12 @@ var PostsFilter = React.createClass({
 		}
 		return filterParams;
 	},
+	//выбор даты в календаре
+	handleDatePicked: function (datePickerName, date) {
+		var stateObject = {};
+		stateObject[datePickerName] = (date)?date.to_yyyy_mm_dd():"";
+		this.setState(stateObject);
+	},
 	//обработка нажатия на кнопку "Фильтр" (сокрытие/отображение)
 	handleFilterToggleClick: function () {
 		this.setState({filterToggle: !this.state.filterToggle}, this.saveFilterState);		
@@ -81,16 +89,24 @@ var PostsFilter = React.createClass({
 	handleClearClick: function () {
 		React.findDOMNode(this.refs.adress).value = "";
 		React.findDOMNode(this.refs.sex).value = "DVAL_ANY";
-		React.findDOMNode(this.refs.dfrom).value = "";
-		React.findDOMNode(this.refs.dto).value = "";
 		React.findDOMNode(this.refs.apartType).value = "DVAL_ANY";
 		React.findDOMNode(this.refs.priceAny).checked = true;
 		React.findDOMNode(this.refs.price1).checked = false;
 		React.findDOMNode(this.refs.price2).checked = false;
 		React.findDOMNode(this.refs.price3).checked = false;
-		this.setState({filterDisplay: false, filterToggle: false, noFilterSpecified: false});
-		var f = this.saveFilterState();
-		this.props.onFilterChange(filterFactory.buildAdvertsFilter(f));
+		this.setState(
+			{
+				filterDisplay: false, 
+				filterToggle: false, 
+				noFilterSpecified: false, 
+				dFrom: "", 
+				dTo: ""
+			},
+			function () {
+				var f = this.saveFilterState();
+				this.props.onFilterChange(filterFactory.buildAdvertsFilter(f));
+			}
+		);		
 	},
 	//обработка нажатия на кнопку "Поиск"
 	handleFindClick: function () {
@@ -129,6 +145,12 @@ var PostsFilter = React.createClass({
 			"u-form-field": true,
 			"errstate": this.state.noFilterSpecified	
 		});
+		var cDateInput = React.addons.classSet;
+		var classesDateInput = cDateInput({
+			"w-input": true,
+			"u-form-field": true,
+			"rel": true
+		});		  
 		//представление фильтра
 		return (
 			<div>
@@ -160,14 +182,18 @@ var PostsFilter = React.createClass({
 								</label>
 							</div>
 							<div className="w-col w-col-9">
-								<input className="w-input u-form-field rel" 
-									type="date"
-									ref="dfrom"
-									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}/>
-								<input className="w-input u-form-field rel" 
-									type="date"
-									ref="dto"
-									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_TO"})}/>
+								<Calendar name="dFrom" 
+									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}
+									defaultValue={(this.state.dFrom)?(new Date(this.state.dFrom)):""}
+									onDatePicked={this.handleDatePicked}
+									language={this.props.language}
+									inputClasses={classesDateInput}/>
+								<Calendar name="dTo" 
+									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_TO"})}
+									defaultValue={(this.state.dTo)?(new Date(this.state.dTo)):""}
+									onDatePicked={this.handleDatePicked}
+									language={this.props.language}
+									inputClasses={classesDateInput}/>									
 							</div>
 						</div>
 						<div className="u-block-spacer2"></div>

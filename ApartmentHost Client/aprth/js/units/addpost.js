@@ -5,6 +5,8 @@ var AddPost = React.createClass({
 	//состояние
 	getInitialState: function () {
 		return {
+			dFrom: "", //дата начала периода бронирования
+			dTo: "" //дата коночания периода бронирования
 		}
 	},
 	//зачистка формы
@@ -12,8 +14,7 @@ var AddPost = React.createClass({
 		React.findDOMNode(this.refs.sex).value = "";
 		React.findDOMNode(this.refs.apartType).value = "";
 		React.findDOMNode(this.refs.address).value = "";
-		React.findDOMNode(this.refs.dfrom).value = "";
-		React.findDOMNode(this.refs.dto).value = "";
+		this.setState({dFrom: "", dTo: ""});
 		React.findDOMNode(this.refs.apartAddition).value = "";
 		React.findDOMNode(this.refs.rentAddition).value = "";
 		React.findDOMNode(this.refs.price).value = "";	
@@ -43,8 +44,8 @@ var AddPost = React.createClass({
 					type: React.findDOMNode(this.refs.apartType).value,
 				},
 				Name: React.findDOMNode(this.refs.apartAddition).value,
-				dateFrom: React.findDOMNode(this.refs.dfrom).value + "T00:00:00Z",
-				dateTo: React.findDOMNode(this.refs.dto).value + "T00:00:00Z",
+				dateFrom: this.state.dFrom + "T00:00:00Z",
+				dateTo: this.state.dTo + "T00:00:00Z",
 				description: React.findDOMNode(this.refs.apartAddition).value,
 				residentGender: React.findDOMNode(this.refs.sex).value,
 				priceDay: price,
@@ -72,7 +73,7 @@ var AddPost = React.createClass({
 			res = Utils.getStrResource({lang: this.props.language, code: "SRV_APARTMENT_REQUIRED", values: [Utils.getStrResource({lang: this.props.language, code: "UI_FLD_ADRESS"})]});
 			return res;
 		}
-		if((!React.findDOMNode(this.refs.dfrom).value)||(!React.findDOMNode(this.refs.dto).value)) {
+		if((!this.state.dFrom)||(!this.state.dTo)) {
 			res = Utils.getStrResource({lang: this.props.language, code: "SRV_APARTMENT_REQUIRED", values: [Utils.getStrResource({lang: this.props.language, code: "UI_FLD_UNAVAILABLE"})]});
 			return res;
 		}
@@ -85,6 +86,12 @@ var AddPost = React.createClass({
 			return res;
 		}
 		return res;
+	},
+	//выбор даты в календаре
+	handleDatePicked: function (datePickerName, date) {
+		var stateObject = {};
+		stateObject[datePickerName] = (date)?date.to_yyyy_mm_dd():"";
+		this.setState(stateObject);
 	},
 	//нажатие на кнопку добавления объявления
 	handleAddRentClick: function () {
@@ -100,10 +107,16 @@ var AddPost = React.createClass({
 	},
 	//генерация представления страницы размещения объявления
 	render: function () {
-		//классы контейнера		
+		//дополнительные стили и классы
 		var cCont = React.addons.classSet;
 		var classesCont = cCont({
 			"empty-unit": (!this.props.session.loggedIn)
+		});
+		var cDateInput = React.addons.classSet;
+		var classesDateInput = cDateInput({
+			"w-input": true,
+			"u-form-field": true,
+			"rel": true
 		});
 		//содержимое формы
 		var content;
@@ -170,14 +183,18 @@ var AddPost = React.createClass({
 												<div className="u-t-small">{Utils.getStrResource({lang: this.props.language, code: "UI_NOTE_UNAVAILABLE"})}</div>
 											</div>
 											<div className="w-col w-col-9">
-												<input className="w-input u-form-field rel" 
-													type="date"
-													ref="dfrom"
-													placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}/>
-												<input className="w-input u-form-field rel" 
-													type="date"
-													ref="dto"
-													placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_TO"})}/>
+												<Calendar name="dFrom" 
+													placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}
+													defaultValue={(this.state.dFrom)?(new Date(this.state.dFrom)):""}
+													onDatePicked={this.handleDatePicked}
+													language={this.props.language}
+													inputClasses={classesDateInput}/>
+												<Calendar name="dTo" 
+													placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_TO"})}
+													defaultValue={(this.state.dTo)?(new Date(this.state.dTo)):""}
+													onDatePicked={this.handleDatePicked}
+													language={this.props.language}
+													inputClasses={classesDateInput}/>
 											</div>
 										</div>
 										<div className="u-block-spacer2"></div>

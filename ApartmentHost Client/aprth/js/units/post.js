@@ -39,7 +39,7 @@ var Post = React.createClass({
 	},
 	//выполнение бронирования
 	makeBooking: function () {
-		if((React.findDOMNode(this.refs.dfrom).value)&&(React.findDOMNode(this.refs.dto).value)) {
+		if((this.state.dFrom)&&(this.state.dTo)) {
 			this.setState({postBooked: true});	
 		} else {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
@@ -47,9 +47,9 @@ var Post = React.createClass({
 		}
 	},
 	//обработка смены дат
-	handleDateChange: function (formInput, event) {
+	handleDateChange: function (datePickerName, date) {
 		var stateObject = {};
-		stateObject[formInput] = event.target.value;
+		stateObject[datePickerName] = (date)?date.to_yyyy_mm_dd():"";
 		this.setState(stateObject);
 	},
 	//нажатие на бронирование
@@ -111,9 +111,44 @@ var Post = React.createClass({
 		var aStyle = {textDecoration: "none"};
 		var ulOptions = {paddingLeft: "14px"};
 		var btnRate = {textDecoration: "none", float: "none"};
+		var cDateInput = React.addons.classSet;
+		var classesDateInput = cDateInput({
+			"w-input": true,
+			"u-form-field": true,
+			"rel": true,
+			"dtcard": true
+		});	
+		var cDateInputR = React.addons.classSet;
+		var classesDateInputR = cDateInputR({
+			"w-input": true,
+			"u-form-field": true,
+			"rel": true,
+			"dtcard": true,
+			"right": true
+		});	
 		//содержимое объявления
 		var content;
 		if(this.state.postReady) {
+			//форма бронирования
+			var bookFrm;
+			if(!this.state.postBooked) {
+				bookFrm =	<div className="w-form u-form-wrapper-simple">
+								<form className="w-clearfix">
+									<Calendar name="dFrom" 
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}
+										defaultValue={(this.state.dFrom)?(new Date(this.state.dFrom)):""}
+										onDatePicked={this.handleDateChange}
+										language={this.props.language}
+										inputClasses={classesDateInput}/>
+									<Calendar name="dTo" 
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_TO"})}
+										defaultValue={(this.state.dTo)?(new Date(this.state.dTo)):""}
+										onDatePicked={this.handleDateChange}
+										language={this.props.language}
+										inputClasses={classesDateInputR}/>														
+								</form>
+							</div>
+			}
 			//кнопка бронирования
 			var bookBtn;
 			if(!this.state.postBooked) {
@@ -200,22 +235,7 @@ var Post = React.createClass({
 													{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_WEEK"})}
 												</div>
 											</div>
-											<div className="w-form u-form-wrapper-simple">
-												<form className="w-clearfix">
-													<input className="w-input u-form-field rel dtcard"
-														type="date"
-														ref="dfrom"
-														value={this.state.dFrom}
-														onChange={this.handleDateChange.bind(this, "dFrom")}
-														placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}/>
-													<input className="w-input u-form-field rel dtcard right"
-														type="date"
-														ref="dto"
-														value={this.state.dTo}
-														onChange={this.handleDateChange.bind(this, "dTo")}
-														placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_TO"})}/>
-												</form>
-											</div>
+											{bookFrm}
 											{bookBtn}											
 										</div>
 										<div className="u-block-owner addition">
