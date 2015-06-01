@@ -31,7 +31,10 @@ var MainMenu = React.createClass({
 	componentDidMount: function () {
 		var menuTmp = Utils.getMenuObject("MAIN_MENU");
 		if(menuTmp) {
-			this.setState({menu: menuTmp, menuReady: true});
+			this.setState({menu: menuTmp, menuReady: true}, function () {
+				Webflow.require("navbar").destroy();
+				Webflow.require("navbar").ready();
+			});
 		}
 	},	
 	//генерация представления главного меню

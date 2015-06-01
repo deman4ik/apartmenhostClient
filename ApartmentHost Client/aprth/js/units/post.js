@@ -68,7 +68,6 @@ var Post = React.createClass({
 	},
 	//получение ответа о смене статуса в избранном
 	handleFavorChange: function (resp) {
-		console.log(resp);
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {

@@ -6,7 +6,6 @@ var PostsModes = {
 	FAVORITES: "favorites", //режим избранного
 	SEARCH: "search" //режим поиска
 }
-
 //класс объявлений
 var Posts = React.createClass({
 	//переменные окружения
@@ -126,7 +125,6 @@ var Posts = React.createClass({
 				if(this.props.session.loggedIn) {
 					this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 					var filter = filterFactory.buildAdvertsFilter({language: this.props.language, isFavorite: true});
-					console.log(filter);
 					var getPrms = {
 						language: this.props.language, 
 						filter: filter, 

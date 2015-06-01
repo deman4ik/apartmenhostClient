@@ -70,6 +70,9 @@ var FilterFactory = function () {
 				filter.push(buildFilterItemFn("PriceDay", params.priceFrom, operTypes.COMPARE, cmpsOData.GEN)); 
 			}			
 		}
+		if("userId" in params) {
+			filter.push(buildFilterItemFn("User/Id", params.userId, operTypes.COMPARE, cmpsOData.EQS));
+		}
 		if("isFavorite" in params) {
 			filter.push(buildFilterItemFn("IsFavorite", params.isFavorite, operTypes.COMPARE, cmpsOData.EQB));
 		}

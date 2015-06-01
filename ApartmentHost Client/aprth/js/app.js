@@ -16,6 +16,8 @@ var App = React.createClass({
 	//глобальное состояние приложения
 	getInitialState: function () {
 		return {
+			//флаг готовности приложения к работе
+			appReady: false,
 			//язык приложения
 			language: "RU",
 			//выполняется процесс входа в систему
@@ -141,7 +143,16 @@ var App = React.createClass({
 	},
 	//обработка результатов выполнения входа в систему
 	handleLogInOk: function (sessionInfo) {
-		this.setState({loggingIn: false, session: {loggedIn: true, sessionInfo: sessionInfo}}, this.processAfterAuth());
+		this.setState(
+			{
+				loggingIn: false, 
+				session: {loggedIn: true, sessionInfo: sessionInfo}
+			}, 
+			function () {
+				Utils.saveObjectState("sessionState", this.state.session);
+				this.processAfterAuth();
+			}
+		);
 	},
 	//отмена входа в систему
 	handleLogInCancel: function () {
@@ -154,7 +165,16 @@ var App = React.createClass({
 			{actionType: AppAfterAuthActionTypes.REDIRECT, actionPrms: {link: "/"}}
 		);
 		_.extend(this.state.afterAuth, afterAuthTmp);
-		this.setState({session: {loggedIn: false, sessionInfo: {}}, afterAuth: afterAuthTmp}, this.processAfterAuth());		
+		this.setState(
+			{
+				session: {loggedIn: false, sessionInfo: {}},
+				afterAuth: afterAuthTmp
+			}, 
+			function () {
+				Utils.deleteObjectState("sessionState");
+				this.processAfterAuth();
+			}
+		);
 	},
 	//выбор пункта главного меню
 	handleMenuItemSelected: function (menuItem) {
@@ -164,7 +184,13 @@ var App = React.createClass({
 		this.setLanguage(language);
 	},
 	//инициализация при старте приложения
-	componentDidMount: function () {		
+	componentDidMount: function () {
+		var sessionState = Utils.loadObjectState("sessionState");
+		if(sessionState) {
+			this.setState({session: sessionState, appReady: true});
+		} else {
+			this.setState({appReady: true});
+		}
 	},
 	//генерация приложения
 	render: function () {
@@ -198,28 +224,35 @@ var App = React.createClass({
 		footer =	<Footer session={this.state.session} 
 						language={this.state.language}
 						onLangugeChange={this.handleLanguageChange}/>
+		//общее содержимое
+		var content;
+		if(this.state.appReady) {
+			content = 	<div>
+							{loader}
+							{message}
+							{logInForm}
+							{navBar}
+							<div className="content_wrapper">
+								<RouteHandler session={this.state.session}
+									onLogIn={this.handleLogIn}
+									onDisplayProgress={this.showLoader}
+									onHideProgress={this.hideLoader}
+									onShowError={this.showDialogError}
+									onShowMessage={this.showDialogMessage}
+									language={this.state.language}/>
+							</div>
+							{footer}
+						</div>
+		}
 		//генератор
 		return (
 			<div>
-				{loader}
-				{message}
-				{logInForm}
-				{navBar}
-				<div className="content_wrapper">
-					<RouteHandler session={this.state.session}
-						onLogIn={this.handleLogIn}
-						onDisplayProgress={this.showLoader}
-						onHideProgress={this.hideLoader}
-						onShowError={this.showDialogError}
-						onShowMessage={this.showDialogMessage}
-						language={this.state.language}/>
-				</div>
-				{footer}			
+				{content}
 			</div>
 		);
 	}
 });
-
+//инициализация роутера
 var routes = (
 	<Route name="app" handler={App} path="/">
 		<Route name="main" handler={Main}/>
@@ -234,7 +267,7 @@ var routes = (
 		<Redirect from="/" to="/main"/>
 	</Route>	
 );
-
+//запуск роутера
 Router.run(routes, function (Handler) {
 	React.render(<Handler/>, document.getElementById("application"));
 });

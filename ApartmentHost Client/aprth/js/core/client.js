@@ -5,7 +5,7 @@ var Client = function (clientConfig) {
 	//флаг отладки: true - в консоль пишется всё что проходит через log, false - в консоль не пишется ничего, из того, что проходит через log
 	var debug = true;
 	//серверные объекты, поддерживающие метаописания
-	var serverMetaObjects = ["Apartment", "Advert", "User"];
+	var serverMetaObjects = ["Apartment", "Card", "User"];
 	//поддерживаемые серверные методы
 	var serverMethods = {
 		get: "GET",
@@ -19,7 +19,7 @@ var Client = function (clientConfig) {
 		getUserInfo: "User", //получение сведений о пользователе
 		getMeta: "Metadata", //получение метаописания объекта
 		userApart: "Apartment", //работа с пользовательскими объектами недвижимости
-		userAdvert: "Advert", //работа с пользовательскими объявлениями
+		userAdvert: "Card", //работа с пользовательскими объявлениями
 		toggleAdvertFavor: "Favorite" //переключение состояния объявления в списке избранных
 	}
 	//коды стандартных ответов сервера
@@ -271,6 +271,48 @@ var Client = function (clientConfig) {
 			throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_WS_NO_QUERY"}));
 		}
 	}
+	//считывание списка объявлений
+	var	getAdverts = function (prms, callBack) {
+		try {
+			if(!prms)
+				throw new Error(Utils.getStrResource({code: "CLNT_NO_OBJECT"}));
+			if(!prms.language)
+				throw new Error(Utils.getStrResource({code: "CLNT_NO_LANGUAGE"}));
+			if((!callBack)||(!Utils.isFunction(callBack)))
+				throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_WS_NO_CALL_BACK"}));
+			var filter;
+			if(!prms.filter) {
+				filter = "";
+			} else {
+				filter = filterFactory.buildAdvertsServerFilter(prms.filter);
+			}
+			log(["FILTER IS: ", filter]);
+			if((prms.session)&&(checkSession(prms.session))) {
+				clnt.currentUser = {
+					"userId": prms.session.user.userId,
+					"mobileServiceAuthenticationToken": prms.session.authenticationToken
+				};
+			}
+			var advTable = clnt.getTable("Card");
+			advTable.read(filter).then(function (advItems) {					
+				//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ОБЪЕКТАМ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
+				advItems.forEach(function (item, i) {
+					item.user.img = "aprth/img/tmp/user1.jpg";
+					item.apartment.img = "aprth/img/tmp/2013-10-04_151552.jpg";
+				});
+				//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ОБЪЕКТАМ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
+				log(["GETING ADVERTS SERVER RESULT:", advItems]);
+				callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, advItems));
+			}, function (error) {
+				log(["GETING ADVERTS SERVER ERROR:", error]);
+				callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			});
+		} catch (error) {
+			log(["GETING ADVERTS ERROR:", error]);
+			if(Utils.isFunction(callBack))
+				callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+		}
+	}
 	//публичные члены класса (интерфейс)
 	return {
 		//методы сервера
@@ -408,47 +450,7 @@ var Client = function (clientConfig) {
 			}
 		},
 		//считывание списка объявлений
-		getAdverts: function (prms, callBack) {
-			try {
-				if(!prms)
-					throw new Error(Utils.getStrResource({code: "CLNT_NO_OBJECT"}));
-				if(!prms.language)
-					throw new Error(Utils.getStrResource({code: "CLNT_NO_LANGUAGE"}));
-				if((!callBack)||(!Utils.isFunction(callBack)))
-					throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_WS_NO_CALL_BACK"}));
-				var filter;
-				if(!prms.filter) {
-					filter = "";
-				} else {
-					filter = filterFactory.buildAdvertsServerFilter(prms.filter);
-				}
-				log(["FILTER IS: ", filter]);
-				if((prms.session)&&(checkSession(prms.session))) {
-					clnt.currentUser = {
-						"userId": prms.session.user.userId,
-						"mobileServiceAuthenticationToken": prms.session.authenticationToken
-					};
-				}
-				var advTable = clnt.getTable("Advert");
-				advTable.read(filter).then(function (advItems) {					
-					//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ОБЪЕКТАМ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
-					advItems.forEach(function (item, i) {
-						item.user.img = "aprth/img/tmp/user1.jpg";
-						item.apartment.img = "aprth/img/tmp/2013-10-04_151552.jpg";
-					});
-					//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ОБЪЕКТАМ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
-					log(["GETING ADVERTS SERVER RESULT:", advItems]);
-					callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, advItems));
-				}, function (error) {
-					log(["GETING ADVERTS SERVER ERROR:", error]);
-					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
-				});
-			} catch (error) {
-				log(["GETING ADVERTS ERROR:", error]);
-				if(Utils.isFunction(callBack))
-					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
-			}
-		},
+		getAdverts: getAdverts,
 		//считывание объявления
 		getAdvert: function (prms, callBack) {
 			try {
@@ -458,7 +460,7 @@ var Client = function (clientConfig) {
 					throw new Error(Utils.getStrResource({code: "CLNT_NO_LANGUAGE"}));
 				if((!callBack)||(!Utils.isFunction(callBack)))
 					throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_WS_NO_CALL_BACK"}));
-				if((!prms.postId)||(!Utils.isFunction(callBack)))
+				if(!prms.postId)
 					throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_NO_ID"}));
 				if((prms.session)&&(checkSession(prms.session))) {
 					clnt.currentUser = {
@@ -466,7 +468,7 @@ var Client = function (clientConfig) {
 						"mobileServiceAuthenticationToken": prms.session.authenticationToken
 					};
 				}
-				var advTable = clnt.getTable("Advert");
+				var advTable = clnt.getTable("Card");
 				advTable.lookup(prms.postId).then(function (advItem) {
 					//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ОБЪЕКТАМ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
 					advItem.user.img = "aprth/img/tmp/user1.jpg";
@@ -537,7 +539,59 @@ var Client = function (clientConfig) {
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
-		}		
+		},
+		//считывание профиля пользователя
+		getProfile: function (prms, callBack) {
+			try {
+				if(!prms)
+					throw new Error(Utils.getStrResource({code: "CLNT_NO_OBJECT"}));
+				if(!prms.language)
+					throw new Error(Utils.getStrResource({code: "CLNT_NO_LANGUAGE"}));
+				if((!callBack)||(!Utils.isFunction(callBack)))
+					throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_WS_NO_CALL_BACK"}));
+				if(!prms.profileId)
+					throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_NO_ID"}));
+				if((!prms.session)||(!checkSession(prms.session)))
+					throw new Error(Utils.getStrResource({lang: prms.language, code: "SRV_UNAUTH"}));
+				clnt.currentUser = {
+					"userId": prms.session.user.userId,
+					"mobileServiceAuthenticationToken": prms.session.authenticationToken
+				};
+				var profileTable = clnt.getTable("Profile");
+				profileTable.lookup(prms.profileId).then(function (profileItem) {
+					//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ПРОФИЛЮ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
+					profileItem.img = "aprth/img/tmp/user1.jpg";
+					//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ПРОФИЛЮ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
+					var getAdvertsPrms = {
+						language: prms.language, 
+						filter: filterFactory.buildAdvertsFilter({language: prms.language, userId: prms.profileId}),
+						session: prms.session
+					}		
+					getAdverts(getAdvertsPrms, function (resp) {
+						if(resp.STATE == respStates.ERR) {
+							callBack(resp);
+						} else {
+							if((resp.MESSAGE)&&(Array.isArray(resp.MESSAGE))&&(resp.MESSAGE.length > 0)) {
+								profileItem.adverts = resp.MESSAGE;
+								profileItem.advertsCount = resp.MESSAGE.length;
+							} else {
+								profileItem.adverts = [];
+								profileItem.advertsCount = 0;
+							}
+							log(["GETING PROFILE SERVER RESULT:", profileItem]);
+							callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, profileItem));
+						}
+					});
+				}, function (error) {
+					log(["GETING PROFILE SERVER ERROR:", error]);
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+				});
+			} catch (error) {
+				log(["GETING PROFILE ERROR:", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		}
 	}
 }
 
