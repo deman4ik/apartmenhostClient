@@ -80,15 +80,17 @@ var PostItem = React.createClass({
 		return (
 			<div>
 				<div className="w-row u-row-cardlst">
-					<div className="w-col w-col-4 w-col-small-4 u-col-cardlst-img">
-						<a className="w-clearfix w-inline-block u-lnk-cardlst-img" 
+					<div className="w-col w-col-4 w-col-small-4">
+						<a className="w-inline-block u-block-card-desc" 
 							href="javascript:;" 
 							onClick={this.handlePostClick}>
-							<img className="u-lnk-cardlst-img" src={this.props.item.apartment.img}/>
+							<img src={this.props.item.apartment.img}/>
 							<img className="u-img-author-sm" src={this.props.item.user.img}/>
 						</a>
+						<div><img src="aprth/img/tmp/rater_1.png"/><div className="card_lst_rate">(6)</div></div>
 					</div>
-					<div className="w-col w-col-4 w-col-small-4 w-clearfix u-col-cardlst-desc">
+					<div className="w-col w-col-4 w-col-small-4">
+					  <div className="w-clearfix u-block-card-desc">
 						<div>{this.props.item.user.lastName} {this.props.item.user.firstName}</div>
 						<h4>{Utils.getStrResource({lang: this.props.language, code: this.props.item.apartment.type})}</h4>
 						<div className="u-t-price price-sm">
@@ -104,8 +106,9 @@ var PostItem = React.createClass({
 							{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_WEEK"})}
 						</div>
 						{favorBtn}
+					  </div>
 					</div>
-					<div className="w-col w-col-4 w-col-small-4 u-col-cardlst-desc">
+					<div className="w-col w-col-4 w-col-small-4">
 						<div>
 							<div></div>
 							<div>
