@@ -11,7 +11,8 @@ var PostsFilter = React.createClass({
 			filterPriceTo: 500, //верхняя граница фильтра по цене
 			noFilterSpecified: false, //флаг отсуствия фильтра
 			dFrom: "", //дата начала периода бронирования
-			dTo: "" //дата коночания периода бронирования		
+			dTo: "", //дата коночания периода бронирования
+			sex: "" //пол постояльца	
 		};
 	},
 	//сохранение и сборка фильтра
@@ -22,8 +23,8 @@ var PostsFilter = React.createClass({
 		if(React.findDOMNode(this.refs.adress).value) {
 			filterParams.adress = React.findDOMNode(this.refs.adress).value;			
 		}
-		if((React.findDOMNode(this.refs.sex).value)&&(React.findDOMNode(this.refs.sex).value != "DVAL_ANY")) {
-			filterParams.sex = React.findDOMNode(this.refs.sex).value;
+		if(this.state.sex) {
+			filterParams.sex = this.state.sex;
 		}
 		if(this.state.dFrom) {
 			filterParams.dFrom = this.state.dFrom;
@@ -57,7 +58,7 @@ var PostsFilter = React.createClass({
 		console.log(filterParams);
 		if(filterParams) {
 			if("adress" in filterParams) React.findDOMNode(this.refs.adress).value = filterParams.adress;
-			if("sex" in filterParams) React.findDOMNode(this.refs.sex).value = filterParams.sex;
+			if("sex" in filterParams) this.setState({sex: filterParams.sex});
 			if("dFrom" in filterParams) this.setState({dFrom: filterParams.dFrom});
 			if("dTo" in filterParams) this.setState({dTo: filterParams.dTo});
 			if("apartType" in filterParams) React.findDOMNode(this.refs.apartType).value = filterParams.apartType;
@@ -75,6 +76,11 @@ var PostsFilter = React.createClass({
 		}
 		return filterParams;
 	},
+	//выбор пола
+	handleSelectedSex: function (sex) {
+		this.setState({sex: sex});
+		console.log(sex);
+	},
 	//выбор даты в календаре
 	handleDatePicked: function (datePickerName, date) {
 		var stateObject = {};
@@ -88,7 +94,6 @@ var PostsFilter = React.createClass({
 	//обработка нажатия на кнопку "Очистить"
 	handleClearClick: function () {
 		React.findDOMNode(this.refs.adress).value = "";
-		React.findDOMNode(this.refs.sex).value = "DVAL_ANY";
 		React.findDOMNode(this.refs.apartType).value = "DVAL_ANY";
 		React.findDOMNode(this.refs.priceAny).checked = true;
 		React.findDOMNode(this.refs.price1).checked = false;
@@ -100,7 +105,8 @@ var PostsFilter = React.createClass({
 				filterToggle: false, 
 				noFilterSpecified: false, 
 				dFrom: "", 
-				dTo: ""
+				dTo: "",
+				sex: ""
 			},
 			function () {
 				var f = this.saveFilterState();
@@ -168,11 +174,29 @@ var PostsFilter = React.createClass({
 								</label>
 							</div>
 							<div className="w-col w-col-9">
-								<select className="w-select u-form-field" ref="sex">
-									<option value="DVAL_ANY">{Utils.getStrResource({lang: this.props.language, code: "DVAL_ANY"})}</option>
-									<option value="DVAL_MALE">{Utils.getStrResource({lang: this.props.language, code: "DVAL_MALE"})}</option>
-									<option value="DVAL_FEMALE">{Utils.getStrResource({lang: this.props.language, code: "DVAL_FEMALE"})}</option>
-								</select>
+								<OptionsSelector options={[
+										{
+											label: Utils.getStrResource({lang: this.props.language, code: "DVAL_ANY"}),
+											value: "DVAL_ANY"
+										}, 
+										{
+											label: Utils.getStrResource({lang: this.props.language, code: "DVAL_MALE"}),
+											value: "DVAL_MALE"
+										},
+										{
+											label: Utils.getStrResource({lang: this.props.language, code: "DVAL_FEMALE"}),
+											value: "DVAL_FEMALE"
+										},
+										{
+											label: Utils.getStrResource({lang: this.props.language, code: "DVAL_THING"}),
+											value: "DVAL_THING"
+										},
+										{
+											label: Utils.getStrResource({lang: this.props.language, code: "DVAL_ALIEN"}),
+											value: "DVAL_ALIEN"
+										}]}
+									onOptionChanged={this.handleSelectedSex}
+									defaultOptionsState={this.state.sex}/>								
 							</div>
 						</div>
 						<div className="w-row">

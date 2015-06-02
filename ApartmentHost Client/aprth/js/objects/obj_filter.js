@@ -9,7 +9,8 @@ var FilterFactory = function () {
 	}
 	//поддерживаемые функции фильтра
 	var funcsOData = {
-		SUBSTR: "substringof" //поиск подстроки в строке		
+		SUBSTR: "substringof", //поиск подстроки в строке
+		INDEXOF: "indexof" //вхождение подстроки в строку
 	}
 	//поддерживаемые операции сравнения
 	var cmpsOData = {
@@ -52,7 +53,7 @@ var FilterFactory = function () {
 				filter.push(buildFilterItemFn("Apartment/Adress", params.adress, operTypes.FUNCTION, funcsOData.SUBSTR));
 			}
 			if(("sex" in params)&&(params.sex)) {
-				filter.push(buildFilterItemFn("ResidentGender", params.sex, operTypes.COMPARE, cmpsOData.EQS));
+				filter.push(buildFilterItemFn("ResidentGender", params.sex, operTypes.FUNCTION, funcsOData.INDEXOF));
 			}
 			if(("dFrom" in params)&&(params.dFrom)) {				
 				filter.push(buildFilterItemFn("DateFrom", params.dFrom, operTypes.COMPARE, cmpsOData.LED));
@@ -92,6 +93,10 @@ var FilterFactory = function () {
 								filter += "substringof('" + filterItem.value + "', " + filterItem.fieldName + ")";
 								break;
 							}
+							case(funcsOData.INDEXOF): {
+								filter += "indexof('" + filterItem.value + "', " + filterItem.fieldName + ") ne -1";
+								break;
+							}							
 							default: {
 							}
 						}

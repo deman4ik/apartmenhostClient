@@ -54,7 +54,8 @@ var langs = [
 		UI_BTN_SEARCH: "Искать",
 		UI_BTN_FILTER: "Фильтр",
 		UI_BTN_FAVOR_ADD: "В избранное",
-		UI_BTN_FAVOR_RM: "Уже в избранном",
+		UI_BTN_FAVOR_RM: "В избранном",
+		UI_BTN_FAVOR_DEL: "Убрать",
 		UI_BTN_CLEAR: "Очистить",
 		UI_BTN_REQ_RENT: "Запросить бронирование",
 		UI_BTN_SEND_COMPLAINT: "Пожаловаться",
@@ -130,6 +131,8 @@ var langs = [
 		//ресурсы для описания списков - пол
 		DVAL_MALE: "Мужской",
 		DVAL_FEMALE: "Женский",
+		DVAL_THING: "Средний",
+		DVAL_ALIEN: "Инопланетный",
 		//ресурсы для описания списков - типы недвижимости
 		DVAL_HOUSE: "Дом",
 		DVAL_ROOM: "Комната",
@@ -216,6 +219,7 @@ var langs = [
 		UI_BTN_FILTER: "Filter",
 		UI_BTN_FAVOR_ADD: "To favorites",
 		UI_BTN_FAVOR_RM: "In favorites",
+		UI_BTN_FAVOR_DEL: "Remove",
 		UI_BTN_CLEAR: "Clear",
 		UI_BTN_REQ_RENT: "Request rent",
 		UI_BTN_SEND_COMPLAINT: "Send complaint",
@@ -291,6 +295,8 @@ var langs = [
 		//ресурсы для описания списков - пол
 		DVAL_MALE: "Male",
 		DVAL_FEMALE: "Female",
+		DVAL_THING: "The Thing",
+		DVAL_ALIEN: "Alien",
 		//ресурсы для описания списков - типы недвижимости
 		DVAL_HOUSE: "House",
 		DVAL_ROOM: "Room",

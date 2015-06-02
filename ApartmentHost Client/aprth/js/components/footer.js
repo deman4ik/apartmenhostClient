@@ -9,7 +9,9 @@ var Footer = React.createClass({
 		//меню социальных сервисов подвала
 		var menuFooterSocial = <FooterSocialMenu language={this.props.language}/>			
 		//меню языков подвала
-		//var menuFooterLanguage = <LangMenu language={this.props.language} onLangugeChange={this.props.onLangugeChange}/>;
+		var menuFooterLanguage;
+		if(this.props.languageEnabled)
+			menuFooterLanguage = <LangMenu language={this.props.language} onLangugeChange={this.props.onLangugeChange}/>;
 		//генерация представления подвала
 		return (
 			<div>
@@ -29,12 +31,8 @@ var Footer = React.createClass({
 					</footer>
 					<footer className="u-block-footer-social">
 						<div className="w-row">
-							<div className="w-col w-col-8 w-col-small-8 w-col-tiny-8">
-								{menuFooterSocial}
-							</div>
-							{/*<div className="w-col w-col-4 w-col-small-4 w-col-tiny-4 u-col-lang">
-								{menuFooterLanguage}
-							</div>*/}
+							{menuFooterSocial}
+							{menuFooterLanguage}							
 						</div>
 					</footer>
 				</section>

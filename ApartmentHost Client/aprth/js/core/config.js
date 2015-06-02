@@ -9,5 +9,9 @@ var config = {
 	//имя демонстрационного пользователя
 	demoUser: "parus@parus.ru",
 	//пароль демонстрационного пользователя
-	demoPassword: "parusina"
+	demoPassword: "parusina",
+	//доступность смены языка интерфейса
+	languagesEnabled: true,
+	//язык интерфейса по умолчанию
+	languageDefault: "RU"
 }

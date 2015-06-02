@@ -6,15 +6,15 @@ var AddPost = React.createClass({
 	getInitialState: function () {
 		return {
 			dFrom: "", //дата начала периода бронирования
-			dTo: "" //дата коночания периода бронирования
+			dTo: "", //дата коночания периода бронирования
+			sex: "" //пол постояльца
 		}
-	},
+	},	
 	//зачистка формы
-	clearAddRentForm: function () {
-		React.findDOMNode(this.refs.sex).value = "";
+	clearAddRentForm: function () {		
 		React.findDOMNode(this.refs.apartType).value = "";
 		React.findDOMNode(this.refs.address).value = "";
-		this.setState({dFrom: "", dTo: ""});
+		this.setState({dFrom: "", dTo: "", sex: ""});
 		React.findDOMNode(this.refs.apartAddition).value = "";
 		React.findDOMNode(this.refs.rentAddition).value = "";
 		React.findDOMNode(this.refs.price).value = "";	
@@ -47,11 +47,12 @@ var AddPost = React.createClass({
 				dateFrom: this.state.dFrom + "T00:00:00Z",
 				dateTo: this.state.dTo + "T00:00:00Z",
 				description: React.findDOMNode(this.refs.apartAddition).value,
-				residentGender: React.findDOMNode(this.refs.sex).value,
+				residentGender: this.state.sex,
 				priceDay: price,
 				pricePeriod: price * 10
 			}
 		}
+		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 		clnt.addAdvert(addPrms, this.handleAddRent);
 	},
 	//проверка обязательных параметров
@@ -61,7 +62,7 @@ var AddPost = React.createClass({
 			res = Utils.getStrResource({lang: this.props.language, code: "SRV_APARTMENT_REQUIRED", values: [Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PHONE"})]});
 			return res;
 		}		
-		if(!React.findDOMNode(this.refs.sex).value) {
+		if(!this.state.sex) {
 			res = Utils.getStrResource({lang: this.props.language, code: "SRV_APARTMENT_REQUIRED", values: [Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})]});
 			return res;
 		}
@@ -86,6 +87,10 @@ var AddPost = React.createClass({
 			return res;
 		}
 		return res;
+	},
+	//выбор пола
+	handleSelectedSex: function (sex) {
+		this.setState({sex: sex});
 	},
 	//выбор даты в календаре
 	handleDatePicked: function (datePickerName, date) {
@@ -117,7 +122,7 @@ var AddPost = React.createClass({
 			"w-input": true,
 			"u-form-field": true,
 			"rel": true
-		});
+		});		
 		//содержимое формы
 		var content;
 		if(this.props.session.loggedIn) {
@@ -142,11 +147,29 @@ var AddPost = React.createClass({
 												<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}:</label>
 											</div>
 											<div className="w-col w-col-9">
-												<select className="w-select u-form-field" ref="sex">
-													<option value="">{Utils.getStrResource({lang: this.props.language, code: "DVAL_ANY"})}</option>
-													<option value="DVAL_MALE">{Utils.getStrResource({lang: this.props.language, code: "DVAL_MALE"})}</option>
-													<option value="DVAL_FEMALE">{Utils.getStrResource({lang: this.props.language, code: "DVAL_FEMALE"})}</option>
-												</select>
+												<OptionsSelector options={[
+														{
+															label: Utils.getStrResource({lang: this.props.language, code: "DVAL_ANY"}),
+															value: "DVAL_ANY"
+														}, 
+														{
+															label: Utils.getStrResource({lang: this.props.language, code: "DVAL_MALE"}),
+															value: "DVAL_MALE"
+														},
+														{
+															label: Utils.getStrResource({lang: this.props.language, code: "DVAL_FEMALE"}),
+															value: "DVAL_FEMALE"
+														},
+														{
+															label: Utils.getStrResource({lang: this.props.language, code: "DVAL_THING"}),
+															value: "DVAL_THING"
+														},
+														{
+															label: Utils.getStrResource({lang: this.props.language, code: "DVAL_ALIEN"}),
+															value: "DVAL_ALIEN"
+														}]}
+													onOptionChanged={this.handleSelectedSex}
+													defaultOptionsState={this.state.sex}/>
 											</div>
 										</div>
 										<div className="w-row">

@@ -19,7 +19,9 @@ var App = React.createClass({
 			//флаг готовности приложения к работе
 			appReady: false,
 			//язык приложения
-			language: "RU",
+			language: "",
+			//признак доступности мультиязычного интерфейса
+			languageEnabled: "",
 			//выполняется процесс входа в систему
 			loggingIn: false,
 			//действие после входа/выхода
@@ -187,9 +189,16 @@ var App = React.createClass({
 	componentDidMount: function () {
 		var sessionState = Utils.loadObjectState("sessionState");
 		if(sessionState) {
-			this.setState({session: sessionState, appReady: true});
+			this.setState({session: sessionState, 
+				language: config.languageDefault,
+				languageEnabled: config.languagesEnabled,
+				appReady: true
+			});
 		} else {
-			this.setState({appReady: true});
+			this.setState({language: config.languageDefault,
+				languageEnabled: config.languagesEnabled,
+				appReady: true
+			});
 		}
 	},
 	//генерация приложения
@@ -223,6 +232,7 @@ var App = React.createClass({
 		var footer;
 		footer =	<Footer session={this.state.session} 
 						language={this.state.language}
+						languageEnabled={this.state.languageEnabled}
 						onLangugeChange={this.handleLanguageChange}/>
 		//общее содержимое
 		var content;

@@ -47,7 +47,23 @@ var PostItem = React.createClass({
 		//кнопка управления избранным
 		var favorText;
 		if(this.props.item.isFavorite) {
-			favorText = Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FAVOR_RM"});
+			//выбираем текст в зависимости от режима
+			switch(this.props.mode) {
+				//режим поиска
+				case(PostsModes.SEARCH): {
+					favorText = Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FAVOR_RM"});
+					break;
+				}
+				//режим избранного
+				case(PostsModes.FAVORITES): {
+					favorText = Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FAVOR_DEL"});
+					break;
+				}
+				//прочие режимы
+				default: {
+					favorText = Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FAVOR_RM"});
+				}
+			}
 		} else {
 			favorText = Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FAVOR_ADD"});	
 		}

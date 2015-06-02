@@ -37,7 +37,7 @@ var FooterSocialMenu = React.createClass({
 		}
 		//генерация представления меню
 		return (
-			<div>
+			<div className="w-col w-col-8 w-col-small-8 w-col-tiny-8">
 				{menuItems}
 			</div>			
 		);

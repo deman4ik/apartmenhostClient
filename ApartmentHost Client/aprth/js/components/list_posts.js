@@ -21,7 +21,8 @@ var PostsList = React.createClass({
 				<PostItem onFavorChange={this.props.onFavorChange}
 					onItemClick={this.props.onItemClick}
 					language={this.props.language}
-					item={item}/>
+					item={item}
+					mode={this.props.mode}/>
 			);
 		}, this);
 		//представление списка

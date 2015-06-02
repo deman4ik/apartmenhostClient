@@ -160,7 +160,8 @@ var Posts = React.createClass({
 					postsList = <PostsList onFavorChange={this.onFavorChange}
 									onItemClick={this.onItemClick}
 									language={this.props.language}
-									items={this.state.adverts}/>
+									items={this.state.adverts}
+									mode={this.props.mode}/>
 				} else {
 					if(!this.state.advertsReady) {
 						postsList =	<InLineMessage type={Utils.getMessageTypeInf()} 
@@ -190,7 +191,8 @@ var Posts = React.createClass({
 						postsList = <PostsList onFavorChange={this.onFavorChange}
 										onItemClick={this.onItemClick}
 										language={this.props.language}
-										items={this.state.adverts}/>
+										items={this.state.adverts}
+										mode={this.props.mode}/>
 					} else {					
 						postsList =	<InLineMessage type={Utils.getMessageTypeInf()} 
 											message={Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_FAVORITES"})}/>					
