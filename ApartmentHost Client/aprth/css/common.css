@@ -44,7 +44,25 @@
 	border: 1px solid #ed5466;
 }
 
+.has-error .help-block,
+.has-error .control-label,
+.has-error .radio,
+.has-error .checkbox,
+.has-error .radio-inline,
+.has-error .checkbox-inline {
+  color: #ed5466;
+}
+
+.has-error .u-form-field {
+  border-color: #ed5466;
+}
+
+
 .u-form-body {
 	position: relative;
 	z-index: 400;
+}
+
+.u-nav-button.w--open {
+  background-color: transparent;
 }
