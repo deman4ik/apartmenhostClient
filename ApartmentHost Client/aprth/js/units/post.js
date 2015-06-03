@@ -155,7 +155,8 @@ var Post = React.createClass({
 								{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_REQ_RENT"})}
 							</a>											
 			} else {
-				bookBtn =	<a className="u-btn-booked u-btn" href="javascript:;" style={aStyle}>
+				bookBtn =	<a className="u-btn query booked" href="javascript:;" style={aStyle}>
+								<span className="glyphicon glyphicon-ok btn" aria-hidden="true"></span>
 								{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_BOOKED"})}
 							</a>
 			}
@@ -190,11 +191,22 @@ var Post = React.createClass({
 			var classesFavorBtn = cFavorBtn({
 				"u-btn": true,
 				"btn-sm": true,
+				"right": true,
 				"btn-done": (this.state.post.isFavorite)
 			});
-			var favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+			var favorBtn;
+			if(this.state.post.isFavorite) {
+				favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+								<span className="glyphicon glyphicon-ok btn" aria-hidden="true"></span>
 								{favorText}
-							</a>			
+							</a>
+			} else {
+				favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+								<span className="glyphicon glyphicon-heart btn" aria-hidden="true"></span>
+								{favorText}
+							</a>				
+			}
+			
 			//дополнительные опции объявления
 			var advOptions;
 			if(this.state.post.apartment.options) {			 

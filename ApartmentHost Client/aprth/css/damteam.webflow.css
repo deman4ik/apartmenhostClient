@@ -66,6 +66,9 @@ p {
   text-align: center;
   text-decoration: none;
 }
+.u-btn.right {
+  float:right;
+}
 .u-btn.tel {
   margin-top: 6px;
   margin-bottom: 14px;
@@ -79,28 +82,19 @@ p {
   border-color: #64d3f5;
   color: #0be3dc;
 }
-.u-btn.query {
-  left: 0px;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  display: block;
-  border: 0px none transparent;
-  border-radius: 0px;
-  background-color: #e65e5e;
-  color: white;
-  font-weight: 300;
-}
-.u-btn.query:hover {
-  background-color: rgba(230, 94, 94, 0.78);
-}
 .u-btn.btn-sm {
   padding: 2px 6px;
-  float: left;
   font-size: 13px;
+}
+.u-btn.btn-sm.right {
+  float:right;
 }
 .u-btn.btn-sm:hover {
   background-color: #bbd645;
+}
+.u-btn.btn-sm > span {
+  color: #296573;
+  padding:0;
 }
 .u-btn.btn-sm.btn-done {
   border-color: #cfd9db;
@@ -109,6 +103,10 @@ p {
 }
 .u-btn.btn-sm.btn-done:hover {
   background-color: #dde4e6;
+}
+.u-btn.btn-sm.btn-done > span {
+  color: #7d9091;
+  padding:0;
 }
 .u-btn.round {
   width: 40px;
@@ -391,7 +389,7 @@ p {
 .u-img-author-sm {
   position: absolute;
   right: 2px;
-  bottom: 28px;
+  bottom: 26px;
   z-index: 50;
   width: 62px;
   height: 62px;
@@ -658,14 +656,28 @@ p {
 .u-row-underline.old {
   background-color: #f8f8f8;
 }
-.u-btn-booked {
-  display: none;
-  border-style: none;
-  border-width: 0px;
+.u-btn.query {
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: block;
+  border: 0px none transparent;
   border-radius: 0px;
-  background-color: #91c854;
+  background-color: #e65e5e;
   color: white;
   font-weight: 300;
+}
+.u-btn.query:hover {
+  background-color: rgba(230, 94, 94, 0.78);
+}
+.u-btn.query.booked {
+  background-color: #91c854;
+  cursor:text;
+}
+.u-btn.query.booked > span {
+  color: #ffffff;
+  cursor:text;
 }
 .u-col-query {
   padding-top: 14px;
@@ -780,6 +792,9 @@ html.w-mod-js *[data-ix="hide-on-load"] {
     right: 0px;
     bottom: 0px;
     float: right;
+    background-color: transparent;
+  }
+  .u-nav-button.w--open {
     background-color: transparent;
   }
   .u-nav-button.w--open:active {

@@ -73,9 +73,27 @@ var PostItem = React.createClass({
 			"btn-sm": true,
 			"btn-done": (this.props.item.isFavorite)
 		});
-		var favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+		/*if(this.props.item.isFavorite) {
+			favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+								<i className="ico-chevron-down" aria-hidden="true"></i>{favorText}
+						</a>
+		} else {
+			favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+								<i className="ico-heart3" aria-hidden="true"></i>{favorText}
+						</a>			
+		}*/		
+		var favorBtn;
+		if(this.props.item.isFavorite) {
+			favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+							<span className="glyphicon glyphicon-ok btn" aria-hidden="true"></span>
 							{favorText}
 						</a>
+		} else {
+			favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+							<span className="glyphicon glyphicon-heart btn" aria-hidden="true"></span>
+							{favorText}
+						</a>			
+		}
 		//представление элемента
 		return (
 			<div>
@@ -105,7 +123,9 @@ var PostItem = React.createClass({
 							{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
 							{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_WEEK"})}
 						</div>
-						{favorBtn}
+						<div>
+							{favorBtn}
+						</div>
 					  </div>
 					</div>
 					<div className="w-col w-col-4 w-col-small-4">

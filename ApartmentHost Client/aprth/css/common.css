@@ -63,6 +63,4 @@
 	z-index: 400;
 }
 
-.u-nav-button.w--open {
-  background-color: transparent;
-}
+.glyphicon.btn {margin-right: 4px; position:relative; margin-bottom:3px;}
