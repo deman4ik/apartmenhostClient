@@ -20,7 +20,8 @@ var Client = function (clientConfig) {
 		getMeta: "Metadata", //получение метаописания объекта
 		userApart: "Apartment", //работа с пользовательскими объектами недвижимости
 		userAdvert: "Card", //работа с пользовательскими объявлениями
-		toggleAdvertFavor: "Favorite" //переключение состояния объявления в списке избранных
+		toggleAdvertFavor: "Favorite", //переключение состояния объявления в списке избранных
+		makeReservation: "Reservation/Make" //бронирование
 	}
 	//коды стандартных ответов сервера
 	var serverStdErrCodes = {
@@ -200,6 +201,35 @@ var Client = function (clientConfig) {
 							values: ["ServerRequest", "data"]
 						}));
 					return fillSrvStdReqData(serverActions.toggleAdvertFavor + "/" + prms.data, serverMethods.ins, "");
+					break;
+				}
+				//бронирование
+				case (serverActions.makeReservation): {
+					if(!prms.data) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));
+					if(!prms.data.postId) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "postId"]
+						}));
+					if(!prms.data.dateFrom) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "dateFrom"]
+						}));
+					if(!prms.data.dateTo) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "dateTo"]
+						}));
+					return fillSrvStdReqData(serverActions.makeReservation + "/" + prms.data.postId + "/" + prms.data.dateFrom + "/" + prms.data.dateTo, serverMethods.ins, "");
 					break;
 				}
 				//неизвестное действие
@@ -497,6 +527,33 @@ var Client = function (clientConfig) {
 						action: serverActions.toggleAdvertFavor,
 						method: serverMethods.ins,
 						data: prms.postId
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["TOGGLING FAVOR ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//смена статуса объявления в избранном
+		makeReservation: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.makeReservation,
+						method: serverMethods.ins,
+						data: {postId: prms.postId, dateFrom: prms.dateFrom, dateTo: prms.dateTo}
 					}),
 					callBack: function (resp) {
 						if(resp.STATE == respStates.ERR)

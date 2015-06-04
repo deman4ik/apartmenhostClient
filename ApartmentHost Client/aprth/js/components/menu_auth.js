@@ -9,10 +9,24 @@ var AuthMenu = React.createClass({
 	},
 	//обработка нажатия на "Вход"
 	handleLogIn: function () {
+		this.props.onMenuItemSelected({
+			code: "LogIn", 
+			title: "UI_MENU_AUTH_LOGIN", 
+			link: "main",
+			path: "/main",
+			authAccess: false
+		});
 		this.props.onLogIn({actionType: AppAfterAuthActionTypes.REDIRECT, actionPrms: {link: "/"}});
 	},
 	//обработка нажатия на "Выход"
 	handleLogOut: function () {
+		this.props.onMenuItemSelected({
+			code: "LogOut", 
+			title: "UI_MENU_AUTH_LOGOUT", 
+			link: "main",
+			path: "/main",
+			authAccess: false
+		});
 		this.props.onLogOut();
 	},
 	//инициализация компонента при подключении к страничке

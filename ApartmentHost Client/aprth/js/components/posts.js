@@ -162,14 +162,6 @@ var Posts = React.createClass({
 									language={this.props.language}
 									items={this.state.adverts}
 									mode={this.props.mode}/>
-				} else {
-					if(!this.state.advertsReady) {
-						postsList =	<InLineMessage type={Utils.getMessageTypeInf()} 
-										message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_FILTER"})}/>
-					} else {
-						postsList =	<InLineMessage type={Utils.getMessageTypeErr()} 
-										message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_DATA_FOUND"})}/>
-					}
 				}
 				//соберем финальный вид компонента
 				content =	<div className="w-section u-sect-page-cardlst">

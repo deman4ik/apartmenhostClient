@@ -29,9 +29,7 @@ var langs = [
 		UI_COPYRIGHT: "Copyright © 2015",
 		UI_UNIT_UNDER_CONSTRUCTION: "Раздел в разработке",
 		UI_UNIT_NOT_FOUND: "Раздел не найден",
-		UI_NO_DATA_FOUND: "Данных не найдено",
 		UI_NO_DATA: "Нет данных для отображения",
-		UI_NO_FILTER: "Задайте параметры поиска...",
 		UI_MENU_AUTH_LOGIN: "Войти",
 		UI_MENU_AUTH_LOGOUT: "Выйти",
 		UI_MAIN_MENU_SEARCH: "Поиск",
@@ -67,6 +65,8 @@ var langs = [
 		UI_TITLE_LOGIN: "Вход",
 		UI_TITLE_ADVERTS_FILER: "Поиск жилья",
 		UI_TITLE_ADD_RENT_POST: "Размещение объявления о сдаче жилья",
+		UI_TITLE_COMPLAINT: "Жалоба",
+		UI_FLD_COMPLAINT_TEXT: "Текст жалобы",
 		UI_FLD_USER: "Логин",		
 		UI_FLD_PASS: "Пароль",
 		UI_FLD_DATE: "Дата",
@@ -101,7 +101,7 @@ var langs = [
 		UI_LBL_PERIOD_WEEK: "неделя",
 		UI_LBL_EXTRAS: "Дополнительно",
 		UI_LBL_BOOKED: "Запрос отправлен",
-		UI_LBL_MAKE_CALL: "или позвонить",
+		UI_LBL_MAKE_CALL: "или",
 		UI_LBL_CAN_RATE_AFTER_BOOKING: "Запросив бронирование вы также сможете оставить отзыв",
 		UI_LBL_DESCR: "Описание",
 		UI_LBL_ABOUT_OWNER: "О собственнике",
@@ -152,6 +152,7 @@ var langs = [
 		SRV_LOGIN_INVALID_PASS: "Некорректно указан пароль!",
 		SRV_APARTMENT_REQUIRED: "Незаполнено обязательное поле \"%1$s\"!",
 		SRV_APARTMENT_DEPENDENCY: "У данного объекта есть зависимости!",
+		SRV_CARD_EXISTS: "У Вас уже есть объявление!",
 		//ресурсы для клиентских сообщений об ошибках и информации
 		CLNT_COMMON_ERROR: "Ошибка",
 		CLNT_COMMON_SUCCESS: "Успех",
@@ -175,7 +176,8 @@ var langs = [
 		CLNT_NO_MODE: "Не указан режим работы компонента!",
 		CLNT_NO_FAVORITES: "У вас в избранном нет объявлений",
 		CLNT_BOOKING_NO_DATES: "Не указаны даты бронирования!",
-		CLNT_NO_ADVERTS: "У вас нет объявлений, нажмите \"%1$s\" для создания объявления"
+		CLNT_NO_ADVERTS: "У вас нет объявлений, нажмите \"%1$s\" для создания объявления",
+		CLNT_COMPLAINT_ADDED: "Спасибо за помощь"
 	},
 	//английский
 	{
@@ -193,9 +195,7 @@ var langs = [
 		UI_COPYRIGHT: "Copyright © 2015",
 		UI_UNIT_UNDER_CONSTRUCTION: "Unit is under construction",
 		UI_UNIT_NOT_FOUND: "Unit not found",
-		UI_NO_DATA_FOUND: "No adverts found!",
 		UI_NO_DATA: "No data to display",
-		UI_NO_FILTER: "Set filter for search...",
 		UI_MENU_AUTH_LOGIN: "Login",
 		UI_MENU_AUTH_LOGOUT: "Logout",		
 		UI_MAIN_MENU_SEARCH: "Search",
@@ -231,6 +231,8 @@ var langs = [
 		UI_TITLE_LOGIN: "Login",
 		UI_TITLE_ADVERTS_FILER: "Apartments search",
 		UI_TITLE_ADD_RENT_POST: "New apartment rent",
+		UI_TITLE_COMPLAINT: "Complaint",
+		UI_FLD_COMPLAINT_TEXT: "Complaint text",
 		UI_FLD_USER: "User",
 		UI_FLD_PASS: "Password",
 		UI_FLD_DATE: "Date",
@@ -265,7 +267,7 @@ var langs = [
 		UI_LBL_PERIOD_WEEK: "week",
 		UI_LBL_EXTRAS: "Options",
 		UI_LBL_BOOKED: "Request sent",
-		UI_LBL_MAKE_CALL: "or make a call",
+		UI_LBL_MAKE_CALL: "or",
 		UI_LBL_CAN_RATE_AFTER_BOOKING: "You can rate this advert after booking",
 		UI_LBL_DESCR: "Description",
 		UI_LBL_ABOUT_OWNER: "About owner",
@@ -316,6 +318,7 @@ var langs = [
 		SRV_LOGIN_INVALID_PASS: "Invalid password!",
 		SRV_APARTMENT_REQUIRED: "Field \"%1$s\" required!",
 		SRV_APARTMENT_DEPENDENCY: "Object have dependencies!",
+		SRV_CARD_EXISTS: "Your advert card already exists!",
 		//ресурсы для клиентских сообщений об ошибках и информации
 		CLNT_COMMON_ERROR: "Error",
 		CLNT_COMMON_SUCCESS: "Success",
@@ -339,6 +342,7 @@ var langs = [
 		CLNT_NO_MODE: "No component mode specified!",
 		CLNT_NO_FAVORITES: "You have no favorites!",
 		CLNT_BOOKING_NO_DATES: "No booking dates specified!",
-		CLNT_NO_ADVERTS: "You have no posts, press \"%1$s\" to make one"
+		CLNT_NO_ADVERTS: "You have no posts, press \"%1$s\" to make one",
+		CLNT_COMPLAINT_ADDED: "Thank you for cooperation"
 	}
 ]

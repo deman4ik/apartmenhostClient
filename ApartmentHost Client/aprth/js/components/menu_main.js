@@ -17,11 +17,18 @@ var MainMenu = React.createClass({
 	},
 	//обработка нажатия пункта меню
 	handleMenuItemClick: function (itemIndex) {
-		this.context.router.transitionTo(this.state.menu.items[itemIndex].link);
 		this.props.onMenuItemSelected(this.state.menu.items[itemIndex]);
+		this.context.router.transitionTo(this.state.menu.items[itemIndex].link);		
 	},
 	//обработка нажатия на кнопку сдачи квартиры
 	handleAddPostClick: function () {
+		this.props.onMenuItemSelected({
+			code: "Lease", 
+			title: "UI_BTN_LEASE", 
+			link: "addpost",
+			path: "/addpost",
+			authAccess: false
+		});
 		if(this.props.session.loggedIn)
 			this.context.router.transitionTo("addpost");
 		else
@@ -41,11 +48,18 @@ var MainMenu = React.createClass({
 	render: function () {
 		//дополнительные стили для пункта меню
 		var aStyle = {textDecoration: "none"}
+		var cNav = React.addons.classSet;
+		var classesNav = cNav({
+			"w-nav-menu": true,
+			"u-nav-menu": true,
+			"w--nav-menu-open": this.props.menuOpen
+		});
 		//меню управления сессией
 		var authMenu;
 		authMenu =	<AuthMenu session={this.props.session}
 						onLogIn={this.props.onLogIn}
 						onLogOut={this.props.onLogOut}
+						onMenuItemSelected={this.props.onMenuItemSelected}
 						language={this.props.language}/>;
 		//пункты главного меню
 		var items;
@@ -61,7 +75,7 @@ var MainMenu = React.createClass({
 					return (
 						<a className={classesItem} 
 							key={i}
-							href="javascript:;"
+							href="#"
 							style={aStyle}
 							onClick={this.handleMenuItemClick.bind(this, i)}>
 								{Utils.getStrResource({lang: this.props.language, code: menuItem.title})}
@@ -71,13 +85,13 @@ var MainMenu = React.createClass({
 			}, this);
 		}
 		//кнопка "Сдать жильё"
-		var rentButton = 	<a className="u-btn nav" href="javascript:;" style={aStyle} onClick={this.handleAddPostClick}>
+		var rentButton = 	<a className="u-btn nav" href="#" style={aStyle} onClick={this.handleAddPostClick}>
 								{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LEASE"})}
 							</a>;
 
 		//генерация представления меню
 		return (
-			<nav className="w-nav-menu u-nav-menu" role="navigation">
+			<nav className={classesNav} role="navigation">
 				{items}
 				{authMenu}
 				{rentButton}

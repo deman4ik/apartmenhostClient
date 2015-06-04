@@ -5,7 +5,6 @@ var PostsFilter = React.createClass({
 	//состояние фильтра
 	getInitialState: function () {
 		return {
-			filterDisplay: false, //фоаг отображения/сокрытия заголовка фильтра
 			filterToggle: false, //флаг отображения/сокрытия тела фильтра
 			filterPriceFrom: 300, //нижняя граница фильтра по цене
 			filterPriceTo: 500, //верхняя граница фильтра по цене
@@ -101,7 +100,6 @@ var PostsFilter = React.createClass({
 		React.findDOMNode(this.refs.price3).checked = false;
 		this.setState(
 			{
-				filterDisplay: false, 
 				filterToggle: false, 
 				noFilterSpecified: false, 
 				dFrom: "", 
@@ -140,9 +138,11 @@ var PostsFilter = React.createClass({
 		//дополнительные стили
 		var formWrapperStyle = {maxWidth: "none"};
 		var lblStale = {paddingLeft: "5px"};
-		var aStyle = {textDecoration: "none"};
+		var aStyle = {textDecoration: "none"};		
+		var counterDisplay = {};
+		if(this.props.filterIsSet) _.extend(counterDisplay, {display: "block"}); else _.extend(counterDisplay, {display: "none"});
 		var filterDisplay = {};
-		if(this.props.filterIsSet) _.extend(filterDisplay, {display: "block"}); else _.extend(filterDisplay, {display: "none"});
+		if(((this.props.filterIsSet)&&(this.props.cntFound > 0))||(this.state.filterToggle)) _.extend(filterDisplay, {display: "block"}); else _.extend(filterDisplay, {display: "none"});
 		var filterToggle = {};
 		if(this.state.filterToggle) _.extend(filterToggle, {display: "block"}); else _.extend(filterToggle, {display: "none"});
 		var cAdrInput = React.addons.classSet;
@@ -230,11 +230,13 @@ var PostsFilter = React.createClass({
 							onClick={this.handleClearClick}
 							value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CLEAR"})}/>
 					</form>					
-				</div>
-				<div className="w-clearfix u-block-underline" style={filterDisplay}>
-					<h1 className="txt">
+				</div>				
+				<div style={counterDisplay}>
+					<h1 className="txt search-result">
 						{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_FILTER_RESULT"})} – {this.props.cntFound}
 					</h1>
+				</div>
+				<div className="w-clearfix u-block-underline" style={filterDisplay}>
 					<a className="u-lnk-norm h1" href="javascript:;" style={aStyle} onClick={this.handleFilterToggleClick}>
 						{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FILTER"})}
 					</a>

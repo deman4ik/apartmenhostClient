@@ -239,6 +239,8 @@ var Profile = React.createClass({
 										</div>
 									</div>
 								</div>
+								<div className="u-block-spacer"></div>
+								<div className="u-block-spacer"></div>
 							</div>
 			} else {
 				content =	<InLineMessage type={Utils.getMessageTypeErr()}

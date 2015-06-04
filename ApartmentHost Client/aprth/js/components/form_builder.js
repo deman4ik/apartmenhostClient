@@ -80,7 +80,7 @@ var FormBuilder = React.createClass({
 				}, this);
 			}
 			//собираем форму
-			form =	<div className="fade show in">
+			form =	<div className="modal fade show in">
 						<div className="modal-dialog">
 							<div className="modal-content">
 								<div className="modal-header">

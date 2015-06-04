@@ -18,12 +18,14 @@ var Calendar = React.createClass({
 		$("#" + props.name).off("changeDate");
 	},
 	//применение значения по умолчанию
-	applyDefaultValue: function (props) {		
-		if(props.defaultValue) {
+	applyDefaultValue: function (props) {
+		if(props.defaultValue) {			
 			$("#" + props.name).datepicker("setDate", props.defaultValue);
-		} else {
-			$("#" + props.name).datepicker("setDate", "");
-		}		
+		}
+	},
+	//очистка значения
+	clearValue: function (props) {
+		$("#" + props.name).datepicker("clearDates");
 	},
 	//инициализация виджета календаря
 	initDatePicker: function (props) {
@@ -46,6 +48,13 @@ var Calendar = React.createClass({
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
+		if(newProps.name == this.props.name) {
+			if(!newProps.defaultValue) {
+				this.chancelDatePickedListener(newProps);
+				this.clearValue(newProps)
+				this.applyDatePickedListener(newProps);
+			}
+		}
 	},
 	//сборка представления компонента
 	render: function () {

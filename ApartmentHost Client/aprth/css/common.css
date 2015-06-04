@@ -5,9 +5,6 @@
 }
 
 .content_wrapper {
-	/*padding-left: 10px;
-	padding-right: 10px;
-	padding-top: 10px;*/
 }
 
 .content-center {
@@ -57,10 +54,13 @@
   border-color: #ed5466;
 }
 
-
 .u-form-body {
 	position: relative;
 	z-index: 400;
 }
 
 .glyphicon.btn {margin-right: 4px; position:relative; margin-bottom:3px;}
+
+h1.txt.search-result {
+	margin-top: 10px;
+}

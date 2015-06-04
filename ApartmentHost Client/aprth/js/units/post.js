@@ -15,9 +15,39 @@ var Post = React.createClass({
 			postBooked: false, //состояние отправки запроса на бронирование
 			showPhone: false, //признак отображения телефона владельца
 			dFrom: "", //дата начала периода бронирования
-			dTo: "" //дата коночания периода бронирования
+			dTo: "", //дата коночания периода бронирования
+			displaySendComplaint: false, //признак отображения формы жалобы
+			sendComplaintForm: {} //форма жалобы
 		}
 	},
+	//сборка формы жалобы
+	buildComplaintForm: function (props) {
+		var formTmp = formFactory.buildForm({
+			language: props.language,
+			title: Utils.getStrResource({lang: props.language, code: "UI_TITLE_COMPLAINT"})
+		});
+		var textItemTmp = formFactory.buildFormItem({
+			language: props.language,
+			label: Utils.getStrResource({lang: props.language, code: "UI_FLD_COMPLAINT_TEXT"}),
+			name: "complaintText",
+			dataType: formFactory.itemDataType.STR,
+			inputType: formFactory.itemInputType.TEXT,
+			required: true
+		});
+		formFactory.appedFormItem(formTmp, textItemTmp);
+		this.setState({sendComplaintForm: formTmp});
+	},
+	//отправка жалобы
+	onComplaintFormOK: function (values) {
+		console.log(values);
+		this.setState({displaySendComplaint: false});
+		this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
+			Utils.getStrResource({lang: this.props.language, code: "CLNT_COMPLAINT_ADDED"}));
+	},
+	//отмена отправки жалобы
+	onComplaintFormChancel: function () {
+		this.setState({displaySendComplaint: false});
+	}, 
 	//обработка загруженных данных объявления
 	handleLoadPostResult: function (resp) {
 		this.props.onHideProgress();
@@ -37,14 +67,35 @@ var Post = React.createClass({
 		if(this.props.session.loggedIn) _.extend(getPrms, {session: this.props.session.sessionInfo});
 		clnt.getAdvert(getPrms, this.handleLoadPostResult);
 	},
+	//обработка результатов бронирования
+	handleBookingResult: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			this.setState({postBooked: true});
+		}
+	},
 	//выполнение бронирования
 	makeBooking: function () {
 		if((this.state.dFrom)&&(this.state.dTo)) {
-			this.setState({postBooked: true});	
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var resPrms = {
+				language: this.props.language, 
+				postId: this.state.postId,
+				dateFrom: this.state.dFrom,
+				dateTo: this.state.dTo
+			}
+			if(this.props.session.loggedIn) _.extend(resPrms, {session: this.props.session.sessionInfo});
+			clnt.makeReservation(resPrms, this.handleBookingResult);
 		} else {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
 				Utils.getStrResource({lang: this.props.language, code: "CLNT_BOOKING_NO_DATES"}));
 		}
+	},
+	//выполнение добавления жалобы
+	makeComplaint: function () {
+		this.setState({displaySendComplaint: true});
 	},
 	//обработка смены дат
 	handleDateChange: function (datePickerName, date) {
@@ -95,14 +146,28 @@ var Post = React.createClass({
 				actionPrms: {callBack: this.toggleAdvertFavor}
 			});		
 	},
+	//обработка нажатия на "Пожаловаться"
+	handleSendComplaintClick: function () {
+		if(this.props.session.loggedIn)
+			this.makeComplaint();
+		else
+			this.props.onLogIn({
+				actionType: AppAfterAuthActionTypes.CALLBACK, 
+				actionPrms: {callBack: this.makeComplaint}
+			});		
+	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
+		this.buildComplaintForm(this.props);
 		if(this.context.router.getCurrentQuery().dFrom) this.setState({dFrom: this.context.router.getCurrentQuery().dFrom});
 		if(this.context.router.getCurrentQuery().dTo) this.setState({dTo: this.context.router.getCurrentQuery().dTo});
 		this.setState({postId: this.context.router.getCurrentParams().postId}, this.loadPost);
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
+		if(newProps.language != this.props.language) {
+			this.buildComplaintForm(newProps);
+		}
 	},
 	//генерация представления объявления
 	render: function () {
@@ -128,6 +193,15 @@ var Post = React.createClass({
 		//содержимое объявления
 		var content;
 		if(this.state.postReady) {
+			//форма жалобы
+			var complaintForm;
+			if(this.state.displaySendComplaint) {
+				complaintForm =	<FormBuilder form={this.state.sendComplaintForm} 
+						onOK={this.onComplaintFormOK} 
+						onChancel={this.onComplaintFormChancel} 
+						onShowError={this.props.onShowError}
+						language={this.props.language}/>
+			}
 			//форма бронирования
 			var bookFrm;
 			if(!this.state.postBooked) {
@@ -205,22 +279,18 @@ var Post = React.createClass({
 								<span className="glyphicon glyphicon-heart btn" aria-hidden="true"></span>
 								{favorText}
 							</a>				
-			}
-			
+			}	
 			//дополнительные опции объявления
 			var advOptions;
-			if(this.state.post.apartment.options) {			 
-				var advOptionsItems = this.state.post.apartment.options.split(";").map(function (option, i) {
-					return (
-						<li>
-							{Utils.getStrResource({lang: this.props.language, code: option})}
-						</li>
-					);
-				}, this);
-				advOptions = <ul className="descr" style={ulOptions}>{advOptionsItems}</ul>
+			if(this.state.post.apartment.options) {
+				advOptions=	<OptionsParser language={this.props.language}
+								options={this.state.post.apartment.options}
+								view={OptionsParserView.LIST}
+								listStyle={ulOptions}/>				
 			}
 			//объявление
 			content =	<div className="w-section u-sect-card">
+							{complaintForm}
 							<div className="w-container">
 								<div className="w-row">							    
 									<div className="w-col w-col-5 u-col-card">
@@ -230,7 +300,9 @@ var Post = React.createClass({
 										</div>
 										<div className="u-block-cardprice">
 											<div className="u-t-label-cardprice">
-												{Utils.getStrResource({lang: this.props.language, code: this.state.post.residentGender})}
+												<OptionsParser language={this.props.language}								
+													options={this.state.post.residentGender}
+													view={OptionsParserView.ROW}/>
 											</div>
 											<div className="u-block-ownertext">
 												<div className="u-t-price">
@@ -258,12 +330,13 @@ var Post = React.createClass({
 												{rate}												
 											</div>
 											<div className="u-t-small center">
-												<a className="u-lnk-norm" href="javascript:;">
+												<a className="u-lnk-norm" href="javascript:;" onClick={this.handleSendComplaintClick}>
 													{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SEND_COMPLAINT"})}
 												</a>
 											</div>
 										</div>
 										<div className="empty"></div>
+										<div className="u-block-spacer"></div>
 									</div>
 									<div className="w-col w-col-7 w-clearfix u-col-card">
 										<div>
