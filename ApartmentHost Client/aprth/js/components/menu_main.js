@@ -75,7 +75,7 @@ var MainMenu = React.createClass({
 					return (
 						<a className={classesItem} 
 							key={i}
-							href="#"
+							href="javascript:;"
 							style={aStyle}
 							onClick={this.handleMenuItemClick.bind(this, i)}>
 								{Utils.getStrResource({lang: this.props.language, code: menuItem.title})}
@@ -85,7 +85,7 @@ var MainMenu = React.createClass({
 			}, this);
 		}
 		//кнопка "Сдать жильё"
-		var rentButton = 	<a className="u-btn nav" href="#" style={aStyle} onClick={this.handleAddPostClick}>
+		var rentButton = 	<a className="u-btn nav" href="javascript:;" style={aStyle} onClick={this.handleAddPostClick}>
 								{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LEASE"})}
 							</a>;
 

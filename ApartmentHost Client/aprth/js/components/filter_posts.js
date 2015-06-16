@@ -11,7 +11,9 @@ var PostsFilter = React.createClass({
 			noFilterSpecified: false, //флаг отсуствия фильтра
 			dFrom: "", //дата начала периода бронирования
 			dTo: "", //дата коночания периода бронирования
-			sex: "" //пол постояльца	
+			sex: "", //пол постояльца
+			apartType: "", //тип жилья
+			price: "" //цена
 		};
 	},
 	//сохранение и сборка фильтра
@@ -31,18 +33,20 @@ var PostsFilter = React.createClass({
 		if(this.state.dTo) {
 			filterParams.dTo = this.state.dTo;
 		}
-		if((React.findDOMNode(this.refs.apartType).value)&&(React.findDOMNode(this.refs.apartType).value != "DVAL_ANY")) {
-			filterParams.apartType = React.findDOMNode(this.refs.apartType).value;
+		if(this.state.apartType) {
+			filterParams.apartType = this.state.apartType;
 		}
-		if(React.findDOMNode(this.refs.price1).checked) {
-			filterParams.priceTo = React.findDOMNode(this.refs.price1).value * 1 - 1;
-		}
-		if(React.findDOMNode(this.refs.price2).checked) {
-			filterParams.priceFrom = React.findDOMNode(this.refs.price1).value * 1;
-			filterParams.priceTo = React.findDOMNode(this.refs.price3).value * 1;
-		}
-		if(React.findDOMNode(this.refs.price3).checked) {
-			filterParams.priceFrom = React.findDOMNode(this.refs.price3).value * 1 + 1;
+		if(this.state.price) {
+			if(this.state.price == this.state.filterPriceFrom) {
+				filterParams.priceTo = this.state.filterPriceFrom * 1 - 1;
+			} else {
+				if(this.state.price == this.state.filterPriceTo) {
+					filterParams.priceFrom = this.state.filterPriceTo * 1 + 1;
+				} else {
+					filterParams.priceFrom = this.state.filterPriceFrom * 1;
+					filterParams.priceTo = this.state.filterPriceTo * 1;
+				}
+			}			
 		}
 		filterParams.filterToggle = this.state.filterToggle;
 		Utils.saveObjectState("filterParams", filterParams);
@@ -60,17 +64,19 @@ var PostsFilter = React.createClass({
 			if("sex" in filterParams) this.setState({sex: filterParams.sex});
 			if("dFrom" in filterParams) this.setState({dFrom: filterParams.dFrom});
 			if("dTo" in filterParams) this.setState({dTo: filterParams.dTo});
-			if("apartType" in filterParams) React.findDOMNode(this.refs.apartType).value = filterParams.apartType;
+			if("apartType" in filterParams) this.setState({apartType: filterParams.apartType});;
 			if(("priceFrom" in filterParams)||("priceTo" in filterParams)) {
-				if(filterParams.priceTo == React.findDOMNode(this.refs.price1).value * 1 - 1)
-					React.findDOMNode(this.refs.price1).checked = true;
-				if((filterParams.priceTo == React.findDOMNode(this.refs.price1).value * 1)
-					&&(filterParams.priceFrom == React.findDOMNode(this.refs.price3).value * 1))
-					React.findDOMNode(this.refs.price2).checked = true;
-				if(filterParams.priceFrom == React.findDOMNode(this.refs.price3).value * 1 + 1)
-					React.findDOMNode(this.refs.price3).checked = true;
+				if(filterParams.priceTo == this.state.filterPriceFrom) {
+					this.setState({price: this.state.filterPriceFrom});
+				} else {
+					if(filterParams.priceFrom == this.state.filterPriceTo) {
+						 this.setState({price: this.state.filterPriceTo});
+					} else {
+						this.setState({price: this.state.filterPriceFrom + "-" + this.state.filterPriceTo});
+					}
+				}
 			} else {
-				React.findDOMNode(this.refs.priceAny).checked = true;
+				this.setState({price: ""});
 			}						
 		}
 		return filterParams;
@@ -78,7 +84,6 @@ var PostsFilter = React.createClass({
 	//выбор пола
 	handleSelectedSex: function (sex) {
 		this.setState({sex: sex});
-		console.log(sex);
 	},
 	//выбор даты в календаре
 	handleDatePicked: function (datePickerName, date) {
@@ -86,25 +91,30 @@ var PostsFilter = React.createClass({
 		stateObject[datePickerName] = (date)?date.to_yyyy_mm_dd():"";
 		this.setState(stateObject);
 	},
+	//выбор типа недвижимости в фильтре
+	handleSelectedApartType: function (apartType) {
+		this.setState({apartType: apartType}, this.handleFindClick);		
+	},
+	//выбор цены в фильтре
+	handleSelectedPrice: function (price) {
+		this.setState({price: price}, this.handleFindClick);
+	},
 	//обработка нажатия на кнопку "Фильтр" (сокрытие/отображение)
 	handleFilterToggleClick: function () {
 		this.setState({filterToggle: !this.state.filterToggle}, this.saveFilterState);		
 	},
 	//обработка нажатия на кнопку "Очистить"
 	handleClearClick: function () {
-		React.findDOMNode(this.refs.adress).value = "";
-		React.findDOMNode(this.refs.apartType).value = "DVAL_ANY";
-		React.findDOMNode(this.refs.priceAny).checked = true;
-		React.findDOMNode(this.refs.price1).checked = false;
-		React.findDOMNode(this.refs.price2).checked = false;
-		React.findDOMNode(this.refs.price3).checked = false;
+		React.findDOMNode(this.refs.adress).value = "";		
 		this.setState(
 			{
 				filterToggle: false, 
 				noFilterSpecified: false, 
 				dFrom: "", 
 				dTo: "",
-				sex: ""
+				sex: "",
+				apartType: "",
+				price: ""
 			},
 			function () {
 				var f = this.saveFilterState();
@@ -174,29 +184,16 @@ var PostsFilter = React.createClass({
 								</label>
 							</div>
 							<div className="w-col w-col-9">
-								<OptionsSelector options={[
-										{
-											label: Utils.getStrResource({lang: this.props.language, code: "DVAL_ANY"}),
-											value: "DVAL_ANY"
-										}, 
-										{
-											label: Utils.getStrResource({lang: this.props.language, code: "DVAL_MALE"}),
-											value: "DVAL_MALE"
-										},
-										{
-											label: Utils.getStrResource({lang: this.props.language, code: "DVAL_FEMALE"}),
-											value: "DVAL_FEMALE"
-										},
-										{
-											label: Utils.getStrResource({lang: this.props.language, code: "DVAL_THING"}),
-											value: "DVAL_THING"
-										},
-										{
-											label: Utils.getStrResource({lang: this.props.language, code: "DVAL_ALIEN"}),
-											value: "DVAL_ALIEN"
-										}]}
+								<OptionsSelector view={OptionsSelectorView.SELECT}
+									language={this.props.language}
+									options={optionsFactory.buildOptions({
+												language: this.props.language, 
+												id: "sex",
+												options: ["DVAL_ANY", "DVAL_MALE", "DVAL_FEMALE", "DVAL_THING", "DVAL_ALIEN"]})}
 									onOptionChanged={this.handleSelectedSex}
-									defaultOptionsState={this.state.sex}/>								
+									defaultOptionsState={this.state.sex}
+									appendEmptyOption={true}
+									emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}/>
 							</div>
 						</div>
 						<div className="w-row">
@@ -252,76 +249,41 @@ var PostsFilter = React.createClass({
 										</label>
 									</div>
 									<div className="w-col w-col-8">
-										<div className="w-radio">
-											<input className="w-radio-input"
-												id="priceAny"
-												type="radio" 
-												name="price"
-												value=""
-												ref="priceAny"
-												onChange={this.handleFindClick}/>
-											<label className="w-form-label" for="price-1" style={lblStale}>
-												{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ANY_PRICE"})}									
-											</label>
-										</div>
-										<div className="w-radio">
-											<input className="w-radio-input"
-												id="price-1"
-												type="radio" 
-												name="price"
-												value={this.state.filterPriceFrom}
-												ref="price1"
-												onChange={this.handleFindClick}/>
-											<label className="w-form-label" for="price-1" style={lblStale}>
-												{Utils.getStrResource({
-													lang: this.props.language, 
-													code: "UI_LBL_LESS",
-													values: [
-														this.state.filterPriceFrom,
-														Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
-													]
-												})}									
-											</label>
-										</div>
-										<div className="w-radio">
-											<input className="w-radio-input"
-												id="price-2"
-												type="radio"
-												name="price"
-												value={this.state.filterPriceFrom + "-" + this.state.filterPriceTo}
-												ref="price2"
-												onChange={this.handleFindClick}/>
-											<label className="w-form-label" for="price-2" style={lblStale}>
-												{Utils.getStrResource({
-													lang: this.props.language, 
-													code: "UI_LBL_BETWEEN",
-													values: [
-														this.state.filterPriceFrom,
-														this.state.filterPriceTo,
-														Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
-													]
-												})}
-											</label>
-										</div>
-										<div className="w-radio">
-											<input className="w-radio-input"
-												id="price-3"
-												type="radio"
-												name="price"
-												value={this.state.filterPriceTo}
-												ref="price3"
-												onChange={this.handleFindClick}/>
-											<label className="w-form-label" for="price-3" style={lblStale}>
-												{Utils.getStrResource({
-													lang: this.props.language, 
-													code: "UI_LBL_MORE",
-													values: [
-														this.state.filterPriceTo,
-														Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
-													]
-												})}
-											</label>
-										</div>
+										<OptionsSelector view={OptionsSelectorView.RADIO}
+											language={this.props.language}
+											name="price"
+											options={optionsFactory.buildOptions({
+														language: this.props.language, 
+														id: "price",
+														options: ["", this.state.filterPriceFrom, this.state.filterPriceFrom + "-" + this.state.filterPriceTo, this.state.filterPriceTo],
+														labels: [Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ANY_PRICE"}),
+																Utils.getStrResource({
+																	lang: this.props.language, 
+																	code: "UI_LBL_LESS",
+																	values: [
+																		this.state.filterPriceFrom,
+																		Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
+																	]
+																}),
+																Utils.getStrResource({
+																	lang: this.props.language, 
+																	code: "UI_LBL_BETWEEN",
+																	values: [
+																		this.state.filterPriceFrom,
+																		this.state.filterPriceTo,
+																		Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
+																	]
+																}),
+																Utils.getStrResource({
+																	lang: this.props.language, 
+																	code: "UI_LBL_MORE",
+																	values: [
+																		this.state.filterPriceTo,
+																		Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
+																	]
+																})]})}
+											onOptionChanged={this.handleSelectedPrice}
+											defaultOptionsState={[this.state.price]}/>				
 									</div>
 								</div>
 								<div className="w-row">
@@ -331,14 +293,16 @@ var PostsFilter = React.createClass({
 										</label>
 									</div>
 									<div className="w-col w-col-8">
-										<select className="w-select u-form-field" ref="apartType" onChange={this.handleFindClick}>
-											<option value="DVAL_ANY">{Utils.getStrResource({lang: this.props.language, code: "DVAL_ANY"})}</option>
-											<option value="DVAL_HOUSE">{Utils.getStrResource({lang: this.props.language, code: "DVAL_HOUSE"})}</option>
-											<option value="DVAL_ROOM">{Utils.getStrResource({lang: this.props.language, code: "DVAL_ROOM"})}</option>
-											<option value="DVAL_OFFICE">{Utils.getStrResource({lang: this.props.language, code: "DVAL_OFFICE"})}</option>
-											<option value="DVAL_FLAT">{Utils.getStrResource({lang: this.props.language, code: "DVAL_FLAT"})}</option>
-											<option value="DVAL_HOTEL_ROOM">{Utils.getStrResource({lang: this.props.language, code: "DVAL_HOTEL_ROOM"})}</option>
-										</select>
+										<OptionsSelector view={OptionsSelectorView.SELECT}
+											language={this.props.language}
+											options={optionsFactory.buildOptions({
+														language: this.props.language,
+														id: "apartType",
+														options: ["DVAL_HOUSE", "DVAL_ROOM", "DVAL_OFFICE", "DVAL_FLAT", "DVAL_HOTEL_ROOM"]})}
+											onOptionChanged={this.handleSelectedApartType}
+											defaultOptionsState={this.state.apartType}
+											appendEmptyOption={true}
+											emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}/>
 									</div>
 								</div>
 							</form>

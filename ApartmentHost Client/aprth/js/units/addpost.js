@@ -168,6 +168,7 @@ var AddPost = React.createClass({
 															label: Utils.getStrResource({lang: this.props.language, code: "DVAL_ALIEN"}),
 															value: "DVAL_ALIEN"
 														}]}
+													language={this.props.language}
 													onOptionChanged={this.handleSelectedSex}
 													defaultOptionsState={this.state.sex}/>
 											</div>

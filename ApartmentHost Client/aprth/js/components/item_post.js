@@ -30,7 +30,7 @@ var PostItem = React.createClass({
 		if(this.props.item.apartment.options) {
 			advOptions=	<OptionsParser language={this.props.language}
 								title={Utils.getStrResource({lang: this.props.language, code: "UI_LBL_EXTRAS"}) + ":"}
-								options={this.props.item.apartment.options}
+								options={this.props.item.apartment.options.split(";")}
 								view={OptionsParserView.LIST}/>
 		}		
 		//кнопка управления избранным
@@ -115,7 +115,7 @@ var PostItem = React.createClass({
 								{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}:&nbsp;
 								<strong>
 									<OptionsParser language={this.props.language}								
-										options={this.props.item.residentGender}
+										options={this.props.item.residentGender.split(";")}
 										view={OptionsParserView.ROW}/>									
 								</strong>
 							</div>

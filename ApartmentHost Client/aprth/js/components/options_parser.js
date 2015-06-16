@@ -48,9 +48,9 @@ var OptionsParser = React.createClass({
 		}
 		//формирование представления списка опций
 		var options;
-		if(this.props.options) {
-			var optionsLength = this.props.options.split(";").length;
-			var optionsItems = this.props.options.split(";").map(function (option, i) {
+		if((this.props.options)&&(Array.isArray(this.props.options))) {
+			var optionsLength = this.props.options.length;
+			var optionsItems = this.props.options.map(function (option, i) {
 				var optionsItem;
 				switch(view) {
 					case(OptionsParserView.LIST): {

@@ -284,7 +284,7 @@ var Post = React.createClass({
 			var advOptions;
 			if(this.state.post.apartment.options) {
 				advOptions=	<OptionsParser language={this.props.language}
-								options={this.state.post.apartment.options}
+								options={this.state.post.apartment.options.split(";")}
 								view={OptionsParserView.LIST}
 								listStyle={ulOptions}/>				
 			}
@@ -301,7 +301,7 @@ var Post = React.createClass({
 										<div className="u-block-cardprice">
 											<div className="u-t-label-cardprice">
 												<OptionsParser language={this.props.language}								
-													options={this.state.post.residentGender}
+													options={this.state.post.residentGender.split(";")}
 													view={OptionsParserView.ROW}/>
 											</div>
 											<div className="u-block-ownertext">
