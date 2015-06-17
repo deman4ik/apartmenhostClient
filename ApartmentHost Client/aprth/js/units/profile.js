@@ -131,27 +131,23 @@ var Profile = React.createClass({
 				if((this.state.profile.adverts)&&(Array.isArray(this.state.profile.adverts))&&(this.state.profile.advertsCount > 0)) {
 					adverts = this.state.profile.adverts.map(function (item, i) {
 						return (
-							<div key={i}>
-								<h1>{Utils.getStrResource({lang: this.props.language, code: item.apartment.type})}</h1>
-								<div className="w-row">
-									<div className="w-col w-col-5 w-col-stack w-col-small-6">
-										<a className="w-clearfix w-inline-block u-lnk-cardlst-img" 
-											href="javascript:;" 
-											onClick={this.handlePostClick.bind(this, item.id)}>					
-											<img src={item.apartment.img}/>
-										</a>
-									</div>
-									<div className="w-col w-col-7 w-col-stack w-col-small-6">
-										<div className="u-block-card-desc">
-											<div>
-												<a className="u-lnk-norm" href="javascript:;" onClick={this.handlePostClick.bind(this, item.id)}>
-													{item.apartment.adress}
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
+							<div>
+								<a key={i} className="w-inline-block u-lnk-norm" href="javascript:;" onClick={this.handlePostClick.bind(this, item.id)}>
+						            <div className="w-row u-row-cardlst bordered">
+						              <div className="w-col w-col-5 w-col-stack w-col-small-6"><img src={item.apartment.img}/>
+						              </div>
+						              <div className="w-col w-col-7 w-col-stack w-col-small-6">
+						                <div className="u-block-card-desc">
+						                  <h1>{Utils.getStrResource({lang: this.props.language, code: item.apartment.type})}</h1>
+						                  <div>{item.apartment.adress}</div>
+						                </div>
+						              </div>
+						            </div>
+						        </a>
+						        <div className="u-block-spacer"></div>
+						        <div className="w-clearfix u-block-right"><a className="u-btn btn-sm u-btn-danger" href="#">Удалить объявление</a></div>
+						        <div className="u-block-spacer"></div>	
+					        </div>						
 						);
 					}, this);
 				} else {
@@ -175,7 +171,7 @@ var Profile = React.createClass({
 									</a>
 				}
 				//непосредственно объявление
-				content =	<div className="w-container">
+				content =	<section className="w-container">
 								<div className="w-section u-sect-card">
 									<div className="w-row">
 										<div className="w-col w-col-6 u-col-card">
@@ -233,15 +229,13 @@ var Profile = React.createClass({
 											<div className="u-block-underline h3">
 												<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ADVERT"})}</h3>
 											</div>
-											<div className="u-block-centered">
-												{adverts}												
-											</div>
+											{adverts}												
 										</div>
 									</div>
 								</div>
 								<div className="u-block-spacer"></div>
 								<div className="u-block-spacer"></div>
-							</div>
+							</section>
 			} else {
 				content =	<InLineMessage type={Utils.getMessageTypeErr()}
 								message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_DATA"})}/>
