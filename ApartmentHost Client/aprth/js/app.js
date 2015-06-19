@@ -237,7 +237,7 @@ var App = React.createClass({
 		//общее содержимое
 		var content;
 		if(this.state.appReady) {
-			content = 	<section className="u-sect-main">
+			content = 	<div>
 							{loader}
 							{message}
 							{logInForm}
@@ -251,13 +251,13 @@ var App = React.createClass({
 									onShowMessage={this.showDialogMessage}
 									language={this.state.language}/>
 							</div>
-						</section>
+							{footer}
+						</div>
 		}
 		//генератор
 		return (
 			<div>
 				{content}
-				{footer}				
 			</div>
 		);
 	}
