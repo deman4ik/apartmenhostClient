@@ -14,7 +14,6 @@ var Footer = React.createClass({
 			menuFooterLanguage = <LangMenu language={this.props.language} onLangugeChange={this.props.onLangugeChange}/>;
 		//генерация представления подвала
 		return (
-			<div>
 				<section className="w-section u-sect-page-footer">
 					<footer className="w-row">
 						<div className="w-col w-col-4 w-col-small-4 w-col-tiny-4 u-col-footer">
@@ -36,7 +35,6 @@ var Footer = React.createClass({
 						</div>
 					</footer>
 				</section>
-  			</div>
 		);
 	}
 });

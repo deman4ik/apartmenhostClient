@@ -47,7 +47,7 @@ var NavBar = React.createClass({
 						menuOpen={this.state.menuOpen}/>;
 		//генерация представления
 		return (
-			<div className="w-section u-sect-page-header">
+			<header className="w-section u-sect-page-header">
 				<div className="w-nav u-navbar-header" 
 					data-collapse="medium" 
 					data-animation="over-right" 
@@ -66,7 +66,7 @@ var NavBar = React.createClass({
 						</div>
 					</div>
 				</div>
-			</div>
+			</header>
 		);
 	}
 });
