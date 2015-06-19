@@ -152,6 +152,7 @@ p {
 .u-btn.nav:hover {
   background-color: white;
   color: #cae650;
+  text-decoration: none;
 }
 .u-t-price {
   margin-top: 0px;
@@ -259,10 +260,14 @@ p {
   border-bottom-color: #00c7c0;
   color: #00c7c0;
 }
+.u-nav-link.w--current:hover {
+  color: #0be3dc;
+}
 .u-nav-link.hidden {
   display: none;
 }
 .u-nav-link.vertical {
+  display: block;
   border-left: 3px solid transparent;
   border-bottom-style: none;
   border-bottom-width: 0px;
@@ -871,6 +876,8 @@ html.w-mod-js *[data-ix="hide-on-load"] {
     bottom: 0px;
     float: right;
     background-color: transparent;
+    color:#00ccc5;
+    z-index:1000;
   }
   .u-nav-button.w--open {
     background-color: transparent;

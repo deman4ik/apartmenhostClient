@@ -64,3 +64,42 @@
 h1.txt.search-result {
 	margin-top: 10px;
 }
+
+.username {
+    padding-left: 38px !important;
+}
+.avatar {
+	  position:absolute;
+    display: table-cell;
+    vertical-align: middle;
+    width: 34px;
+    height: 34px;
+	  top: 0px;
+	  padding-top: 14px;    
+}
+.avatar > img {
+    display: block;
+    width: 100%;
+    vertical-align: middle;
+}
+.img-circle {
+    border-radius: 50% !important;
+}
+
+.w-dropdown-btn, .w-dropdown-toggle, .w-dropdown-link {color: #00ccc5;}
+.w-nav[data-animation="over-right"] .w-nav-overlay, .w-nav[data-animation="over-right"] .w--nav-menu-open {
+  z-index: 800;
+}
+
+.u-menu-item {float:right;}
+.w-dropdown-toggle.item {
+  padding-bottom: 0px;
+  padding-top: 14px;
+  padding-right:20px;
+}
+.glyphicon {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
