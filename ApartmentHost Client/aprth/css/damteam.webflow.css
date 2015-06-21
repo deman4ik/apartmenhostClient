@@ -121,7 +121,7 @@ p {
 .u-btn.btn-sm.right {
   float:right;
 }
-.u-btn.btn-sm > span {
+.u-btn.btn-sm > span.glyphicon {
   color: #296573;
   padding:0;
 }
