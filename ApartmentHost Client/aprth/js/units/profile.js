@@ -10,8 +10,10 @@ var Profile = React.createClass({
 	getInitialState: function () {
 		return {			
 			profile: {}, //профиль пользователя
+			profileTmp: {}, //буфер для редактирования профиля
 			profileReady: false, //профиль пользователя готов к отображению
-			modeEdit: false //режим редактирования профиля		
+			modeEdit: false, //режим редактирования профиля	
+			notifyApp: false //флаг необходимости оповещения приложения о смене профиля пользователя 	
 		}
 	},
 	//обработка загруженных данных объявления
@@ -20,9 +22,31 @@ var Profile = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			this.setState({profile: resp.MESSAGE, profileReady: true});
+			this.setState({profile: resp.MESSAGE, profileTmp: resp.MESSAGE, profileReady: true});
+			if((this.state.notifyApp)||(resp.MESSAGE.advertsCount != this.props.session.sessionInfo.advertsCount)) {
+				this.setState({notifyApp: false});
+				this.props.onProfileChange(resp.MESSAGE);
+			}
 		}
 	},
+	//обработка результатов удаления объявления
+	handleDeletePostResult: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			this.setState({notifyApp: true}, function () {this.loadProfile();});
+		}
+	},
+	//обработка результатов обновления профиля
+	handleProfileUpdateResult: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			this.setState({modeEdit: false, notifyApp: true}, function () {this.loadProfile();});
+		}
+	},	
 	//загрузка данных профиля
 	loadProfile: function () {
 		if(this.props.session.loggedIn) {
@@ -35,17 +59,58 @@ var Profile = React.createClass({
 			clnt.getProfile(getPrms, this.handleLoadProfileResult);
 		}
 	},
+	//обработка изменения поля формы редактирования профиля
+	handleFormItemChange: function (e) {
+		var tmp = {};
+		_.extend(tmp, this.state.profileTmp)
+		tmp[e.target.id] = e.target.value;
+		this.setState({profileTmp: tmp});
+	},	
 	//обработка нажатия на карточку объявления
 	handlePostClick: function (postId) {
 		this.context.router.transitionTo("post", {postId: postId});
 	},
 	//обработка нажатия на кнопку редактирования
 	handleEditClick: function () {
-		this.setState({modeEdit: true});
+		var tmp = {};
+		_.extend(tmp, this.state.profile);
+		this.setState({profileTmp: tmp, modeEdit: true});
 	},
 	//обработка нажатия на кнопку отмены редактирования
 	handleCancelEditClick: function () {
 		this.setState({modeEdit: false});
+	},
+	//обработка нажатия на кнопку изменения профиля
+	handleOKEditClick: function () {
+		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+		var updPrms = {
+			language: this.props.language, 
+			data: {
+				id: this.state.profileTmp.id,
+				email: this.state.profileTmp.email,
+				firstName: this.state.profileTmp.firstName,
+				lastName: this.state.profileTmp.lastName,
+				gender: this.state.profileTmp.gender,
+				phone: this.state.profileTmp.phone,
+				description: this.state.profileTmp.description
+			},
+			session: this.props.session.sessionInfo
+		}
+		clnt.updateProfile(updPrms, this.handleProfileUpdateResult);
+	},
+	//обработка нажатия на кнопку создания объявления
+	handleAddPostClick: function () {
+		this.context.router.transitionTo("modifypost", {mode: ModifyPostModes.ADD});
+	},
+	//обработка нажатия на кнопку удаления объявления
+	handleDeletePostClick: function (postId) {
+		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+		var delPrms = {
+			language: this.props.language, 
+			postId: postId,
+			session: this.props.session.sessionInfo
+		}
+		clnt.removeAdvert(delPrms, this.handleDeletePostResult);
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
@@ -64,13 +129,17 @@ var Profile = React.createClass({
 									<input className="w-input u-form-field rel"
 										type="text"
 										ref="lastName"
-										value={this.state.profile.lastName}
-										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_LAST_NAME"})}/>
+										id="lastName"
+										value={this.state.profileTmp.lastName}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_LAST_NAME"})}
+										onChange={this.handleFormItemChange}/>
 									<input className="w-input u-form-field rel"
 										type="text"
 										ref="firstName"
-										value={this.state.profile.firstName}
-										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FIRST_NAME"})}/>
+										id="firstName"
+										value={this.state.profileTmp.firstName}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FIRST_NAME"})}
+										onChange={this.handleFormItemChange}/>
 								</div>
 				} else {
 					userName = <div className="u-t-center">{this.state.profile.lastName} {this.state.profile.firstName}</div>
@@ -79,10 +148,14 @@ var Profile = React.createClass({
 				var userGender;
 				if(this.state.modeEdit) {
 					userGender =	<div>
-										<select className="w-select u-form-field" ref="gender" value={this.state.profile.gender}>
-											<option value="DVAL_MALE">{Utils.getStrResource({lang: this.props.language, code: "DVAL_MALE"})}</option>
-											<option value="DVAL_FEMALE">{Utils.getStrResource({lang: this.props.language, code: "DVAL_FEMALE"})}</option>
-										</select>
+										<OptionsSelector view={OptionsSelectorView.SELECT}
+											options={optionsFactory.buildOptions({
+														language: this.props.language, 
+														id: "gender",
+														options: ["DVAL_MALE", "DVAL_FEMALE"]})}
+											language={this.props.language}
+											defaultOptionsState={this.state.profileTmp.gender}
+											onOptionChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "gender", value: value}})}, this)}/>
 									</div>
 				} else {
 					userGender = <div><strong>{Utils.getStrResource({lang: this.props.language, code: this.state.profile.gender})}</strong></div>
@@ -94,8 +167,10 @@ var Profile = React.createClass({
 									<input className="w-input u-form-field"
 										type="text"
 										ref="email"
-										value={this.state.profile.email}
-										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_MAIL"})}/>									
+										id="email"
+										value={this.state.profileTmp.email}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_MAIL"})}
+										onChange={this.handleFormItemChange}/>									
 								</div>
 				} else {
 					userMail = <div><strong>{this.state.profile.email}</strong></div>
@@ -107,8 +182,10 @@ var Profile = React.createClass({
 									<input className="w-input u-form-field"
 										type="text"
 										ref="phone"
-										value={this.state.profile.phone}
-										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_PHONE"})}/>									
+										id="phone"
+										value={this.state.profileTmp.phone}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_PHONE"})}
+										onChange={this.handleFormItemChange}/>
 								</div>
 				} else {
 					userPhone = <div><strong>{this.state.profile.phone}</strong></div>
@@ -117,11 +194,13 @@ var Profile = React.createClass({
 				var userDesc;
 				if(this.state.modeEdit) {
 					userDesc =	<div>
-									<input className="w-input u-form-field"
-										type="text"
+									<textarea className="w-input u-form-field"
 										ref="description"
-										value={this.state.profile.description}
-										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_ABOUT_ME"})}/>									
+										id="description"
+										value={this.state.profileTmp.description}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_ABOUT_ME"})}
+										onChange={this.handleFormItemChange}>
+									</textarea>
 								</div>
 				} else {
 					userDesc = <div>{this.state.profile.description}</div>
@@ -131,34 +210,44 @@ var Profile = React.createClass({
 				if((this.state.profile.adverts)&&(Array.isArray(this.state.profile.adverts))&&(this.state.profile.advertsCount > 0)) {
 					adverts = this.state.profile.adverts.map(function (item, i) {
 						return (
-							<div>
-								<a key={i} className="w-inline-block u-lnk-norm" href="javascript:;" onClick={this.handlePostClick.bind(this, item.id)}>
-						            <div className="w-row u-row-cardlst bordered">
-						              <div className="w-col w-col-5 w-col-stack w-col-small-6"><img src={item.apartment.img}/>
-						              </div>
-						              <div className="w-col w-col-7 w-col-stack w-col-small-6">
-						                <div className="u-block-card-desc">
-						                  <h1>{Utils.getStrResource({lang: this.props.language, code: item.apartment.type})}</h1>
-						                  <div>{item.apartment.adress}</div>
-						                </div>
-						              </div>
-						            </div>
-						        </a>
-						        <div className="u-block-spacer"></div>
-						        <div className="w-clearfix u-block-right"><a className="u-btn btn-sm u-btn-danger" href="#">Удалить объявление</a></div>
-						        <div className="u-block-spacer"></div>	
-					        </div>						
+							<div key={i}>
+								<a className="w-inline-block u-lnk-norm" 
+									href="javascript:void(0);" 
+									onClick={this.handlePostClick.bind(this, item.id)}>
+									<div className="w-row u-row-cardlst bordered">
+										<div className="w-col w-col-5 w-col-stack w-col-small-6">
+											<img src={item.apartment.img}/>
+										</div>
+										<div className="w-col w-col-7 w-col-stack w-col-small-6">
+											<div className="u-block-card-desc">
+												<h1>{Utils.getStrResource({lang: this.props.language, code: item.apartment.type})}</h1>
+												<div>{item.apartment.adress}</div>
+											</div>
+										</div>
+									</div>
+								</a>
+								<div className="u-block-spacer"></div>
+								<div className="w-clearfix u-block-right">
+									<a className="u-btn btn-sm u-btn-danger"
+										href="javascript:void(0);"
+										onClick={this.handleDeletePostClick.bind(this, item.id)}>
+										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_DELETE_ADVERT"})}										
+									</a>
+								</div>
+								<div className="u-block-spacer"></div>							
+							</div>
 						);
 					}, this);
 				} else {
-					adverts =	<InLineMessage type={Utils.getMessageTypeInf()} 
-									message={Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_ADVERTS", searchVals: true, values: ["UI_BTN_LEASE"]})}/>;
-				}
+					adverts =	<button type="button" className="w-button u-btn-regular" onClick={this.handleAddPostClick}>
+									{Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_ADVERTS"})}
+								</button>
+				}				
 				//контроллер редактирования профиля
 				var editControl;
 				if(this.state.modeEdit) {
 					editControl = 	<div>
-										<button type="button" className="w-button u-btn-primary">
+										<button type="button" className="w-button u-btn-primary" onClick={this.handleOKEditClick}>
 											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_OK"})}
 										</button>
 										<button type="button" className="w-button u-btn-regular" onClick={this.handleCancelEditClick}>
@@ -166,7 +255,7 @@ var Profile = React.createClass({
 										</button>
 									</div>
 				} else {
-					editControl = 	<a className="u-t-right u-lnk-norm" href="javascript:;" onClick={this.handleEditClick}>
+					editControl = 	<a className="u-t-right u-lnk-norm" href="javascript:void(0);" onClick={this.handleEditClick}>
 										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_EDIT"})}
 									</a>
 				}
@@ -228,8 +317,8 @@ var Profile = React.createClass({
 										<div className="w-col w-col-6 u-col-card">
 											<div className="u-block-underline h3">
 												<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ADVERT"})}</h3>
-											</div>
-											{adverts}												
+											</div>											
+											{adverts}											
 										</div>
 									</div>
 								</div>

@@ -105,12 +105,65 @@ var Utils = {
 	//удаление объекта из хранилища
 	deleteObjectState: function (key) {
 		localStorage.removeItem(key);
+	},
+	//разница в днях между двумя датами
+	daysBetween: function (from, to) {
+    	return (to - from) / (1000 * 60 * 60 * 24);
+	},
+	//привязка контекста к произвольной функции
+	bind: function (func, context) {
+		return function() {
+			return func.apply(context, arguments);
+		};
+	},
+	//форматирование даты согласно региональным настройкам
+	formatDate: function (prms) {
+		var res;
+		if(("date" in prms)||(prms.date)) {
+			if(!("lang" in prms)||(!prms.lang)) {
+				prms.lang = "DEFAULT";
+			}
+			switch(_.findWhere(langs, {lang: prms.lang})["DATE_FORMAT"]) {
+				case("dd.mm.yyyy"): {
+					res = prms.date.to_dd_mm_yyyy();
+					break;
+				}
+				case("mm/dd/yyyy"): {
+					res = prms.date.to_mm_dd_yyyy();
+					break;
+				}
+				default: {
+					res = prms.date.to_dd_mm_yyyy();
+				}
+			}
+		}
+		return res;
 	}
 }
-//расширение для дат
-Date.prototype.to_yyyy_mm_dd = function () {
+
+//расширение для дат - конвертация в формат ГГГГ-ММ-ДД
+Date.prototype.to_yyyy_mm_dd = function (separ) {
+	var s = (separ)?separ:"-";
 	var yyyy = this.getFullYear().toString();
 	var mm = (this.getMonth() + 1).toString();
 	var dd = this.getDate().toString();
-	return yyyy + "-" + (mm[1]?mm:"0" + mm[0]) + "-" + (dd[1]?dd:"0" + dd[0]);
+	return yyyy + s + (mm[1]?mm:"0" + mm[0]) + s + (dd[1]?dd:"0" + dd[0]);
+};
+
+//расширение для дат - конвертация в формат ДД-ММ-ГГГГ
+Date.prototype.to_dd_mm_yyyy = function (separ) {
+	var s = (separ)?separ:".";
+	var yyyy = this.getFullYear().toString();
+	var mm = (this.getMonth() + 1).toString();
+	var dd = this.getDate().toString();
+	return (dd[1]?dd:"0" + dd[0]) + s + (mm[1]?mm:"0" + mm[0]) + s + yyyy;
+};
+
+//расширение для дат - конвертация в формат ММ-ДД-ГГГГ
+Date.prototype.to_mm_dd_yyyy = function (separ) {
+	var s = (separ)?separ:"/";
+	var yyyy = this.getFullYear().toString();
+	var mm = (this.getMonth() + 1).toString();
+	var dd = this.getDate().toString();
+	return (mm[1]?mm:"0" + mm[0]) + s + (dd[1]?dd:"0" + dd[0]) + s + yyyy;
 };

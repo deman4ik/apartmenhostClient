@@ -17,11 +17,15 @@ var OptionsSelector = React.createClass({
 				if(React.findDOMNode(this.refs[item.ref]).checked) optionsList += item.value + ";";
 			}, this);
 		}
-		this.props.onOptionChanged(optionsList.substring(0, optionsList.length - 1));
+		if(Utils.isFunction(this.props.onOptionChanged)) {
+			this.props.onOptionChanged(optionsList.substring(0, optionsList.length - 1));
+		}
 	},
 	//обработка выбора элемента выпадающего списка
 	handleOptionSelected: function (e) {
-		this.props.onOptionChanged(e.target.value);
+		if(Utils.isFunction(this.props.onOptionChanged)) {
+			this.props.onOptionChanged(e.target.value);
+		}
 	},
 	//проверка статуса опции по умолчанию
 	isDefaultChecked: function (item) {

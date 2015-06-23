@@ -6,6 +6,11 @@ var OptionsParserView = {
 	LIST: "list", //список вертикальный
 	ROW: "row" //строка горизогтальная
 }
+//способы конвертации опций
+var OptionsParserConvert = {
+	NO_CONVERT: "no", //не конвертировать
+	DO_CONVERT: "yes" //конвертировать
+}
 //парсер опций
 var OptionsParser = React.createClass({
 	//формирование представления
@@ -48,6 +53,12 @@ var OptionsParser = React.createClass({
 		}
 		//формирование представления списка опций
 		var options;
+		var convertOptions;
+		if(this.props.convertOptions) {
+			convertOptions = this.props.convertOptions;
+		} else {
+			convertOptions = OptionsParserConvert.DO_CONVERT;
+		}		
 		if((this.props.options)&&(Array.isArray(this.props.options))) {
 			var optionsLength = this.props.options.length;
 			var optionsItems = this.props.options.map(function (option, i) {
@@ -55,17 +66,17 @@ var OptionsParser = React.createClass({
 				switch(view) {
 					case(OptionsParserView.LIST): {
 						optionsItem = 	<li>
-											{Utils.getStrResource({lang: this.props.language, code: option})}
+											{(convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option}
 										</li>
 						break;
 					}
 					case(OptionsParserView.ROW): {
-						optionsItem = Utils.getStrResource({lang: this.props.language, code: option});
+						optionsItem = (convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option;
 						if(i < (optionsLength - 1)) optionsItem += rowSeparator + " ";
 						break;
 					}				
 					default: {
-						optionsItem = Utils.getStrResource({lang: this.props.language, code: option}) + this.props.rowSeparator + " ";
+						optionsItem = ((convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option) + this.props.rowSeparator + " ";
 						if(i < (optionsLength - 1)) optionsItem += rowSeparator + " ";
 					}
 				}

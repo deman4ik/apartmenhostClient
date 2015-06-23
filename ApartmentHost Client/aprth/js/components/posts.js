@@ -22,13 +22,50 @@ var Posts = React.createClass({
 			filter: [] //текущее состояние фильтра
 		}
 	},
+	//расчет "цены за период" объявлений по датам
+	calcAdvertsPricePeriod: function (adverts, from, to) {
+		if((adverts)&&(Array.isArray(adverts))) {
+			if((from)&&(to)) {
+				var dFrom = new Date(from);
+				var dTo = new Date(to);
+				adverts.map(function (item, i) {item.pricePeriod = item.priceDay * 1 * Utils.daysBetween(dFrom, dTo);});
+			} else {
+				adverts.map(function (item, i) {item.pricePeriod = 0;});
+			}
+		}
+	},
 	//получение данных объявлений от сервера
 	handleSearchResult: function (resp) {
 		this.props.onHideProgress();
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			this.setState({adverts: resp.MESSAGE, advertsCnt: resp.MESSAGE.length, advertsReady: true, filterIsSet: true});
+			//обработаем ответ в зависимости от режима
+			switch(this.props.mode) {
+				//режим поиска
+				case(PostsModes.SEARCH): {
+					//если это поиск, то необходимо расчитать цену за период для каждого объявления
+					if((_.findWhere(this.state.filter, {fieldName: "DateFrom"}))&&(_.findWhere(this.state.filter, {fieldName: "DateTo"})))
+						this.calcAdvertsPricePeriod(
+							resp.MESSAGE, 
+							_.findWhere(this.state.filter, {fieldName: "DateFrom"}).value, 
+							_.findWhere(this.state.filter, {fieldName: "DateTo"}).value
+						);
+					else
+						this.calcAdvertsPricePeriod(resp.MESSAGE);
+					break;
+				}
+				//режим избранного
+				case(PostsModes.FAVORITES): {
+					//для избранного - просто затираем цену за период
+					this.calcAdvertsPricePeriod(resp.MESSAGE);
+					break;
+				}
+				//прочие режимы
+				default: {}
+			}
+			//теперь выставляем состояние компоненты
+			this.setState({adverts: resp.MESSAGE, advertsCnt: resp.MESSAGE.length, advertsReady: true, filterIsSet: true}, function () {fixFooter();});
 		}
 	},
 	//получение ответа о смене статуса в избранном

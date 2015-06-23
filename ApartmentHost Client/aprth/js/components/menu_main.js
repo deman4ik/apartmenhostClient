@@ -8,31 +8,44 @@ var MainMenu = React.createClass({
 	},
 	//состояние меню
 	getInitialState: function () {
-		return {
-			//пункты меню
-			menu: {},
-			//готовность меню к отображению
-			menuReady: false
+		return {			
+			menu: {}, //пункты меню			
+			menuReady: false //готовность меню к отображению
+		}
+	},
+	//выполнение добавления объявления
+	makeAddPost: function () {
+		if(this.props.session.loggedIn) {
+			if(this.props.session.sessionInfo.advertsCount == 0) {
+				this.context.router.transitionTo("modifypost", {mode: ModifyPostModes.ADD});
+			} else {
+				this.props.onShowError(
+					Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}),
+					Utils.getStrResource({lang: this.props.language, code: "CLNT_ALREADY_HAVE_ADVERT"})
+				);
+			}
 		}
 	},
 	//обработка нажатия пункта меню
 	handleMenuItemClick: function (itemIndex) {
-		this.props.onMenuItemSelected(this.state.menu.items[itemIndex]);
-		this.context.router.transitionTo(this.state.menu.items[itemIndex].link);		
-	},
+		this.props.onMenuItemSelected(this.state.menu.items[itemIndex]);		
+	},	
 	//обработка нажатия на кнопку сдачи квартиры
 	handleAddPostClick: function () {
 		this.props.onMenuItemSelected({
 			code: "Lease", 
 			title: "UI_BTN_LEASE", 
-			link: "addpost",
-			path: "/addpost",
+			link: "modifypost",
+			path: "/modifypost/add",
 			authAccess: false
 		});
 		if(this.props.session.loggedIn)
-			this.context.router.transitionTo("addpost");
+			this.makeAddPost();
 		else
-			this.props.onLogIn({actionType: AppAfterAuthActionTypes.REDIRECT, actionPrms: {link: "addpost"}});
+			this.props.onLogIn({
+				actionType: AppAfterAuthActionTypes.CALLBACK,
+				actionPrms: {callBack: this.makeAddPost}
+			});
 	},
 	//инициализация компонента при подключении к страничке
 	componentDidMount: function () {
@@ -75,7 +88,7 @@ var MainMenu = React.createClass({
 					return (
 						<a className={classesItem} 
 							key={i}
-							href="#"
+							href={"#/" + menuItem.link}
 							style={aStyle}
 							onClick={this.handleMenuItemClick.bind(this, i)}>
 								{Utils.getStrResource({lang: this.props.language, code: menuItem.title})}
@@ -85,10 +98,12 @@ var MainMenu = React.createClass({
 			}, this);
 		}
 		//кнопка "Сдать жильё"
-		var rentButton = 	<a className="u-btn nav" href="#" style={aStyle} onClick={this.handleAddPostClick}>
+		var rentButton;
+		if((!this.props.session.loggedIn)||((this.props.session.loggedIn)&&(this.props.session.sessionInfo.advertsCount == 0))) {
+			rentButton = 	<a className="u-btn nav" href="javascript:void(0);" style={aStyle} onClick={this.handleAddPostClick}>
 								{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LEASE"})}
 							</a>;
-
+		}
 		//генерация представления меню
 		return (
 			<nav className={classesNav} role="navigation">

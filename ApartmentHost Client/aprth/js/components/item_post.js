@@ -25,13 +25,23 @@ var PostItem = React.createClass({
 	render: function () {
 		//дополнительные стили
 		var aStyle = {textDecoration: "none"};
+		var pricePeriodStyle;
+		if(this.props.item.pricePeriod > this.props.item.priceDay) pricePeriodStyle = {display: "inline"}; else pricePeriodStyle = {display: "none"};
 		//дополнительные опции объявления
 		var advOptions 
 		if(this.props.item.apartment.options) {
-			advOptions=	<OptionsParser language={this.props.language}
-								title={Utils.getStrResource({lang: this.props.language, code: "UI_LBL_EXTRAS"}) + ":"}
-								options={this.props.item.apartment.options.split(";")}
-								view={OptionsParserView.LIST}/>
+			if(!optionsFactory.isParseble(this.props.item.apartment.options)) {
+				advOptions =	<div>
+									{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_EXTRAS"})}:&nbsp;
+									{this.props.item.apartment.options}
+								</div>
+			} else {
+				advOptions =	<OptionsParser language={this.props.language}
+									title={Utils.getStrResource({lang: this.props.language, code: "UI_LBL_EXTRAS"}) + ":"}
+									options={optionsFactory.parse(this.props.item.apartment.options)}
+									convertOptions={OptionsParserConvert.NO_CONVERT}
+									view={OptionsParserView.LIST}/>		
+			}
 		}		
 		//кнопка управления избранным
 		var favorText;
@@ -64,12 +74,12 @@ var PostItem = React.createClass({
 		});
 		var favorBtn;
 		if(this.props.item.isFavorite) {
-			favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+			favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
 							<span className="glyphicon glyphicon-ok btn" aria-hidden="true"></span>
 							{favorText}
 						</a>
 		} else {
-			favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+			favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
 							<span className="glyphicon glyphicon-heart btn" aria-hidden="true"></span>
 							{favorText}
 						</a>			
@@ -80,7 +90,7 @@ var PostItem = React.createClass({
 				<div className="w-row u-row-cardlst">
 					<div className="w-col w-col-4 w-col-small-4">
 						<a className="w-inline-block u-block-card-desc"
-							href="javascript:;" 
+							href="javascript:void(0);" 
 							onClick={this.handlePostClick}>
 							<img src={this.props.item.apartment.img}/>
 							<img className="u-img-author-sm" src={this.props.item.user.img}/>
@@ -98,10 +108,10 @@ var PostItem = React.createClass({
 									{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"})}
 								</strong>
 							</div>
-							<div className="u-t-price2 price-sm">
+							<div className="u-t-price2 price-sm" style={pricePeriodStyle}>
 								{this.props.item.pricePeriod}&nbsp;
 								{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
-								{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_WEEK"})}
+								{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD"})}
 							</div>
 							<div>
 								{favorBtn}						
@@ -115,7 +125,7 @@ var PostItem = React.createClass({
 								{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}:&nbsp;
 								<strong>
 									<OptionsParser language={this.props.language}								
-										options={this.props.item.residentGender.split(";")}
+										options={optionsFactory.parse(this.props.item.residentGender)}
 										view={OptionsParserView.ROW}/>									
 								</strong>
 							</div>

@@ -9,6 +9,7 @@ var PostsFilter = React.createClass({
 			filterPriceFrom: 300, //нижняя граница фильтра по цене
 			filterPriceTo: 500, //верхняя граница фильтра по цене
 			noFilterSpecified: false, //флаг отсуствия фильтра
+			adress: "", //адрес жилья
 			dFrom: "", //дата начала периода бронирования
 			dTo: "", //дата коночания периода бронирования
 			sex: "", //пол постояльца
@@ -21,8 +22,8 @@ var PostsFilter = React.createClass({
 		var filterParams = {
 			language: this.props.language
 		}
-		if(React.findDOMNode(this.refs.adress).value) {
-			filterParams.adress = React.findDOMNode(this.refs.adress).value;			
+		if(this.state.adress) {
+			filterParams.adress = this.state.adress;			
 		}
 		if(this.state.sex) {
 			filterParams.sex = this.state.sex;
@@ -60,9 +61,9 @@ var PostsFilter = React.createClass({
 		console.log("LOADED FILTER: ");
 		console.log(filterParams);
 		if(filterParams) {
-			if("adress" in filterParams) React.findDOMNode(this.refs.adress).value = filterParams.adress;
+			if("adress" in filterParams) this.setState({adress: filterParams.adress});
 			if("sex" in filterParams) this.setState({sex: filterParams.sex});
-			if("dFrom" in filterParams) this.setState({dFrom: filterParams.dFrom});
+			if("dFrom" in filterParams)	this.setState({dFrom: filterParams.dFrom});
 			if("dTo" in filterParams) this.setState({dTo: filterParams.dTo});
 			if("apartType" in filterParams) this.setState({apartType: filterParams.apartType});;
 			if(("priceFrom" in filterParams)||("priceTo" in filterParams)) {
@@ -80,6 +81,10 @@ var PostsFilter = React.createClass({
 			}						
 		}
 		return filterParams;
+	},
+	//ввод адреса
+	handleAddrChange: function (e) {
+		this.setState({adress: e.target.value});
 	},
 	//выбор пола
 	handleSelectedSex: function (sex) {
@@ -105,11 +110,11 @@ var PostsFilter = React.createClass({
 	},
 	//обработка нажатия на кнопку "Очистить"
 	handleClearClick: function () {
-		React.findDOMNode(this.refs.adress).value = "";		
 		this.setState(
 			{
 				filterToggle: false, 
 				noFilterSpecified: false, 
+				adress: "",
 				dFrom: "", 
 				dTo: "",
 				sex: "",
@@ -124,7 +129,7 @@ var PostsFilter = React.createClass({
 	},
 	//обработка нажатия на кнопку "Поиск"
 	handleFindClick: function () {
-		if(!React.findDOMNode(this.refs.adress).value) {
+		if(!this.state.adress) {
 			this.setState({noFilterSpecified: true});
 		} else {
 			this.setState({noFilterSpecified: false});
@@ -176,7 +181,9 @@ var PostsFilter = React.createClass({
 						<input className={classesAdrInput}
 							type="text"
 							ref="adress"
-							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FILTER_ADRESS"})}/>
+							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FILTER_ADRESS"})}
+							onChange={this.handleAddrChange}
+							value={this.state.adress}/>
 						<div className="w-row">
 							<div className="w-col w-col-3">
 								<label className="u-form-label">
@@ -234,7 +241,7 @@ var PostsFilter = React.createClass({
 					</h1>
 				</div>
 				<div className="w-clearfix u-block-underline" style={filterDisplay}>
-					<a className="u-lnk-norm h1" href="javascript:;" style={aStyle} onClick={this.handleFilterToggleClick}>
+					<a className="u-lnk-norm h1" href="javascript:void(0);" style={aStyle} onClick={this.handleFilterToggleClick}>
 						{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FILTER"})}
 					</a>
 				</div>

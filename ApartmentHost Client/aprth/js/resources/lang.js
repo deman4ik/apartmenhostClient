@@ -7,6 +7,8 @@ var langs = [
 		//код языка
 		lang: "DEFAULT",
 		display: false,
+		//формат даты по умолчанию
+		DATE_FORMAT: "dd.mm.yyyy",
 		//общая ошибка
 		UNDEFINED_RESOURCE: "Undefined message!",
 		//ресурсы для клиентских сообщений об ошибках и информации
@@ -60,7 +62,10 @@ var langs = [
 		UI_BTN_SHOW_PHONE: "Показать телефон",
 		UI_BTN_RATE: "Отзыв",
 		UI_BTN_ADD_RENT_POST: "Разместить",	
-		UI_BTN_EDIT: "Редактировать",	
+		UI_BTN_EDIT: "Редактировать",
+		UI_BTN_DELETE_ADVERT: "Удалить объявление",
+		UI_BTN_ADD: "Добавить",
+		UI_BTN_DEL: "Удалить",
 		UI_TITLE_APP: "Apartmenthost",
 		UI_TITLE_LOGIN: "Вход",
 		UI_TITLE_ADVERTS_FILER: "Поиск жилья",
@@ -98,7 +103,7 @@ var langs = [
 		UI_LBL_BETWEEN: "от %1$s до %2$s %3$s",
 		UI_LBL_MORE: "более %1$s %2$s",
 		UI_LBL_PERIOD_DAY: "день",
-		UI_LBL_PERIOD_WEEK: "неделя",
+		UI_LBL_PERIOD: "период",
 		UI_LBL_EXTRAS: "Дополнительно",
 		UI_LBL_BOOKED: "Запрос отправлен",
 		UI_LBL_MAKE_CALL: "или",
@@ -107,7 +112,7 @@ var langs = [
 		UI_LBL_ABOUT_OWNER: "О собственнике",
 		UI_LBL_PROFILE: "Мой профиль",
 		UI_LBL_ADVERT: "Моё объявление",		
-		UI_NOTE_PHONE: "Необходимо указать телефон, чтобы съемщики могли связаться с вами.",
+		UI_NOTE_PHONE: "Телефон Вашего профиля.",
 		UI_NOTE_UNAVAILABLE: "Отметьте дни, в которые жилье будет точно не доступно.",
 		UI_NOTE_RENT_EXTRA: "Здесь можно указать наиболее привлекательные параметры жилья, например: кондиционер, консъерж, гаражное место.",
 		//ресурсы для метаописания объектов - фиксированные поля
@@ -176,8 +181,10 @@ var langs = [
 		CLNT_NO_MODE: "Не указан режим работы компонента!",
 		CLNT_NO_FAVORITES: "У вас в избранном нет объявлений",
 		CLNT_BOOKING_NO_DATES: "Не указаны даты бронирования!",
-		CLNT_NO_ADVERTS: "У вас нет объявлений, нажмите \"%1$s\" для создания объявления",
-		CLNT_COMPLAINT_ADDED: "Спасибо за помощь"
+		CLNT_NO_ADVERTS: "У вас нет объявлений, нажмите здесь для создания объявления",
+		CLNT_COMPLAINT_ADDED: "Спасибо за помощь",
+		CLNT_ALREADY_HAVE_ADVERT: "У Вас уже есть объявление! Его можно удалить или исправить в Вашем профиле!",
+		CLNT_ADVER_NO_PHONE: "Необходимо указать телефон, чтобы съемщики могли связаться с вами!"
 	},
 	//английский
 	{
@@ -226,7 +233,10 @@ var langs = [
 		UI_BTN_SHOW_PHONE: "Show phone",
 		UI_BTN_RATE: "Rate",
 		UI_BTN_ADD_RENT_POST: "Publish",
-		UI_BTN_EDIT: "Edit",			
+		UI_BTN_EDIT: "Edit",
+		UI_BTN_DELETE_ADVERT: "Remove advert",
+		UI_BTN_ADD: "Add",
+		UI_BTN_DEL: "Remove",
 		UI_TITLE_APP: "Apartmenthost",
 		UI_TITLE_LOGIN: "Login",
 		UI_TITLE_ADVERTS_FILER: "Apartments search",
@@ -264,7 +274,7 @@ var langs = [
 		UI_LBL_BETWEEN: "from %1$s to %2$s %3$s",
 		UI_LBL_MORE: "more %1$s %2$s",
 		UI_LBL_PERIOD_DAY: "day",
-		UI_LBL_PERIOD_WEEK: "week",
+		UI_LBL_PERIOD: "period",
 		UI_LBL_EXTRAS: "Options",
 		UI_LBL_BOOKED: "Request sent",
 		UI_LBL_MAKE_CALL: "or",
@@ -273,7 +283,7 @@ var langs = [
 		UI_LBL_ABOUT_OWNER: "About owner",
 		UI_LBL_PROFILE: "My profile",
 		UI_LBL_ADVERT: "My advert",		
-		UI_NOTE_PHONE: "Specify you phone for customers.",
+		UI_NOTE_PHONE: "Your profile's phone number.",
 		UI_NOTE_UNAVAILABLE: "Set days, when your apartment is unavalable.",
 		UI_NOTE_RENT_EXTRA: "Show the best features of you apartmetn. Condition, security, parking place, etc...",
 		//ресурсы для метаописания объектов - фиксированные поля
@@ -342,7 +352,9 @@ var langs = [
 		CLNT_NO_MODE: "No component mode specified!",
 		CLNT_NO_FAVORITES: "You have no favorites!",
 		CLNT_BOOKING_NO_DATES: "No booking dates specified!",
-		CLNT_NO_ADVERTS: "You have no posts, press \"%1$s\" to make one",
-		CLNT_COMPLAINT_ADDED: "Thank you for cooperation"
+		CLNT_NO_ADVERTS: "You have no posts, click here to make one",
+		CLNT_COMPLAINT_ADDED: "Thank you for cooperation",
+		CLNT_ALREADY_HAVE_ADVERT: "You all ready have an advert card! You can modify or delete in in you profile!",
+		CLNT_ADVER_NO_PHONE: "Specify you phone for customers!"
 	}
 ]

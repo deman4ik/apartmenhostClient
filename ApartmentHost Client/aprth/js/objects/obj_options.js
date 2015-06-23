@@ -29,9 +29,44 @@ var OptionsFactory = function () {
 		}
 		return res;
 	}
+	//проверка возможности разбора списка опций
+	var isParsebleFn = function (optionsString) {
+		var res = false;
+		if(optionsString) {
+			try {				
+				var optionsStringTmp = ((optionsString.lastIndexOf(";") == optionsString.length - 1)||(optionsString.lastIndexOf(",") == optionsString.length - 1))? optionsString.slice(0, optionsString.length - 1):optionsString;
+				optionsStringTmp = ((optionsStringTmp.indexOf(";") == 0)||(optionsStringTmp.indexOf(",") == 0))? optionsStringTmp.slice(1):optionsStringTmp;
+				if((optionsStringTmp.split(";").length > 1)||(optionsStringTmp.split(",").length > 1)) res = true;
+			} catch (e) {			
+			}
+		}
+		return res;
+	}
+	//разбор списка опций
+	var parseFn = function (optionsString) {		
+		var tmp = [];		
+		if(optionsString) {
+			if(optionsString.split(";").length > 1) {
+				var optionsStringTmp = (optionsString.lastIndexOf(";") == optionsString.length - 1)? optionsString.slice(0, optionsString.length - 1):optionsString;
+				optionsStringTmp = (optionsStringTmp.indexOf(";") == 0)? optionsStringTmp.slice(1):optionsStringTmp;
+				tmp = optionsStringTmp.split(";");
+			} else {
+				if(optionsString.split(",").length > 1) {
+					var optionsStringTmp = (optionsString.lastIndexOf(",") == optionsString.length - 1)? optionsString.slice(0, optionsString.length - 1):optionsString;
+					optionsStringTmp = (optionsStringTmp.indexOf(",") == 0)? optionsStringTmp.slice(1):optionsStringTmp;
+					tmp = optionsStringTmp.split(",");
+				} else {					
+					tmp.push(optionsString);
+				}
+			}
+		}
+		return tmp;
+	}
 	//публичные члены класса (интерфейс)
 	return {
-		buildOptions: buildOptionsFn		
+		buildOptions: buildOptionsFn,
+		isParseble: isParsebleFn,
+		parse: parseFn	
 	}
 }
 

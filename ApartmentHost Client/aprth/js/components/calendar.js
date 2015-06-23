@@ -19,7 +19,7 @@ var Calendar = React.createClass({
 	},
 	//применение значения по умолчанию
 	applyDefaultValue: function (props) {
-		if(props.defaultValue) {			
+		if(props.defaultValue) {
 			$("#" + props.name).datepicker("setDate", props.defaultValue);
 		}
 	},
@@ -51,7 +51,11 @@ var Calendar = React.createClass({
 		if(newProps.name == this.props.name) {
 			if(!newProps.defaultValue) {
 				this.chancelDatePickedListener(newProps);
-				this.clearValue(newProps)
+				this.clearValue(newProps);
+				this.applyDatePickedListener(newProps);
+			} else {
+				this.chancelDatePickedListener(newProps);
+				this.applyDefaultValue(newProps);
 				this.applyDatePickedListener(newProps);
 			}
 		}

@@ -13,10 +13,6 @@ var NavBar = React.createClass({
 			menuOpen: false
 		}
 	},				
-	//обработка нажатия на заголовок
-	handleTitleClick: function () {
-		this.context.router.transitionTo("main");
-	},
 	//обработка нажатия на кнопку отображения меню (в мобильном виде)
 	handleNavButtonClick: function () {
 		this.setState({menuOpen: !this.state.menuOpen})
@@ -43,6 +39,7 @@ var NavBar = React.createClass({
 						onLangugeChange={this.props.onLangugeChange}
 						onLogIn={this.props.onLogIn}
 						onLogOut={this.props.onLogOut}
+						onShowError={this.props.onShowError}
 						language={this.props.language}
 						menuOpen={this.state.menuOpen}/>;
 		//генерация представления
@@ -54,7 +51,7 @@ var NavBar = React.createClass({
 					data-duration="400" 
 					data-contain="1">
 					<div className="w-container u-nav-content">
-						<a className="w-nav-brand" style={aStyle} href="javascript:;" onClick={this.handleTitleClick}>
+						<a className="w-nav-brand" style={aStyle} href="#/main">
 							<img className="u-img-complogo" src="aprth/img/logo.png" width="72"/>
 							<div className="u-t-comptitle">
 								{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_APP"})}

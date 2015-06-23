@@ -33,7 +33,7 @@ var FooterMainMenu = React.createClass({
 			var items = _.where(self.state.menu.items, {col: colNumb}).map(function (menuItem, i) {
 				if((!menuItem.authAccess)||(self.props.session.loggedIn == menuItem.authAccess)) {
 					return (
-						<a key={i} className="u-lnk-footer2" href="javascript:;" onClick={self.onFooterMenuClick.bind(self, menuItem)}>
+						<a key={i} className="u-lnk-footer2" href="javascript:void(0);" onClick={self.onFooterMenuClick.bind(self, menuItem)}>
 							{Utils.getStrResource({lang: self.props.language, code: menuItem.title})}							
 						</a>
 					);

@@ -185,9 +185,26 @@ var App = React.createClass({
 	handleLanguageChange: function (language) {
 		this.setLanguage(language);
 	},
+	//смена размеров окна
+	handleResize: function () {
+		//отключено до решения проблемы с позиционированием футера
+		//fixFooter();
+	},
+	//изменение профиля пользователя
+	handleProfileChange: function (newProfile) {		
+		if(this.state.session.loggedIn) {			
+			var tmp = {};
+			_.extend(tmp, this.state.session);
+			_.extend(tmp.sessionInfo, newProfile);
+			_.extend(tmp.sessionInfo.user.profile, newProfile);
+			this.setState({session: tmp}, Utils.bind(function () {Utils.saveObjectState("sessionState", this.state.session);}, this));
+		}		
+	},
 	//инициализация при старте приложения
 	componentDidMount: function () {
 		var sessionState = Utils.loadObjectState("sessionState");
+		this.handleResize();
+		window.addEventListener("resize", this.handleResize);
 		if(sessionState) {
 			this.setState({session: sessionState, 
 				language: config.languageDefault,
@@ -226,7 +243,8 @@ var App = React.createClass({
 		navBar =	<NavBar session={this.state.session}
 						onLogIn={this.handleLogIn}
 						onLogOut={this.handleLogOut}
-						language={this.state.language}
+						onShowError={this.showDialogError}
+						language={this.state.language}						
 						onMenuItemSelected={this.handleMenuItemSelected}/>;
 		//подвал
 		var footer;
@@ -249,15 +267,16 @@ var App = React.createClass({
 									onHideProgress={this.hideLoader}
 									onShowError={this.showDialogError}
 									onShowMessage={this.showDialogMessage}
+									onProfileChange={this.handleProfileChange}
 									language={this.state.language}/>
-							</div>
+							</div>							
 						</section>
 		}
 		//генератор
 		return (
 			<div>
 				{content}
-				{footer}				
+				{footer}
 			</div>
 		);
 	}
@@ -270,7 +289,7 @@ var routes = (
 		<Route name="favorites" handler={PostsFavorites}/>
 		<Route name="article" handler={Article} path="articles/:articleId"/>
 		<Route name="profile" handler={Profile}/>
-		<Route name="addpost" handler={AddPost}/>
+		<Route name="modifypost" handler={ModifyPost} path="modifypost/:mode"/>
 		<Route name="post" handler={Post}  path="posts/:postId"/>
 		<DefaultRoute handler={DefaultPage}/>
 		<NotFoundRoute handler={Unit404}/>		

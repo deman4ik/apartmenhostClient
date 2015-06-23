@@ -37,6 +37,19 @@ var Post = React.createClass({
 		formFactory.appedFormItem(formTmp, textItemTmp);
 		this.setState({sendComplaintForm: formTmp});
 	},
+	//расчет "цены за период" объявлений по датам
+	calcAdvertPricePeriod: function (advert) {
+		var tmp = {};
+		_.extend(tmp, advert);
+		if((this.state.dFrom)&&(this.state.dTo)) {
+			var dFrom = new Date(this.state.dFrom);
+			var dTo = new Date(this.state.dTo);
+			tmp.pricePeriod = tmp.priceDay * 1 * Utils.daysBetween(dFrom, dTo);
+		} else {
+			tmp.pricePeriod = 0;
+		}
+		return tmp;	
+	},
 	//отправка жалобы
 	onComplaintFormOK: function (values) {
 		console.log(values);
@@ -54,7 +67,8 @@ var Post = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			this.setState({post: resp.MESSAGE, postReady: true});
+			var postTmp = this.calcAdvertPricePeriod(resp.MESSAGE);
+			this.setState({post: postTmp, postReady: true});
 		}
 	},
 	//загрузка данных объявления
@@ -101,7 +115,10 @@ var Post = React.createClass({
 	handleDateChange: function (datePickerName, date) {
 		var stateObject = {};
 		stateObject[datePickerName] = (date)?date.to_yyyy_mm_dd():"";
-		this.setState(stateObject);
+		this.setState(stateObject, function () {
+			var postTmp = this.calcAdvertPricePeriod(this.state.post);
+			this.setState({post: postTmp});
+		});
 	},
 	//нажатие на бронирование
 	handleBookClick: function () {
@@ -189,7 +206,9 @@ var Post = React.createClass({
 			"rel": true,
 			"dtcard": true,
 			"right": true
-		});	
+		});
+		var pricePeriodStyle;
+		if(this.state.post.pricePeriod > this.state.post.priceDay) pricePeriodStyle = {display: "inline"}; else pricePeriodStyle = {display: "none"};
 		//содержимое объявления
 		var content;
 		if(this.state.postReady) {
@@ -225,11 +244,11 @@ var Post = React.createClass({
 			//кнопка бронирования
 			var bookBtn;
 			if(!this.state.postBooked) {
-				bookBtn =	<a className="u-btn query" href="javascript:;" onClick={this.handleBookClick} style={aStyle}>
+				bookBtn =	<a className="u-btn query" href="javascript:void(0);" onClick={this.handleBookClick} style={aStyle}>
 								{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_REQ_RENT"})}
 							</a>											
 			} else {
-				bookBtn =	<a className="u-btn query booked" href="javascript:;" style={aStyle}>
+				bookBtn =	<a className="u-btn query booked" href="javascript:void(0);" style={aStyle}>
 								<span className="glyphicon glyphicon-ok btn" aria-hidden="true"></span>
 								{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_BOOKED"})}
 							</a>
@@ -237,7 +256,7 @@ var Post = React.createClass({
 			//телефон владельца
 			var phone;
 			if(!this.state.showPhone) {
-				phone =	<a className="u-btn tel" href="javascript:;" onClick={this.handleShowPhoneClick} style={aStyle}>
+				phone =	<a className="u-btn tel" href="javascript:void(0);" onClick={this.handleShowPhoneClick} style={aStyle}>
 							{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SHOW_PHONE"})}
 						</a>
 			} else {
@@ -246,7 +265,7 @@ var Post = React.createClass({
 			//отзыв
 			var rate;
 			if((this.state.postBooked)&&(false)) {
-				rate =	<a className="w-button u-btn-primary" href="javascript:;" style={btnRate}>
+				rate =	<a className="w-button u-btn-primary" href="javascript:void(0);" style={btnRate}>
 							{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_RATE"})}
 						</a>
 			} else {
@@ -270,12 +289,12 @@ var Post = React.createClass({
 			});
 			var favorBtn;
 			if(this.state.post.isFavorite) {
-				favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+				favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
 								<span className="glyphicon glyphicon-ok btn" aria-hidden="true"></span>
 								{favorText}
 							</a>
 			} else {
-				favorBtn =	<a className={classesFavorBtn} href="javascript:;" style={aStyle} onClick={this.handleFavorClick}>
+				favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
 								<span className="glyphicon glyphicon-heart btn" aria-hidden="true"></span>
 								{favorText}
 							</a>				
@@ -283,10 +302,15 @@ var Post = React.createClass({
 			//дополнительные опции объявления
 			var advOptions;
 			if(this.state.post.apartment.options) {
-				advOptions=	<OptionsParser language={this.props.language}
-								options={this.state.post.apartment.options.split(";")}
-								view={OptionsParserView.LIST}
-								listStyle={ulOptions}/>				
+				if(!optionsFactory.isParseble(this.state.post.apartment.options)) {
+					advOptions =	<div>{this.state.post.apartment.options}</div>
+				} else {
+					advOptions =	<OptionsParser language={this.props.language}
+										options={optionsFactory.parse(this.state.post.apartment.options)}
+										convertOptions={OptionsParserConvert.NO_CONVERT}
+										view={OptionsParserView.LIST}
+										listStyle={ulOptions}/>				
+				}
 			}
 			//объявление
 			content =	<div className="w-section u-sect-card">
@@ -301,7 +325,7 @@ var Post = React.createClass({
 										<div className="u-block-cardprice">
 											<div className="u-t-label-cardprice">
 												<OptionsParser language={this.props.language}								
-													options={this.state.post.residentGender.split(";")}
+													options={optionsFactory.parse(this.state.post.residentGender)}
 													view={OptionsParserView.ROW}/>
 											</div>
 											<div className="u-block-ownertext">
@@ -312,10 +336,10 @@ var Post = React.createClass({
 														{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"})}
 													</strong>
 												</div>
-												<div className="u-t-price2">
+												<div className="u-t-price2" style={pricePeriodStyle}>
 													{this.state.post.pricePeriod}&nbsp;
 													{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
-													{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_WEEK"})}
+													{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD"})}
 												</div>
 											</div>
 											{bookFrm}
@@ -330,7 +354,7 @@ var Post = React.createClass({
 												{rate}												
 											</div>
 											<div className="u-t-small center">
-												<a className="u-lnk-norm" href="javascript:;" onClick={this.handleSendComplaintClick}>
+												<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleSendComplaintClick}>
 													{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SEND_COMPLAINT"})}
 												</a>
 											</div>

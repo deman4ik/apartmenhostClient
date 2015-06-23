@@ -21,7 +21,8 @@ var Client = function (clientConfig) {
 		userApart: "Apartment", //работа с пользовательскими объектами недвижимости
 		userAdvert: "Card", //работа с пользовательскими объявлениями
 		toggleAdvertFavor: "Favorite", //переключение состояния объявления в списке избранных
-		makeReservation: "Reservation/Make" //бронирование
+		makeReservation: "Reservation/Make", //бронирование
+		userProfile: "Profile" //работа с профилем пользователя
 	}
 	//коды стандартных ответов сервера
 	var serverStdErrCodes = {
@@ -128,6 +129,34 @@ var Client = function (clientConfig) {
 					return fillSrvStdReqData(serverActions.getMeta + "/" + prms.data, serverMethods.get, "");
 					break;
 				}
+				//работа с профилем пользователя
+				case (serverActions.userProfile): {
+					if(!prms.method) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "method"]
+						}));
+					if(!prms.data) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));					
+					//работаем от метода
+					switch (prms.method) {
+						//исправление
+						case(serverMethods.upd): {
+							return fillSrvStdReqData(serverActions.userProfile, serverMethods.upd, prms.data);
+							break;
+						}
+						//неизвестный метод
+						default: {
+							throw new Error("Метод '" + prms.method + "' для действия '" + prms.action + "' не поддерживается сервером!");
+						}
+					}
+					break;
+				}
 				//работа с недвижимостью пользователя
 				case (serverActions.userApart): {
 					if(!prms.method) 
@@ -182,7 +211,8 @@ var Client = function (clientConfig) {
 							break;
 						}
 						//удаление
-						case(serverMethods.del): {							
+						case(serverMethods.del): {
+							return fillSrvStdReqData(serverActions.userAdvert + "/" + prms.data.postId, serverMethods.del, "");		
 							break;
 						}
 						//неизвестный метод
@@ -597,6 +627,33 @@ var Client = function (clientConfig) {
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
 		},
+		//удаление объявления
+		removeAdvert: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.userAdvert,
+						method: serverMethods.del,
+						data:  {postId: prms.postId}
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["TOGGLING FAVOR ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
 		//считывание профиля пользователя
 		getProfile: function (prms, callBack) {
 			try {
@@ -645,6 +702,33 @@ var Client = function (clientConfig) {
 				});
 			} catch (error) {
 				log(["GETING PROFILE ERROR:", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//обновление профиля
+		updateProfile: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.userProfile,
+						method: serverMethods.upd,
+						data:  prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["TOGGLING FAVOR ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}

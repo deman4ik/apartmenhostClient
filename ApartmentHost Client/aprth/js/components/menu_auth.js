@@ -50,7 +50,7 @@ var AuthMenu = React.createClass({
 		}
 		return (
 			<a className="w-nav-link u-nav-login u-nav-link"
-				href="javascript:;"
+				href="javascript:void(0);"
 				onClick={onClickHandler}
 				style={aStyle}>
 				{text}

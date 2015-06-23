@@ -30,7 +30,7 @@ var LangMenu = React.createClass({
 			});
 			return (
 				<a className={classesAncor}
-					href="javascript:;"
+					href="javascript:void(0);"
 					style={aStyle}
 					onClick={this.handleLanguageClick.bind(this, i)}>
 						<div>{langItem}</div>
