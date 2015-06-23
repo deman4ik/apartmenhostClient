@@ -91,6 +91,9 @@ h1.txt.search-result {
   z-index: 800;
 }
 
+textarea.u-form-area-v {resize: vertical;}
+
+/*иконки в главном меню*/
 /*вариант 1*/
 .u-menu-item {float:right;}
 .w-dropdown-toggle.item {

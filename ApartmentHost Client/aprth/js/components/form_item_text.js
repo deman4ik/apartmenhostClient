@@ -53,7 +53,7 @@ var FormItemText = React.createClass({
 						<label for={this.state.item.name} className="control-label hidden-xs hidden-sm col-md-4 col-lg-4">{req}{this.state.item.label}</label>
 						<div className="col-xs-offset-0 col-xs-12 col-sm-offset-0 col-sm-12 col-md-8 col-lg-8">
 							<textarea 
-								className="form-control"
+								className="w-input u-form-field u-form-area-v"
 								id={this.state.item.name}
 								placeholder={this.state.item.label}
 								ref={this.state.item.name}
