@@ -95,6 +95,7 @@ var App = React.createClass({
 	//сокрытие индикатора процесса
 	hideLoader: function () {
 		this.setState({loading: false});
+		fixFooter();
 	},
 	//отображение диалога сообщения
 	showDialogMessage: function (title, text) {
@@ -187,8 +188,7 @@ var App = React.createClass({
 	},
 	//смена размеров окна
 	handleResize: function () {
-		//отключено до решения проблемы с позиционированием футера
-		//fixFooter();
+		fixFooter();
 	},
 	//изменение профиля пользователя
 	handleProfileChange: function (newProfile) {		
@@ -217,6 +217,10 @@ var App = React.createClass({
 				appReady: true
 			});
 		}
+	},
+	//завершение перерисовки состояния
+	componentDidUpdate: function (prevProps, prevState) {
+		fixFooter();
 	},
 	//генерация приложения
 	render: function () {

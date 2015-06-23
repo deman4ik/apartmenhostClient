@@ -37,6 +37,21 @@
 	color: #0be3dc;
 }
 
+.u-btn-regular-no-float {
+	padding: 6px 10px;
+	margin-right: 5px;
+	margin-left: 5px;
+	border-radius: 4px;
+	background: none;
+	color: #00ccc5;
+	font-weight: 400;
+	text-decoration: none;
+}
+
+.u-btn-regular-no-float:hover {
+	color: #0be3dc;
+}
+
 .u-form-field.errstate {
 	border: 1px solid #ed5466;
 }

@@ -688,9 +688,11 @@ var Client = function (clientConfig) {
 							if((resp.MESSAGE)&&(Array.isArray(resp.MESSAGE))&&(resp.MESSAGE.length > 0)) {
 								profileItem.adverts = resp.MESSAGE;
 								profileItem.advertsCount = resp.MESSAGE.length;
+								profileItem.cardCount = resp.MESSAGE.length; //УБРАТЬ КОГДА ДИМА ПОЧЕНИТ
 							} else {
 								profileItem.adverts = [];
 								profileItem.advertsCount = 0;
+								profileItem.cardCount = 0; //УБРАТЬ КОГДА ДИМА ПОЧЕНИТ
 							}
 							log(["GETING PROFILE SERVER RESULT:", profileItem]);
 							callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, profileItem));

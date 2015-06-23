@@ -16,13 +16,10 @@ var MainMenu = React.createClass({
 	//выполнение добавления объявления
 	makeAddPost: function () {
 		if(this.props.session.loggedIn) {
-			if(this.props.session.sessionInfo.advertsCount == 0) {
+			if(this.props.session.sessionInfo.user.profile.cardCount == 0) {
 				this.context.router.transitionTo("modifypost", {mode: ModifyPostModes.ADD});
 			} else {
-				this.props.onShowError(
-					Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}),
-					Utils.getStrResource({lang: this.props.language, code: "CLNT_ALREADY_HAVE_ADVERT"})
-				);
+				this.context.router.transitionTo("profile");
 			}
 		}
 	},
@@ -99,7 +96,7 @@ var MainMenu = React.createClass({
 		}
 		//кнопка "Сдать жильё"
 		var rentButton;
-		if((!this.props.session.loggedIn)||((this.props.session.loggedIn)&&(this.props.session.sessionInfo.advertsCount == 0))) {
+		if((!this.props.session.loggedIn)||((this.props.session.loggedIn)&&(this.props.session.sessionInfo.user.profile.cardCount == 0))) {
 			rentButton = 	<a className="u-btn nav" href="javascript:void(0);" style={aStyle} onClick={this.handleAddPostClick}>
 								{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LEASE"})}
 							</a>;

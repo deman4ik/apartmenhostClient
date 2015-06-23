@@ -23,7 +23,7 @@ var Profile = React.createClass({
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
 			this.setState({profile: resp.MESSAGE, profileTmp: resp.MESSAGE, profileReady: true});
-			if((this.state.notifyApp)||(resp.MESSAGE.advertsCount != this.props.session.sessionInfo.advertsCount)) {
+			if((this.state.notifyApp)||(resp.MESSAGE.cardCount != this.props.session.sessionInfo.user.profile.cardCount)) {
 				this.setState({notifyApp: false});
 				this.props.onProfileChange(resp.MESSAGE);
 			}

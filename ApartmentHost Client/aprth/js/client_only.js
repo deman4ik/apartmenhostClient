@@ -16,4 +16,4 @@ function fixFooter(){
 //$(window).load(function() {fixFooter();});
 //$( window ).bind( "pageshow", fixFooter);
 //$(".u-sect-main").bind( "ready", fixFooter);
-$(window).resize(function(){fixFooter();});
+//$(window).resize(function(){fixFooter();});

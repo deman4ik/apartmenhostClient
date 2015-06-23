@@ -182,8 +182,7 @@ var langs = [
 		CLNT_NO_FAVORITES: "У вас в избранном нет объявлений",
 		CLNT_BOOKING_NO_DATES: "Не указаны даты бронирования!",
 		CLNT_NO_ADVERTS: "У вас нет объявлений, нажмите здесь для создания объявления",
-		CLNT_COMPLAINT_ADDED: "Спасибо за помощь",
-		CLNT_ALREADY_HAVE_ADVERT: "У Вас уже есть объявление! Его можно удалить или исправить в Вашем профиле!",
+		CLNT_COMPLAINT_ADDED: "Спасибо за помощь",		
 		CLNT_ADVER_NO_PHONE: "Необходимо указать телефон, чтобы съемщики могли связаться с вами!"
 	},
 	//английский
@@ -353,8 +352,7 @@ var langs = [
 		CLNT_NO_FAVORITES: "You have no favorites!",
 		CLNT_BOOKING_NO_DATES: "No booking dates specified!",
 		CLNT_NO_ADVERTS: "You have no posts, click here to make one",
-		CLNT_COMPLAINT_ADDED: "Thank you for cooperation",
-		CLNT_ALREADY_HAVE_ADVERT: "You all ready have an advert card! You can modify or delete in in you profile!",
+		CLNT_COMPLAINT_ADDED: "Thank you for cooperation",		
 		CLNT_ADVER_NO_PHONE: "Specify you phone for customers!"
 	}
 ]

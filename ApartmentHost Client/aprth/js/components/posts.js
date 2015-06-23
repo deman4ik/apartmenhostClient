@@ -65,7 +65,7 @@ var Posts = React.createClass({
 				default: {}
 			}
 			//теперь выставляем состояние компоненты
-			this.setState({adverts: resp.MESSAGE, advertsCnt: resp.MESSAGE.length, advertsReady: true, filterIsSet: true}, function () {fixFooter();});
+			this.setState({adverts: resp.MESSAGE, advertsCnt: resp.MESSAGE.length, advertsReady: true, filterIsSet: true});
 		}
 	},
 	//получение ответа о смене статуса в избранном
