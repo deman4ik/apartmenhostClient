@@ -58,7 +58,7 @@ var ModifyPost = React.createClass({
 					adress: this.state.post.address,
 					Name: this.state.post.description,
 					type: this.state.post.apartType,
-					options: this.state.options
+					options: this.state.post.options
 				},
 				Name: this.state.post.description,
 				dates: this.state.post.dates,
@@ -105,7 +105,7 @@ var ModifyPost = React.createClass({
 		var tmp = {};
 		_.extend(tmp, this.state.post);
 		tmp[e.target.id] = e.target.value;
-		this.setState({post: tmp}, function () {console.log(this.state.post);});
+		this.setState({post: tmp});
 	},
 	//нажатие на кнопку добавления нового периода недоступности
 	handleAppendPeriodClick: function () {
