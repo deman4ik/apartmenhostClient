@@ -600,7 +600,7 @@ var Client = function (clientConfig) {
 					}
 				});
 			} catch (error) {
-				log(["TOGGLING FAVOR ERROR", error]);
+				log(["MAKE RESERVATION ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
@@ -627,7 +627,7 @@ var Client = function (clientConfig) {
 					}
 				});
 			} catch (error) {
-				log(["TOGGLING FAVOR ERROR", error]);
+				log(["ADD CARD ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
@@ -654,7 +654,7 @@ var Client = function (clientConfig) {
 					}
 				});
 			} catch (error) {
-				log(["TOGGLING FAVOR ERROR", error]);
+				log(["UPDATE CARD ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
@@ -681,7 +681,7 @@ var Client = function (clientConfig) {
 					}
 				});
 			} catch (error) {
-				log(["TOGGLING FAVOR ERROR", error]);
+				log(["REMOVE CARD ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
@@ -760,7 +760,7 @@ var Client = function (clientConfig) {
 					}
 				});
 			} catch (error) {
-				log(["TOGGLING FAVOR ERROR", error]);
+				log(["UPDATE PROFILE ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
