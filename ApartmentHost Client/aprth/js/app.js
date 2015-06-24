@@ -220,7 +220,6 @@ var App = React.createClass({
 	},
 	//завершение перерисовки состояния
 	componentDidUpdate: function (prevProps, prevState) {
-		fixFooter();
 	},
 	//генерация приложения
 	render: function () {
