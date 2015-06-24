@@ -55,11 +55,11 @@ var FilterFactory = function () {
 			if(("sex" in params)&&(params.sex)) {
 				filter.push(buildFilterItemFn("ResidentGender", params.sex, operTypes.FUNCTION, funcsOData.INDEXOF));
 			}
-			if(("dFrom" in params)&&(params.dFrom)) {				
-				filter.push(buildFilterItemFn("DateFrom", params.dFrom, operTypes.COMPARE, cmpsOData.LED));
+			if(("dFrom" in params)&&(params.dFrom)) {
+				filter.push(buildFilterItemFn("DateFrom", new Date(params.dFrom).to_yyyy_mm_dd(), operTypes.COMPARE, cmpsOData.LED));
 			}
 			if(("dTo" in params)&&(params.dTo)) {				
-				filter.push(buildFilterItemFn("DateTo", params.dTo, operTypes.COMPARE, cmpsOData.GED));
+				filter.push(buildFilterItemFn("DateTo", new Date(params.dTo).to_yyyy_mm_dd(), operTypes.COMPARE, cmpsOData.GED));
 			}
 			if(("apartType" in params)&&(params.apartType)) {
 				filter.push(buildFilterItemFn("Apartment/Type", params.apartType, operTypes.COMPARE, cmpsOData.EQS)); 
@@ -94,7 +94,7 @@ var FilterFactory = function () {
 								break;
 							}
 							case(funcsOData.INDEXOF): {
-								filter += "indexof('" + filterItem.value + "', " + filterItem.fieldName + ") ne -1";
+								filter += "indexof(" + filterItem.fieldName + ", '" + filterItem.value + "') ne -1";
 								break;
 							}							
 							default: {

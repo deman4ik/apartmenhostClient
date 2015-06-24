@@ -93,7 +93,7 @@ var PostsFilter = React.createClass({
 	//выбор даты в календаре
 	handleDatePicked: function (datePickerName, date) {
 		var stateObject = {};
-		stateObject[datePickerName] = (date)?date.to_yyyy_mm_dd():"";
+		stateObject[datePickerName] = (date)?date:"";
 		this.setState(stateObject);
 	},
 	//выбор типа недвижимости в фильтре
@@ -133,7 +133,7 @@ var PostsFilter = React.createClass({
 			this.setState({noFilterSpecified: true});
 		} else {
 			this.setState({noFilterSpecified: false});
-			var f = this.saveFilterState();
+			var f = this.saveFilterState();			
 			this.props.onFilterChange(filterFactory.buildAdvertsFilter(f));
 		}
 	},

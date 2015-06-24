@@ -29,6 +29,8 @@ var Calendar = React.createClass({
 	},
 	//инициализация виджета календаря
 	initDatePicker: function (props) {
+		var datesDisabled = [];
+		if(props.disabledDates) datesDisabled = props.disabledDates;
 		$("#" + props.name).datepicker({
 			language: Utils.getStrResource({lang: props.language, code: "CALENDAR"}),
 			format: Utils.getStrResource({lang: props.language, code: "DATE_FORMAT"}),
@@ -37,8 +39,18 @@ var Calendar = React.createClass({
 			todayHighlight: true,
 			disableTouchKeyboard: true,
 			multidate: false,
-			multidateSeparator: ";"
+			multidateSeparator: ";",
+			datesDisabled: datesDisabled
 		});			
+	},
+	//пересоздание виджета календаря
+	reInitDatePicker: function (props) {
+		this.chancelDatePickedListener(props);
+		$("#" + props.name).datepicker("remove");
+		this.initDatePicker(props);
+		this.applyDefaultValue(props);
+		this.applyDatePickedListener(props);
+		this.initDatePicker(props);
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
@@ -57,6 +69,9 @@ var Calendar = React.createClass({
 				this.chancelDatePickedListener(newProps);
 				this.applyDefaultValue(newProps);
 				this.applyDatePickedListener(newProps);
+			}
+			if(Utils.serialize(newProps.disabledDates) != Utils.serialize(this.props.disabledDates)) {
+				this.reInitDatePicker(newProps);
 			}
 		}
 	},

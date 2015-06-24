@@ -68,7 +68,7 @@ var Profile = React.createClass({
 	},	
 	//обработка нажатия на карточку объявления
 	handlePostClick: function (postId) {
-		this.context.router.transitionTo("post", {postId: postId});
+		this.context.router.transitionTo("modifypost", {mode: ModifyPostModes.EDIT}, {postId: postId});
 	},
 	//обработка нажатия на кнопку редактирования
 	handleEditClick: function () {
@@ -239,9 +239,11 @@ var Profile = React.createClass({
 						);
 					}, this);
 				} else {
-					adverts =	<button type="button" className="w-button u-btn-regular" onClick={this.handleAddPostClick}>
-									{Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_ADVERTS"})}
-								</button>
+					adverts =	<center>
+									<a className="u-t-right u-lnk-norm" href="javascript:void(0);" onClick={this.handleAddPostClick}>
+										{Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_ADVERTS"})}
+									</a>
+								</center>
 				}				
 				//контроллер редактирования профиля
 				var editControl;
@@ -259,7 +261,7 @@ var Profile = React.createClass({
 										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_EDIT"})}
 									</a>
 				}
-				//непосредственно объявление
+				//непосредственно профиль с объявлениями
 				content =	<section className="w-container">
 								<div className="w-section u-sect-card">
 									<div className="w-row">

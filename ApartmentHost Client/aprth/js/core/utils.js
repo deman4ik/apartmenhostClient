@@ -119,23 +119,61 @@ var Utils = {
 	//форматирование даты согласно региональным настройкам
 	formatDate: function (prms) {
 		var res;
-		if(("date" in prms)||(prms.date)) {
+		if(("date" in prms)&&(prms.date)) {
 			if(!("lang" in prms)||(!prms.lang)) {
 				prms.lang = "DEFAULT";
 			}
 			switch(_.findWhere(langs, {lang: prms.lang})["DATE_FORMAT"]) {
 				case("dd.mm.yyyy"): {
-					res = prms.date.to_dd_mm_yyyy();
+					res = prms.date.to_dd_mm_yyyy(prms.separator);
 					break;
 				}
 				case("mm/dd/yyyy"): {
-					res = prms.date.to_mm_dd_yyyy();
+					res = prms.date.to_mm_dd_yyyy(prms.separator);
 					break;
 				}
 				default: {
-					res = prms.date.to_dd_mm_yyyy();
+					res = prms.date.to_dd_mm_yyyy(prms.separator);
 				}
 			}
+		}
+		return res;
+	},
+	//формирование массива дней в укащанном диапазоне дат
+	getDays: function(startDate, stopDate) {
+    	var dateArray = [];
+    	if((startDate)&&(stopDate)) {
+    		var currentDate = startDate;    	
+    		while (currentDate <= stopDate) {
+        		dateArray.push(new Date(currentDate))
+        		currentDate = currentDate.addDays(1);
+    		}
+    	}
+    	return dateArray;
+	},
+	//формирование массива со списком дней, входящих в указанные интервалы
+	buildDaysList: function (prms) {
+		var res = [];
+		if(("dates" in prms)&&(prms.dates)&&(Array.isArray(prms.dates))) {
+			if(!("lang" in prms)||(!prms.lang)) {
+				prms.lang = "DEFAULT";
+			}			
+			prms.dates.forEach(function (item, i) {
+				var days = this.getDays(item.dateFrom, item.dateTo);
+				days.forEach(function (day, j) {
+					res.push(this.formatDate({lang: prms.lang, date: day, separator: "/"}));
+				}, this);				
+			}, this);
+		}		
+		return res;
+	},
+	//проверка массива диапазонов на непересекаемость
+	checkDaysListNoCross: function (prms) {
+		var res = false;
+		if(("dates" in prms)&&(prms.dates)&&(Array.isArray(prms.dates))) {
+			var tmp = this.buildDaysList(prms);
+			var tmpUniq = _.uniq(tmp);
+			if(tmp.length == tmpUniq.length) res = true;
 		}
 		return res;
 	}
@@ -166,4 +204,11 @@ Date.prototype.to_mm_dd_yyyy = function (separ) {
 	var mm = (this.getMonth() + 1).toString();
 	var dd = this.getDate().toString();
 	return (mm[1]?mm:"0" + mm[0]) + s + (dd[1]?dd:"0" + dd[0]) + s + yyyy;
+};
+
+//расширение для дат - добавление дней к дате
+Date.prototype.addDays = function(days) {
+    var dat = new Date(this.valueOf())
+    dat.setDate(dat.getDate() + days);
+    return dat;
 };

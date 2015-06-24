@@ -97,8 +97,8 @@ var Post = React.createClass({
 			var resPrms = {
 				language: this.props.language, 
 				postId: this.state.postId,
-				dateFrom: this.state.dFrom,
-				dateTo: this.state.dTo
+				dateFrom: new Date(this.state.dFrom).to_yyyy_mm_dd(),
+				dateTo: new Date(this.state.dTo).to_yyyy_mm_dd()
 			}
 			if(this.props.session.loggedIn) _.extend(resPrms, {session: this.props.session.sessionInfo});
 			clnt.makeReservation(resPrms, this.handleBookingResult);
@@ -114,7 +114,7 @@ var Post = React.createClass({
 	//обработка смены дат
 	handleDateChange: function (datePickerName, date) {
 		var stateObject = {};
-		stateObject[datePickerName] = (date)?date.to_yyyy_mm_dd():"";
+		stateObject[datePickerName] = (date)?date:"";
 		this.setState(stateObject, function () {
 			var postTmp = this.calcAdvertPricePeriod(this.state.post);
 			this.setState({post: postTmp});
@@ -231,13 +231,15 @@ var Post = React.createClass({
 										defaultValue={(this.state.dFrom)?(new Date(this.state.dFrom)):""}
 										onDatePicked={this.handleDateChange}
 										language={this.props.language}
-										inputClasses={classesDateInput}/>
+										inputClasses={classesDateInput}
+										disabledDates={Utils.buildDaysList({lang: this.props.language, dates: this.state.post.dates})}/>
 									<Calendar name="dTo" 
 										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_TO"})}
 										defaultValue={(this.state.dTo)?(new Date(this.state.dTo)):""}
 										onDatePicked={this.handleDateChange}
 										language={this.props.language}
-										inputClasses={classesDateInputR}/>														
+										inputClasses={classesDateInputR}
+										disabledDates={Utils.buildDaysList({lang: this.props.language, dates: this.state.post.dates})}/>														
 								</form>
 							</div>
 			}

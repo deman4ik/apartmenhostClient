@@ -210,6 +210,11 @@ var Client = function (clientConfig) {
 							return fillSrvStdReqData(serverActions.userAdvert, serverMethods.ins, prms.data);
 							break;
 						}
+						//исправление
+						case(serverMethods.upd): {
+							return fillSrvStdReqData(serverActions.userAdvert + "/" + prms.data.postId, serverMethods.upd, prms.data);		
+							break;
+						}
 						//удаление
 						case(serverMethods.del): {
 							return fillSrvStdReqData(serverActions.userAdvert + "/" + prms.data.postId, serverMethods.del, "");		
@@ -627,6 +632,33 @@ var Client = function (clientConfig) {
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
 		},
+		//исправление объявления
+		updateAdvert: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.userAdvert,
+						method: serverMethods.upd,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["TOGGLING FAVOR ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
 		//удаление объявления
 		removeAdvert: function (prms, callBack) {
 			try {
@@ -687,12 +719,10 @@ var Client = function (clientConfig) {
 						} else {
 							if((resp.MESSAGE)&&(Array.isArray(resp.MESSAGE))&&(resp.MESSAGE.length > 0)) {
 								profileItem.adverts = resp.MESSAGE;
-								profileItem.advertsCount = resp.MESSAGE.length;
-								profileItem.cardCount = resp.MESSAGE.length; //УБРАТЬ КОГДА ДИМА ПОЧЕНИТ
+								profileItem.advertsCount = resp.MESSAGE.length;								
 							} else {
 								profileItem.adverts = [];
-								profileItem.advertsCount = 0;
-								profileItem.cardCount = 0; //УБРАТЬ КОГДА ДИМА ПОЧЕНИТ
+								profileItem.advertsCount = 0;								
 							}
 							log(["GETING PROFILE SERVER RESULT:", profileItem]);
 							callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, profileItem));

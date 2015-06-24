@@ -61,7 +61,8 @@ var langs = [
 		UI_BTN_SEND_COMPLAINT: "Пожаловаться",
 		UI_BTN_SHOW_PHONE: "Показать телефон",
 		UI_BTN_RATE: "Отзыв",
-		UI_BTN_ADD_RENT_POST: "Разместить",	
+		UI_BTN_ADD_RENT_POST: "Разместить",
+		UI_BTN_UPD_RENT_POST: "Изменить",
 		UI_BTN_EDIT: "Редактировать",
 		UI_BTN_DELETE_ADVERT: "Удалить объявление",
 		UI_BTN_ADD: "Добавить",
@@ -70,6 +71,7 @@ var langs = [
 		UI_TITLE_LOGIN: "Вход",
 		UI_TITLE_ADVERTS_FILER: "Поиск жилья",
 		UI_TITLE_ADD_RENT_POST: "Размещение объявления о сдаче жилья",
+		UI_TITLE_UPD_RENT_POST: "Изменение объявления о сдаче жилья",
 		UI_TITLE_COMPLAINT: "Жалоба",
 		UI_FLD_COMPLAINT_TEXT: "Текст жалобы",
 		UI_FLD_USER: "Логин",		
@@ -158,6 +160,9 @@ var langs = [
 		SRV_APARTMENT_REQUIRED: "Незаполнено обязательное поле \"%1$s\"!",
 		SRV_APARTMENT_DEPENDENCY: "У данного объекта есть зависимости!",
 		SRV_CARD_EXISTS: "У Вас уже есть объявление!",
+		SRV_RESERVATION_EXISTS: "Объект уже забронирован на указанные даты!",
+		SRV_CARD_WRONG_DATE: "Некорректно указаны даты! Проверьте границы диапазона!",
+		SRV_RESERVATION_UNAVAILABLE_DATE: "Некорректно указаны даты! Объект недоступен в указанное время!",
 		//ресурсы для клиентских сообщений об ошибках и информации
 		CLNT_COMMON_ERROR: "Ошибка",
 		CLNT_COMMON_SUCCESS: "Успех",
@@ -183,7 +188,9 @@ var langs = [
 		CLNT_BOOKING_NO_DATES: "Не указаны даты бронирования!",
 		CLNT_NO_ADVERTS: "У вас нет объявлений, нажмите здесь для создания объявления",
 		CLNT_COMPLAINT_ADDED: "Спасибо за помощь",		
-		CLNT_ADVER_NO_PHONE: "Необходимо указать телефон, чтобы съемщики могли связаться с вами!"
+		CLNT_ADVER_NO_PHONE: "Необходимо указать телефон, чтобы съемщики могли связаться с вами!",
+		CLNT_DATES_INTERVAL_LIMITS: "Дата начала диапазона должна быть раньше даты его завершения!",
+		CLNT_DATES_INTERVAL_CROSS: "Указаны пересекающиеся диапазоны дат!"
 	},
 	//английский
 	{
@@ -232,6 +239,7 @@ var langs = [
 		UI_BTN_SHOW_PHONE: "Show phone",
 		UI_BTN_RATE: "Rate",
 		UI_BTN_ADD_RENT_POST: "Publish",
+		UI_BTN_UPD_RENT_POST: "Update",
 		UI_BTN_EDIT: "Edit",
 		UI_BTN_DELETE_ADVERT: "Remove advert",
 		UI_BTN_ADD: "Add",
@@ -240,6 +248,7 @@ var langs = [
 		UI_TITLE_LOGIN: "Login",
 		UI_TITLE_ADVERTS_FILER: "Apartments search",
 		UI_TITLE_ADD_RENT_POST: "New apartment rent",
+		UI_TITLE_UPD_RENT_POST: "Update apartment rent",
 		UI_TITLE_COMPLAINT: "Complaint",
 		UI_FLD_COMPLAINT_TEXT: "Complaint text",
 		UI_FLD_USER: "User",
@@ -328,6 +337,9 @@ var langs = [
 		SRV_APARTMENT_REQUIRED: "Field \"%1$s\" required!",
 		SRV_APARTMENT_DEPENDENCY: "Object have dependencies!",
 		SRV_CARD_EXISTS: "Your advert card already exists!",
+		SRV_RESERVATION_EXISTS: "Reservation already exists!",
+		SRV_CARD_WRONG_DATE: "Bad dates! Check interval limits!",
+		SRV_RESERVATION_UNAVAILABLE_DATE: "Bad dates! Apartment not available!",
 		//ресурсы для клиентских сообщений об ошибках и информации
 		CLNT_COMMON_ERROR: "Error",
 		CLNT_COMMON_SUCCESS: "Success",
@@ -353,6 +365,8 @@ var langs = [
 		CLNT_BOOKING_NO_DATES: "No booking dates specified!",
 		CLNT_NO_ADVERTS: "You have no posts, click here to make one",
 		CLNT_COMPLAINT_ADDED: "Thank you for cooperation",		
-		CLNT_ADVER_NO_PHONE: "Specify you phone for customers!"
+		CLNT_ADVER_NO_PHONE: "Specify you phone for customers!",
+		CLNT_DATES_INTERVAL_LIMITS: "Start date should be less then end date!",
+		CLNT_DATES_INTERVAL_CROSS: "Dates intervals cross over!"
 	}
 ]

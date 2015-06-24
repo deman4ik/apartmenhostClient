@@ -106,7 +106,11 @@ var Posts = React.createClass({
 	},
 	//смена фильтра
 	onFilterChange: function (filter) {
-		if((filter)&&(Array.isArray(filter))&&(filter.length > 0)) {
+		if((filter)&&(Array.isArray(filter))&&(filter.length > 0)) {			
+			if((_.where(filter, {fieldName: "DateFrom"}).length > 0)||(_.where(filter, {fieldName: "DateTo"}).length > 0)){
+				this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), "Поиск по датам временно не поддерживается!");
+				return;
+			};			
 			this.setState({filter: filter});
 			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 			var getPrms = {
