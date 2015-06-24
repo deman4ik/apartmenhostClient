@@ -519,7 +519,7 @@ p {
   border-left-style: none;
   border-left-width: 0px;
 }
-.u-form-field.rel.errstate {
+.errstate {
   border-color: #ed5466;
 }
 .u-block-cardlst {
@@ -611,6 +611,9 @@ p {
 }
 .u-form-label.n1 {
   font-weight: 500;
+}
+.u-form-label.rel {
+  display: inline-block;
 }
 .txt {
   top: 0px;

@@ -426,13 +426,14 @@ var ModifyPost = React.createClass({
 													<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PRICE"})}:</label>
 												</div>
 												<div className="w-col w-col-9">
-													<input className="w-input u-form-field" 
+													<input className="w-input u-form-field rel" 
 														type="number"													
 														placeholder={Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}
 														ref="price"
 														id="price"
 														value={this.state.post.price}
 														onChange={this.handleFormItemChange}/>
+													<label className="u-form-label n1 rel">{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}</label>
 												</div>
 											</div>										
 											<input className="w-button u-btn-primary"
