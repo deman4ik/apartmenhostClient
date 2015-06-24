@@ -180,6 +180,10 @@ var Post = React.createClass({
 		if(this.context.router.getCurrentQuery().dTo) this.setState({dTo: this.context.router.getCurrentQuery().dTo});
 		this.setState({postId: this.context.router.getCurrentParams().postId}, this.loadPost);
 	},
+  //A.K. temp
+	componentDidUpdate: function (prevProps, prevState) {
+		fixFooter();
+	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
 		if(newProps.language != this.props.language) {

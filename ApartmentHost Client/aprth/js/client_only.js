@@ -13,3 +13,4 @@ function fixFooter(){
 }   
 
 $(".u-sect-main").resize(function(){fixFooter();});
+$(document).bind( "click", fixFooter);
