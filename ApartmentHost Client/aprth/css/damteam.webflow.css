@@ -835,7 +835,7 @@ p {
 }
 .u-sect-main {
   height: auto; 
-  min-height: 100%;
+  min-height: 500px;
 }
 html.w-mod-js *[data-ix="hide-on-load"] {
   display: none;
