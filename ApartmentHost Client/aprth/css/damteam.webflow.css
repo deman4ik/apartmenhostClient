@@ -211,7 +211,7 @@ p {
   text-align: center;
 }
 .u-block-owner.addition {
-  padding-top: 10px;
+  padding-top: 4px;
 }
 .u-block-owner.addition2 {
   width: 75%;
@@ -668,7 +668,7 @@ p {
   position: relative;
   display: block;
   width: 220px;
-  height: 180px;
+  min-height: 180px;
   margin: 8px auto 10px;
 }
 .u-form-wrapper-simple {
