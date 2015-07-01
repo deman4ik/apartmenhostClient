@@ -123,17 +123,18 @@ var Utils = {
 			if(!("lang" in prms)||(!prms.lang)) {
 				prms.lang = "DEFAULT";
 			}
+			var dTmp = new Date(prms.date);
 			switch(_.findWhere(langs, {lang: prms.lang})["DATE_FORMAT"]) {
 				case("dd.mm.yyyy"): {
-					res = prms.date.to_dd_mm_yyyy(prms.separator);
+					res = dTmp.to_dd_mm_yyyy(prms.separator);
 					break;
 				}
 				case("mm/dd/yyyy"): {
-					res = prms.date.to_mm_dd_yyyy(prms.separator);
+					res = dTmp.to_mm_dd_yyyy(prms.separator);
 					break;
 				}
 				default: {
-					res = prms.date.to_dd_mm_yyyy(prms.separator);
+					res = dTmp.to_dd_mm_yyyy(prms.separator);
 				}
 			}
 		}
@@ -159,7 +160,9 @@ var Utils = {
 				prms.lang = "DEFAULT";
 			}			
 			prms.dates.forEach(function (item, i) {
-				var days = this.getDays(item.dateFrom, item.dateTo);
+				var dF = new Date(item.dateFrom);
+				var dT = new Date(item.dateTo);
+				var days = this.getDays(dF, dT);
 				days.forEach(function (day, j) {
 					res.push(this.formatDate({lang: prms.lang, date: day, separator: "/"}));
 				}, this);				

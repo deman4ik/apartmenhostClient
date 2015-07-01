@@ -92,7 +92,7 @@ var PostItem = React.createClass({
 						<a className="w-inline-block u-block-card-desc"
 							href="javascript:void(0);" 
 							onClick={this.handlePostClick}>
-							<img src={this.props.item.apartment.img}/>
+							<img src={_.find(this.props.item.apartment.pictures, {default: true}).url}/>
 							<img className="u-img-author-sm" src={this.props.item.user.img}/>
 						</a>
 						<div><img src="aprth/img/tmp/rater_1.png"/><div className="card_lst_rate">(6)</div></div>

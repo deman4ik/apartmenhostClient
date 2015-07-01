@@ -216,7 +216,7 @@ var Profile = React.createClass({
 									onClick={this.handlePostClick.bind(this, item.id)}>
 									<div className="w-row u-row-cardlst bordered">
 										<div className="w-col w-col-5 w-col-stack w-col-small-6">
-											<img src={item.apartment.img}/>
+											<img src={_.find(item.apartment.pictures, {default: true}).url}/>
 										</div>
 										<div className="w-col w-col-7 w-col-stack w-col-small-6">
 											<div className="u-block-card-desc">
@@ -270,7 +270,7 @@ var Profile = React.createClass({
 												<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PROFILE"})}</h3>
 											</div>
 											<div className="u-block-owner addition2">
-												<img className="u-img-author-m" src="aprth/img/tmp/user1.jpg" width="96"/>
+												<img className="u-img-author-m" src={this.state.profile.picture.url} width="96"/>
 												{userName}												
 											</div>
 											<div className="w-row u-row-descr">

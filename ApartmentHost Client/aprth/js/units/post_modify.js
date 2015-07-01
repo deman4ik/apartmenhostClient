@@ -95,15 +95,15 @@ var ModifyPost = React.createClass({
 			this.setState({
 				post: {
 					phone: this.props.session.sessionInfo.user.profile.phone,
-					sex: resp.MESSAGE.residentGender,
-					apartType: resp.MESSAGE.apartment.type,
-					address: resp.MESSAGE.apartment.adress,
+					sex: resp.MESSAGE[0].residentGender,
+					apartType: resp.MESSAGE[0].apartment.type,
+					address: resp.MESSAGE[0].apartment.adress,
 					dFrom: "",
 					dTo: "",
-					dates: resp.MESSAGE.dates,
-					description: resp.MESSAGE.description,
-					options: resp.MESSAGE.apartment.options,
-					price: resp.MESSAGE.priceDay
+					dates: resp.MESSAGE[0].dates,
+					description: resp.MESSAGE[0].description,
+					options: resp.MESSAGE[0].apartment.options,
+					price: resp.MESSAGE[0].priceDay
 				},
 				formReady: true
 			});
@@ -115,10 +115,10 @@ var ModifyPost = React.createClass({
 			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 			var getPrms = {
 				language: this.props.language, 
-				postId: this.state.postId,
+				filter: {id: this.state.postId},
 				session: this.props.session.sessionInfo
 			}
-			clnt.getAdvert(getPrms, this.handleLoadPostResult);
+			clnt.getAdverts(getPrms, this.handleLoadPostResult);
 		}
 	},
 	//проверка обязательных параметров
@@ -274,7 +274,9 @@ var ModifyPost = React.createClass({
 			dates = this.state.post.dates.map(function (item, i) {
 				var period;
 				var periodStyle = {marginRight: "20px"}
-				if(item.dateFrom.getTime() != item.dateTo.getTime()) {
+				var dF = new Date(item.dateFrom);
+				var dT = new Date(item.dateTo);
+				if(dF.getTime() != dT.getTime()) {
 					period = Utils.formatDate({lang: this.props.language, date: item.dateFrom}) + " - " + Utils.formatDate({lang: this.props.language, date: item.dateTo});
 				} else {
 					period = Utils.formatDate({lang: this.props.language, date: item.dateFrom});

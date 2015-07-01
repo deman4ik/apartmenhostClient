@@ -19,7 +19,7 @@ var Posts = React.createClass({
 			advertsCnt: 0, //количество объявлений
 			advertsReady: false, //флаг доступности списка объявлений для отображения
 			filterIsSet: false, //флаг установленности фильтра
-			filter: [] //текущее состояние фильтра
+			filter: {} //текущее состояние фильтра
 		}
 	},
 	//расчет "цены за период" объявлений по датам
@@ -45,11 +45,11 @@ var Posts = React.createClass({
 				//режим поиска
 				case(PostsModes.SEARCH): {
 					//если это поиск, то необходимо расчитать цену за период для каждого объявления
-					if((_.findWhere(this.state.filter, {fieldName: "DateFrom"}))&&(_.findWhere(this.state.filter, {fieldName: "DateTo"})))
+					if(("availableDateFrom" in this.state.filter)&&("availableDateTo" in this.state.filter))
 						this.calcAdvertsPricePeriod(
 							resp.MESSAGE, 
-							_.findWhere(this.state.filter, {fieldName: "DateFrom"}).value, 
-							_.findWhere(this.state.filter, {fieldName: "DateTo"}).value
+							this.state.filter.availableDateFrom, 
+							this.state.filter.availableDateTo
 						);
 					else
 						this.calcAdvertsPricePeriod(resp.MESSAGE);
@@ -105,12 +105,8 @@ var Posts = React.createClass({
 		clnt.toggleAdvertFavor(togglePrms, function (resp) {self.handleFavorChange(resp, itemId)});
 	},
 	//смена фильтра
-	onFilterChange: function (filter) {
-		if((filter)&&(Array.isArray(filter))&&(filter.length > 0)) {			
-			if((_.where(filter, {fieldName: "DateFrom"}).length > 0)||(_.where(filter, {fieldName: "DateTo"}).length > 0)){
-				// A.K. temp this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), "Поиск по датам временно не поддерживается!");
-				return;
-			};			
+	onFilterChange: function (filter) {		
+		if(!$.isEmptyObject(filter)) {			
 			this.setState({filter: filter});
 			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 			var getPrms = {
@@ -120,7 +116,7 @@ var Posts = React.createClass({
 			}			
 			clnt.getAdverts(getPrms, this.handleSearchResult);
 		} else {
-			this.setState({adverts: [], advertsCnt: 0, advertsReady: false, filterIsSet: false, filter: []});
+			this.setState({adverts: [], advertsCnt: 0, advertsReady: false, filterIsSet: false, filter: {}});
 		}
 	},
 	//нажатие на кнопку избранного
@@ -140,8 +136,8 @@ var Posts = React.createClass({
 		switch(this.props.mode) {
 			//поиск
 			case(PostsModes.SEARCH): {
-				if(_.findWhere(this.state.filter, {fieldName: "DateFrom"})) query.dFrom = _.findWhere(this.state.filter, {fieldName: "DateFrom"}).value;
-				if(_.findWhere(this.state.filter, {fieldName: "DateTo"})) query.dTo = _.findWhere(this.state.filter, {fieldName: "DateTo"}).value;
+				if("availableDateFrom" in this.state.filter) query.dFrom = this.state.filter.availableDateFrom;
+				if("availableDateTo" in this.state.filter) query.dTo = this.state.filter.availableDateTo;
 				break;
 			}
 			//избранное
@@ -165,10 +161,9 @@ var Posts = React.createClass({
 			case(PostsModes.FAVORITES): {
 				if(this.props.session.loggedIn) {
 					this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
-					var filter = filterFactory.buildAdvertsFilter({language: this.props.language, isFavorite: true});
 					var getPrms = {
 						language: this.props.language, 
-						filter: filter, 
+						filter: {isFavoritedUserId: this.props.session.sessionInfo.user.profile.id},
 						session: this.props.session.sessionInfo
 					}
 					clnt.getAdverts(getPrms, this.handleSearchResult);
@@ -179,7 +174,7 @@ var Posts = React.createClass({
 			default: {}
 		};
 	},
-	//A.K. temp
+	//завершение генерации/обновления представления компонента
 	componentDidUpdate: function (prevProps, prevState) {
 		fixFooter();
 	},

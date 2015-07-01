@@ -67,7 +67,7 @@ var Post = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			var postTmp = this.calcAdvertPricePeriod(resp.MESSAGE);
+			var postTmp = this.calcAdvertPricePeriod(resp.MESSAGE[0]);
 			this.setState({post: postTmp, postReady: true});
 		}
 	},
@@ -75,11 +75,12 @@ var Post = React.createClass({
 	loadPost: function () {
 		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 		var getPrms = {
-			language: this.props.language, 
-			postId: this.state.postId
+			language: this.props.language,
+			filter: {id: this.state.postId},
+			session: this.props.session.sessionInfo
 		}
 		if(this.props.session.loggedIn) _.extend(getPrms, {session: this.props.session.sessionInfo});
-		clnt.getAdvert(getPrms, this.handleLoadPostResult);
+		clnt.getAdverts(getPrms, this.handleLoadPostResult);
 	},
 	//обработка результатов бронирования
 	handleBookingResult: function (resp) {
@@ -180,7 +181,7 @@ var Post = React.createClass({
 		if(this.context.router.getCurrentQuery().dTo) this.setState({dTo: this.context.router.getCurrentQuery().dTo});
 		this.setState({postId: this.context.router.getCurrentParams().postId}, this.loadPost);
 	},
-  //A.K. temp
+	//завершение генерации/обновления представления компонента
 	componentDidUpdate: function (prevProps, prevState) {
 		fixFooter();
 	},
@@ -243,7 +244,7 @@ var Post = React.createClass({
 										onDatePicked={this.handleDateChange}
 										language={this.props.language}
 										inputClasses={classesDateInputR}
-										disabledDates={Utils.buildDaysList({lang: this.props.language, dates: this.state.post.dates})}/>														
+										disabledDates={Utils.buildDaysList({lang: this.props.language, dates: this.state.post.dates})}/>
 								</form>
 							</div>
 			}
@@ -325,7 +326,7 @@ var Post = React.createClass({
 								<div className="w-row">							    
 									<div className="w-col w-col-5 u-col-card">
 										<div className="u-block-owner">
-											<img className="u-img-author-m" src={this.state.post.user.img} width="96"/>
+											<img className="u-img-author-m" src={this.state.post.user.picture.url} width="96"/>
 											<div>{this.state.post.user.lastName} {this.state.post.user.firstName}</div>
 										</div>
 										<div className="u-block-cardprice">
@@ -371,7 +372,7 @@ var Post = React.createClass({
 									<div className="w-col w-col-7 w-clearfix u-col-card">
 										<div>
 											<a className="w-lightbox w-inline-block" href="#">
-												<img src={this.state.post.apartment.img}/>
+												<img src={_.find(this.state.post.apartment.pictures, {default: true}).url}/>
 											</a>
 											<div className="w-row u-row-descr head">
 												<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">

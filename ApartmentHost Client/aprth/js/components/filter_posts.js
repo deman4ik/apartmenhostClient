@@ -1,54 +1,41 @@
 /*
 	Фильтр объявлений
 */
+//границы фильтра по цене
+var PostsFilterPriceLimits = {
+	from: 300, //нижняя граница фильтра по цене
+	to: 500, //верхняя граница фильтра по цене
+}
+//фильтр объявлений
 var PostsFilter = React.createClass({
 	//состояние фильтра
 	getInitialState: function () {
 		return {
 			filterToggle: false, //флаг отображения/сокрытия тела фильтра
-			filterPriceFrom: 300, //нижняя граница фильтра по цене
-			filterPriceTo: 500, //верхняя граница фильтра по цене
-			noFilterSpecified: false, //флаг отсуствия фильтра
+			noAdressFilterSpecified: false, //флаг отсуствия фильтра по адресу
+			noDateFromFilterSpecified: false, //флаг отсуствия фильтра по дате начала периода бронирования
+			noDateToFilterSpecified: false, //флаг отсуствия фильтра по дате окончания периода бронирования
 			adress: "", //адрес жилья
 			dFrom: "", //дата начала периода бронирования
 			dTo: "", //дата коночания периода бронирования
 			sex: "", //пол постояльца
 			apartType: "", //тип жилья
-			price: "" //цена
+			priceFrom: "", //цена с
+			priceTo: "", //цена по
+			price: "" //цена (сводное состояние)
 		};
 	},
 	//сохранение и сборка фильтра
 	saveFilterState: function () {
-		var filterParams = {
-			language: this.props.language
-		}
-		if(this.state.adress) {
-			filterParams.adress = this.state.adress;			
-		}
-		if(this.state.sex) {
-			filterParams.sex = this.state.sex;
-		}
-		if(this.state.dFrom) {
-			filterParams.dFrom = this.state.dFrom;
-		}
-		if(this.state.dTo) {
-			filterParams.dTo = this.state.dTo;
-		}
-		if(this.state.apartType) {
-			filterParams.apartType = this.state.apartType;
-		}
-		if(this.state.price) {
-			if(this.state.price == this.state.filterPriceFrom) {
-				filterParams.priceTo = this.state.filterPriceFrom * 1 - 1;
-			} else {
-				if(this.state.price == this.state.filterPriceTo) {
-					filterParams.priceFrom = this.state.filterPriceTo * 1 + 1;
-				} else {
-					filterParams.priceFrom = this.state.filterPriceFrom * 1;
-					filterParams.priceTo = this.state.filterPriceTo * 1;
-				}
-			}			
-		}
+		var filterParams = {language: this.props.language};
+		if(this.state.adress) filterParams.adress = this.state.adress;			
+		if(this.state.sex) filterParams.sex = this.state.sex;
+		if(this.state.dFrom) filterParams.dFrom = this.state.dFrom;
+		if(this.state.dTo) filterParams.dTo = this.state.dTo;
+		if(this.state.apartType) filterParams.apartType = this.state.apartType;
+		if(this.state.priceFrom) filterParams.priceFrom = this.state.priceFrom * 1;
+		if(this.state.priceTo) filterParams.priceTo = this.state.priceTo * 1;
+		filterParams.price = this.state.price;
 		filterParams.filterToggle = this.state.filterToggle;
 		Utils.saveObjectState("filterParams", filterParams);
 		console.log("SAVED FILTER: ");
@@ -56,31 +43,74 @@ var PostsFilter = React.createClass({
 		return filterParams;
 	},
 	//загрузка сохраненного фильтра
-	loadFilterState: function () {
+	loadFilterState: function (callBack) {
 		var filterParams = Utils.loadObjectState("filterParams");
 		console.log("LOADED FILTER: ");
 		console.log(filterParams);
 		if(filterParams) {
-			if("adress" in filterParams) this.setState({adress: filterParams.adress});
-			if("sex" in filterParams) this.setState({sex: filterParams.sex});
-			if("dFrom" in filterParams)	this.setState({dFrom: filterParams.dFrom});
-			if("dTo" in filterParams) this.setState({dTo: filterParams.dTo});
-			if("apartType" in filterParams) this.setState({apartType: filterParams.apartType});;
-			if(("priceFrom" in filterParams)||("priceTo" in filterParams)) {
-				if(filterParams.priceTo == this.state.filterPriceFrom) {
-					this.setState({price: this.state.filterPriceFrom});
-				} else {
-					if(filterParams.priceFrom == this.state.filterPriceTo) {
-						 this.setState({price: this.state.filterPriceTo});
-					} else {
-						this.setState({price: this.state.filterPriceFrom + "-" + this.state.filterPriceTo});
-					}
-				}
-			} else {
-				this.setState({price: ""});
-			}						
+			this.setState({
+				adress: filterParams.adress,
+				sex: filterParams.sex,
+				dFrom: filterParams.dFrom,
+				dTo: filterParams.dTo,
+				apartType: filterParams.apartType,
+				priceFrom: filterParams.priceFrom,
+				priceTo: filterParams.priceTo,
+				price: filterParams.price,
+				filterToggle: filterParams.filterToggle
+			}, callBack);
+		}		
+	},
+	//формирование фильтра для передачи на сервер
+	buildSrvAdvertsFilter: function () {
+		var serverFilter = {};
+		if(this.state.adress) serverFilter.adress = this.state.adress;
+		if(this.state.sex) serverFilter.residentGender = [this.state.sex];
+		if(this.state.dFrom) serverFilter.availableDateFrom = this.state.dFrom;
+		if(this.state.dFrom) serverFilter.availableDateTo = this.state.dTo;
+		if(this.state.priceFrom) serverFilter.priceDayFrom = this.state.priceFrom;
+		if(this.state.priceTo) serverFilter.priceDayTo = this.state.priceTo;
+		if(this.state.apartType) serverFilter.type = [this.state.apartType];
+		return serverFilter;
+	},
+	//вывполнение фильтрации
+	doFilter: function () {
+		this.saveFilterState();			
+		this.props.onFilterChange(this.buildSrvAdvertsFilter());
+	},
+	//проверка корректности установки фильтра и выполнение фильтрации в случае успеха
+	checkAndDoFilter: function () {
+		var canFilter = true;
+		if(!this.state.adress) {
+			this.setState({noAdressFilterSpecified: true});
+			canFilter = false;
+		} else {
+			this.setState({noAdressFilterSpecified: false});
 		}
-		return filterParams;
+		if((!this.state.dFrom)&&(this.state.dTo)) {
+			this.setState({noDateFromFilterSpecified: true, noDateToFilterSpecified: false});
+			canFilter = false;
+		} else {
+			this.setState({noDateFromFilterSpecified: false, noDateToFilterSpecified: false});
+		}
+		if((this.state.dFrom)&&(this.state.dTo)) {
+			var dF = new Date(this.state.dFrom);
+			var dT = new Date(this.state.dTo);
+			if(dF.getTime() > dT.getTime()) {
+				this.setState({noDateFromFilterSpecified: true, noDateToFilterSpecified: true});
+				canFilter = false;
+			} else {
+				this.setState({noDateFromFilterSpecified: false, noDateToFilterSpecified: false});
+			}
+		}
+		if(canFilter) {
+			if((this.state.dFrom)&&(!this.state.dTo)) {
+				var tmpD = new Date(this.state.dFrom);
+				this.setState({dTo: tmpD.addDays(1)}, this.doFilter);
+			} else {
+				this.doFilter();
+			}
+		}
 	},
 	//ввод адреса
 	handleAddrChange: function (e) {
@@ -101,8 +131,25 @@ var PostsFilter = React.createClass({
 		this.setState({apartType: apartType}, this.handleFindClick);		
 	},
 	//выбор цены в фильтре
-	handleSelectedPrice: function (price) {
-		this.setState({price: price}, this.handleFindClick);
+	handleSelectedPrice: function (price) {		
+		var prices = {
+			from: "",
+			to: ""
+		}
+		if(price) {
+			if(price == PostsFilterPriceLimits.from) {
+				prices.to = PostsFilterPriceLimits.from;
+			} else {
+				if(price == PostsFilterPriceLimits.to) {
+					prices.from = PostsFilterPriceLimits.to;
+				} else {
+					prices.from = PostsFilterPriceLimits.from;
+					prices.to = PostsFilterPriceLimits.to;
+				}
+			}
+		}
+		console.log(prices);
+		this.setState({priceFrom: prices.from, priceTo: prices.to, price: price}, this.handleFindClick);
 	},
 	//обработка нажатия на кнопку "Фильтр" (сокрытие/отображение)
 	handleFilterToggleClick: function () {
@@ -113,7 +160,9 @@ var PostsFilter = React.createClass({
 		this.setState(
 			{
 				filterToggle: false, 
-				noFilterSpecified: false, 
+				noAdressFilterSpecified: false,
+				noDateFromFilterSpecified: false,
+				noDateToFilterSpecified: false,
 				adress: "",
 				dFrom: "", 
 				dTo: "",
@@ -121,29 +170,16 @@ var PostsFilter = React.createClass({
 				apartType: "",
 				price: ""
 			},
-			function () {
-				var f = this.saveFilterState();
-				this.props.onFilterChange(filterFactory.buildAdvertsFilter(f));
-			}
+			this.doFilter
 		);		
 	},
 	//обработка нажатия на кнопку "Поиск"
 	handleFindClick: function () {
-		if(!this.state.adress) {
-			this.setState({noFilterSpecified: true});
-		} else {
-			this.setState({noFilterSpecified: false});
-			var f = this.saveFilterState();			
-			this.props.onFilterChange(filterFactory.buildAdvertsFilter(f));
-		}
+		this.checkAndDoFilter();
 	},
 	//инициализация фильтра
 	componentDidMount: function () {
-		var f = this.loadFilterState();
-		if(f) {
-			this.setState({filterToggle: f.filterToggle});
-			this.props.onFilterChange(filterFactory.buildAdvertsFilter(f));
-		}
+		this.loadFilterState(this.doFilter);
 	},
 	//обновление параметров фильра
 	componentWillReceiveProps: function (newProps) {
@@ -164,14 +200,21 @@ var PostsFilter = React.createClass({
 		var classesAdrInput = cAdrInput({
 			"w-input": true,
 			"u-form-field": true,
-			"errstate": this.state.noFilterSpecified	
+			"errstate": this.state.noAdressFilterSpecified	
 		});
 		var cDateInput = React.addons.classSet;
-		var classesDateInput = cDateInput({
+		var classesDateInputFrom = cDateInput({
 			"w-input": true,
 			"u-form-field": true,
-			"rel": true
-		});		  
+			"rel": true,
+			"errstate": this.state.noDateFromFilterSpecified
+		});
+		var classesDateInputTo = cDateInput({
+			"w-input": true,
+			"u-form-field": true,
+			"rel": true,
+			"errstate": this.state.noDateToFilterSpecified
+		});		
 		//представление фильтра
 		return (
 			<div>
@@ -215,13 +258,13 @@ var PostsFilter = React.createClass({
 									defaultValue={(this.state.dFrom)?(new Date(this.state.dFrom)):""}
 									onDatePicked={this.handleDatePicked}
 									language={this.props.language}
-									inputClasses={classesDateInput}/>
+									inputClasses={classesDateInputFrom}/>
 								<Calendar name="dTo" 
 									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_TO"})}
 									defaultValue={(this.state.dTo)?(new Date(this.state.dTo)):""}
 									onDatePicked={this.handleDatePicked}
 									language={this.props.language}
-									inputClasses={classesDateInput}/>									
+									inputClasses={classesDateInputTo}/>									
 							</div>
 						</div>
 						<div className="u-block-spacer2"></div>
@@ -262,13 +305,13 @@ var PostsFilter = React.createClass({
 											options={optionsFactory.buildOptions({
 														language: this.props.language, 
 														id: "price",
-														options: ["", this.state.filterPriceFrom, this.state.filterPriceFrom + "-" + this.state.filterPriceTo, this.state.filterPriceTo],
+														options: ["", PostsFilterPriceLimits.from, PostsFilterPriceLimits.from + "-" + PostsFilterPriceLimits.to, PostsFilterPriceLimits.to],
 														labels: [Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ANY_PRICE"}),
 																Utils.getStrResource({
 																	lang: this.props.language, 
 																	code: "UI_LBL_LESS",
 																	values: [
-																		this.state.filterPriceFrom,
+																		PostsFilterPriceLimits.from,
 																		Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
 																	]
 																}),
@@ -276,8 +319,8 @@ var PostsFilter = React.createClass({
 																	lang: this.props.language, 
 																	code: "UI_LBL_BETWEEN",
 																	values: [
-																		this.state.filterPriceFrom,
-																		this.state.filterPriceTo,
+																		PostsFilterPriceLimits.from,
+																		PostsFilterPriceLimits.to,
 																		Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
 																	]
 																}),
@@ -285,7 +328,7 @@ var PostsFilter = React.createClass({
 																	lang: this.props.language, 
 																	code: "UI_LBL_MORE",
 																	values: [
-																		this.state.filterPriceTo,
+																		PostsFilterPriceLimits.to,
 																		Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
 																	]
 																})]})}

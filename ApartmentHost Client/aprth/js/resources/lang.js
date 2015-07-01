@@ -163,6 +163,7 @@ var langs = [
 		SRV_RESERVATION_EXISTS: "Объект уже забронирован на указанные даты!",
 		SRV_CARD_WRONG_DATE: "Некорректно указаны даты! Проверьте границы диапазона!",
 		SRV_RESERVATION_UNAVAILABLE_DATE: "Некорректно указаны даты! Объект недоступен в указанное время!",
+		SRV_CARD_INVALID_FILTER: "Не заданы параметры отбора карточек объявлений!",
 		//ресурсы для клиентских сообщений об ошибках и информации
 		CLNT_COMMON_ERROR: "Ошибка",
 		CLNT_COMMON_SUCCESS: "Успех",
@@ -340,6 +341,7 @@ var langs = [
 		SRV_RESERVATION_EXISTS: "Reservation already exists!",
 		SRV_CARD_WRONG_DATE: "Bad dates! Check interval limits!",
 		SRV_RESERVATION_UNAVAILABLE_DATE: "Bad dates! Apartment not available!",
+		SRV_CARD_INVALID_FILTER: "No cards filter specified!",
 		//ресурсы для клиентских сообщений об ошибках и информации
 		CLNT_COMMON_ERROR: "Error",
 		CLNT_COMMON_SUCCESS: "Success",

@@ -205,6 +205,11 @@ var Client = function (clientConfig) {
 						}));					
 					//работаем от метода
 					switch (prms.method) {
+						//считывание/поиск карточек
+						case(serverMethods.get): {
+							return fillSrvStdReqData(serverActions.userAdvert + "s?filter=" + Utils.serialize(prms.data), serverMethods.get, "");
+							break;
+						}
 						//добавление
 						case(serverMethods.ins): {
 							return fillSrvStdReqData(serverActions.userAdvert, serverMethods.ins, prms.data);
@@ -291,6 +296,8 @@ var Client = function (clientConfig) {
 				"userId": prms.session.user.userId,
 				"mobileServiceAuthenticationToken": prms.session.authenticationToken
 			};
+		} else {
+			clnt.currentUser = {};
 		}
 		if(prms.req) {
 			clnt.invokeApi(prms.req.API_NAME, {
@@ -336,44 +343,29 @@ var Client = function (clientConfig) {
 			throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_WS_NO_QUERY"}));
 		}
 	}
-	//считывание списка объявлений
-	var	getAdverts = function (prms, callBack) {
+	//считывание/поиск объявлений
+	var getAdverts = function (prms, callBack) {
 		try {
-			if(!prms)
-				throw new Error(Utils.getStrResource({code: "CLNT_NO_OBJECT"}));
-			if(!prms.language)
-				throw new Error(Utils.getStrResource({code: "CLNT_NO_LANGUAGE"}));
-			if((!callBack)||(!Utils.isFunction(callBack)))
-				throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_WS_NO_CALL_BACK"}));
-			var filter;
-			if(!prms.filter) {
-				filter = "";
-			} else {
-				filter = filterFactory.buildAdvertsServerFilter(prms.filter);
-			}
-			log(["FILTER IS: ", filter]);
-			if((prms.session)&&(checkSession(prms.session))) {
-				clnt.currentUser = {
-					"userId": prms.session.user.userId,
-					"mobileServiceAuthenticationToken": prms.session.authenticationToken
-				};
-			}
-			var advTable = clnt.getTable("Card");
-			advTable.read(filter).then(function (advItems) {					
-				//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ОБЪЕКТАМ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
-				advItems.forEach(function (item, i) {
-					item.user.img = "aprth/img/tmp/user1.jpg";
-					item.apartment.img = "aprth/img/tmp/2013-10-04_151552.jpg";
-				});
-				//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ОБЪЕКТАМ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
-				log(["GETING ADVERTS SERVER RESULT:", advItems]);
-				callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, advItems));
-			}, function (error) {
-				log(["GETING ADVERTS SERVER ERROR:", error]);
-				callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			execServerApi({
+				language: prms.language,
+				session: prms.session,
+				req: buildServerRequest({
+					language: prms.language,
+					action: serverActions.userAdvert,
+					method: serverMethods.get,
+					data: prms.filter
+				}),
+				callBack: function (resp) {
+					if(resp.STATE == respStates.ERR)
+						callBack(resp);
+					else {
+						resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+						callBack(resp);
+					}
+				}
 			});
 		} catch (error) {
-			log(["GETING ADVERTS ERROR:", error]);
+			log(["GETING ADVERS ERROR", error]);
 			if(Utils.isFunction(callBack))
 				callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 		}
@@ -514,43 +506,6 @@ var Client = function (clientConfig) {
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
 		},
-		//считывание списка объявлений
-		getAdverts: getAdverts,
-		//считывание объявления
-		getAdvert: function (prms, callBack) {
-			try {
-				if(!prms)
-					throw new Error(Utils.getStrResource({code: "CLNT_NO_OBJECT"}));
-				if(!prms.language)
-					throw new Error(Utils.getStrResource({code: "CLNT_NO_LANGUAGE"}));
-				if((!callBack)||(!Utils.isFunction(callBack)))
-					throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_WS_NO_CALL_BACK"}));
-				if(!prms.postId)
-					throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_NO_ID"}));
-				if((prms.session)&&(checkSession(prms.session))) {
-					clnt.currentUser = {
-						"userId": prms.session.user.userId,
-						"mobileServiceAuthenticationToken": prms.session.authenticationToken
-					};
-				}
-				var advTable = clnt.getTable("Card");
-				advTable.lookup(prms.postId).then(function (advItem) {
-					//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ОБЪЕКТАМ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
-					advItem.user.img = "aprth/img/tmp/user1.jpg";
-					advItem.apartment.img = "aprth/img/tmp/2013-10-04_151552.jpg";
-					//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ОБЪЕКТАМ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
-					log(["GETING ADVERT SERVER RESULT:", advItem]);
-					callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, advItem));
-				}, function (error) {
-					log(["GETING ADVERT SERVER ERROR:", error]);
-					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
-				});
-			} catch (error) {
-				log(["GETING ADVERT ERROR:", error]);
-				if(Utils.isFunction(callBack))
-					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
-			}
-		},
 		//смена статуса объявления в избранном
 		toggleAdvertFavor: function (prms, callBack) {
 			try {
@@ -605,6 +560,8 @@ var Client = function (clientConfig) {
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
 		},
+		//считывание/поиск объявлений
+		getAdverts: getAdverts,
 		//добавление объявления
 		addAdvert: function (prms, callBack) {
 			try {
@@ -705,12 +662,9 @@ var Client = function (clientConfig) {
 				};
 				var profileTable = clnt.getTable("Profile");
 				profileTable.lookup(prms.profileId).then(function (profileItem) {
-					//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ПРОФИЛЮ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
-					profileItem.img = "aprth/img/tmp/user1.jpg";
-					//ПОДМЕШИВАЕМ СТАТИЧНЫЕ КАРТИНКИ К ПРОФИЛЮ - УБРАТЬ КОГДА ЗАРАБОТАЮТ КАРТИНКИ
 					var getAdvertsPrms = {
 						language: prms.language, 
-						filter: filterFactory.buildAdvertsFilter({language: prms.language, userId: prms.profileId}),
+						filter: {userId: prms.profileId},
 						session: prms.session
 					}		
 					getAdverts(getAdvertsPrms, function (resp) {
