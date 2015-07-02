@@ -370,10 +370,31 @@ var Post = React.createClass({
 										<div className="u-block-spacer"></div>
 									</div>
 									<div className="w-col w-col-7 w-clearfix u-col-card">
+										<div className="w-slider u-img-slider" data-animation="over" data-duration="500" data-infinite="1">
+					            <div className="w-slider-mask">
+					            //A.K. один слайд для цикла (максимально будет 10 картинок, на одну объяву это при загрузке надо контролировать)
+					            	<div className="w-slide u-slide">
+					              	<div className="u-block-slide">
+					              		<img src={_.find(this.state.post.apartment.pictures, {default: true}).url}/>
+					                </div>
+					            	</div>	
+					            //A.K. второй слайд для цикла			            	
+					            	<div className="w-slide u-slide">
+					              	<div className="u-block-slide">
+					              		<img src={_.find(this.state.post.apartment.pictures, {default: true}).url}/>
+					                </div>
+					            	</div>
+					            </div>
+					            <div className="w-slider-arrow-left">
+					              <div className="w-icon-slider-left u-slider-ico"></div>
+					            </div>
+					            <div className="w-slider-arrow-right">
+					              <div className="w-icon-slider-right u-slider-ico"></div>
+					            </div>
+					            <div className="w-slider-nav w-round"><div className="w-slider-dot w-active" data-wf-ignore=""></div><div className="w-slider-dot" data-wf-ignore=""></div></div>
+					          </div>	
+
 										<div>
-											<a className="w-lightbox w-inline-block" href="#">
-												<img src={_.find(this.state.post.apartment.pictures, {default: true}).url}/>
-											</a>
 											<div className="w-row u-row-descr head">
 												<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
 													<h3>
