@@ -142,7 +142,10 @@ var Profile = React.createClass({
 										onChange={this.handleFormItemChange}/>
 								</div>
 				} else {
-					userName = <div className="u-t-center">{this.state.profile.lastName} {this.state.profile.firstName}</div>
+					userName =	<div className="u-t-center">
+									{this.state.profile.lastName} {this.state.profile.firstName}
+									<Rater total={5} rating={this.state.profile.rating}/>
+								</div>
 				}
 				//пол
 				var userGender;

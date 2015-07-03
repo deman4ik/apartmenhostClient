@@ -31,6 +31,10 @@ var Utils = {
 		if(Utils.findBootstrapEnvironment() == "xs") collapse = "collapse";
 		return collapse;
 	},
+	//проерка на число
+	isNumber: function (numb) {
+		return !isNaN(numb);
+	},
 	//проверка на функцию
 	isFunction: function (fnc) {
 		if(!fnc) return false;

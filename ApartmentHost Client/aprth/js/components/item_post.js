@@ -94,8 +94,8 @@ var PostItem = React.createClass({
 							onClick={this.handlePostClick}>
 							<img src={_.find(this.props.item.apartment.pictures, {default: true}).url}/>
 							<img className="u-img-author-sm" src={this.props.item.user.img}/>
-						</a>
-						<div><img src="aprth/img/tmp/rater_1.png"/><div className="card_lst_rate">(6)</div></div>
+						</a>						
+						<Rater total={5} rating={this.props.item.user.rating} ratingCount={this.props.item.user.ratingCount}/>
 					</div>
 					<div className="w-col w-col-4 w-col-small-4">
 						<div className="w-clearfix u-block-card-desc">

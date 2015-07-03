@@ -194,3 +194,36 @@ td.disabled.disabled-date.day {
 td.disabled.disabled-date.day:hover {
 	color: red;
 }
+
+div.w-slider.u-img-slider {
+	min-height: 1px;
+}
+
+.rater {
+	text-align: center;
+	padding: 5px;
+}
+
+.rater-item {
+	cursor: default;
+	color: gray;
+	font-size: 20px;
+}
+
+.rater-count {
+	cursor: default;
+	color: gray;
+	font-size: 17px;
+}
+
+.rater-item-active {
+	color: #FFB000;
+}
+
+.rater-item-rw {
+	cursor: pointer;
+}
+
+.rater-item-rw:hover {
+	color: #FFB000;
+}
