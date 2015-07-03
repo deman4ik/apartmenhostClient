@@ -67,7 +67,8 @@ var Post = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			var postTmp = this.calcAdvertPricePeriod(resp.MESSAGE[0]);			
+			var postTmp = this.calcAdvertPricePeriod(resp.MESSAGE[0]);	
+			console.log(postTmp);
 			this.setState({post: postTmp, postReady: true});
 		}
 	},
@@ -327,6 +328,7 @@ var Post = React.createClass({
 									<div className="w-col w-col-5 u-col-card">
 										<div className="u-block-owner">
 											<img className="u-img-author-m" src={this.state.post.user.picture.url} width="96"/>
+											<div>{this.state.post.user.lastName} {this.state.post.user.firstName}</div>
 											<Rater total={5} rating={this.state.post.user.rating}/>
 										</div>
 										<div className="u-block-cardprice">
