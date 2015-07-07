@@ -4,6 +4,13 @@
 	background: url('/aprth/aprth/img/tmp/house.jpg') no-repeat center;
 }
 
+/*w-container есть же!*/
+.content-center {
+	max-width: 940px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .inline-message {
 	text-align: center;
 }
