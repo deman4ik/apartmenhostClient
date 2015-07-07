@@ -1033,7 +1033,7 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   font-style: normal;
 }
 
-.w-input {
+textarea.w-input {
   height: 88px;
 }
 /*кнопка мобильного меню*/
