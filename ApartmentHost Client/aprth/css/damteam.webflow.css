@@ -444,7 +444,10 @@ p {
   margin-right: auto;
   margin-left: auto;
 }
-.u-btn-primary {
+.u-btn-primary,
+.u-btn-primary:visited,
+.u-btn-primary:focus,
+.u-btn-primary:active {
   padding: 6px 10px;
   float: right;
   border-radius: 4px;
@@ -456,7 +459,10 @@ p {
 .u-btn-primary:hover {
   background-color: #00c7c0;
 }
-.u-btn-regular {
+.u-btn-regular,
+.u-btn-regular:visited,
+.u-btn-regular:focus,
+.u-btn-regular:active {
   padding: 6px 10px;
   margin-right: 5px;
   margin-left: 5px;
@@ -824,11 +830,15 @@ p {
 .u-dropdown {
   top: -19px;
 }
-.u-btn-danger {
+.u-btn-danger, 
+.u-btn-danger:visited,
+.u-btn-danger:active,
+.u-btn-danger:focus {
   border: 1px solid #ec465a;
   background-color: #ed5466;
   color: white;
   font-weight: 300;
+  text-decoration: none;
 }
 .u-btn-danger:hover {
   border-color: #e92f45;

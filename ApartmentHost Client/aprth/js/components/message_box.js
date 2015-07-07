@@ -32,8 +32,6 @@ var MessageBox = React.createClass({
 		var cButton = React.addons.classSet;
 		var classesButton = cButton({
 			"btn": true,
-			"btn-block": true,
-			"btn-lg": true,
 			"btn-danger": (this.props.message.type == Utils.getMessageTypeErr()),
 			"btn-success": (this.props.message.type == Utils.getMessageTypeInf())		
 		});
