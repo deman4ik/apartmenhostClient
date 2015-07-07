@@ -456,27 +456,11 @@ p {
 .u-btn-primary:hover {
   background-color: #00c7c0;
 }
-.u-btn-regular {
-  padding: 6px 10px;
-  margin-right: 5px;
-  margin-left: 5px;
-  float: right;
-  border-radius: 4px;
-  background: none;
-  color: #00ccc5;
-  font-weight: 400;
-  text-decoration: none;
-}
-.u-btn-regular:hover {
-  color: #0be3dc;
-}
 .u-form-body {
   padding: 10px;
   background-color: white;
   font-size: 14px;
   font-weight: 400;
-  position: relative;
-  z-index: 400;  
 }
 .u-col-cardlst1 {
   padding-top: 10px;
@@ -535,25 +519,9 @@ p {
   border-left-style: none;
   border-left-width: 0px;
 }
-
-.has-error {
+.errstate {
   border-color: #ed5466;
 }
-.u-form-field.has-error {
-  border: 1px solid #ed5466;
-}
-.has-error .u-form-field {
-  border-color: #ed5466;
-}
-.has-error .help-block,
-.has-error .control-label,
-.has-error .radio,
-.has-error .checkbox,
-.has-error .radio-inline,
-.has-error .checkbox-inline {
-  color: #ed5466;
-}
-
 .u-block-cardlst {
   position: relative;
   z-index: 110;
@@ -811,9 +779,6 @@ p {
   clear: left;
   font-size: 14px;
 }
-.u-block-lnk {
-  cursor:pointer;
-}
 .u-block-tabs {
   margin-right: 8px;
   margin-left: 8px;
@@ -981,6 +946,12 @@ html.w-mod-js *[data-ix="hide-on-load"] {
     display: inline;
     height: 130px;
   }
+  .u-btn {
+    background-color: #cae650;
+  }
+  .u-btn:hover {
+    background-color: #c6e051;
+  }
   .u-img-slider {
     height: 234px;
     min-height: 234px;
@@ -1031,47 +1002,4 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   src: url('../fonts/entypo.woff') format('woff'), url('../fonts/entypo.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
-}
-
-/*кнопка мобильного меню*/
-.w-dropdown-btn, .w-dropdown-toggle, .w-dropdown-link {
-  color: #00ccc5;
-}
-.w-nav[data-animation="over-right"] .w-nav-overlay, .w-nav[data-animation="over-right"] .w--nav-menu-open {
-  z-index: 800;
-}
-
-/*иконки в главном меню*/
-/*вариант 1*/
-.u-menu-item {
-  float:right;
-}
-.w-dropdown-toggle.item {
-  padding-bottom: 0px;
-  padding-top: 14px;
-  padding-right:20px;
-}
-.glyphicon.u-nav-icon {
-  margin-top: 5px;
-  margin-bottom: 10px;
-  font-size: 24px;
-}
-.glyphicon.btn {
-  margin-right: 4px; 
-  position:relative; 
-  margin-bottom:3px;
-}
-.avatar {
-  position:absolute;
-  display: table-cell;
-  vertical-align: middle;
-  width: 34px;
-  height: 34px;
-  top: 0px;
-  padding-top: 14px;    
-}
-.avatar > img {
-  display: block;
-  width: 100%;
-  vertical-align: middle;
 }

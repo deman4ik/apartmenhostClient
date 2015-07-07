@@ -200,20 +200,20 @@ var PostsFilter = React.createClass({
 		var classesAdrInput = cAdrInput({
 			"w-input": true,
 			"u-form-field": true,
-			"has-error": this.state.noAdressFilterSpecified	
+			"errstate": this.state.noAdressFilterSpecified	
 		});
 		var cDateInput = React.addons.classSet;
 		var classesDateInputFrom = cDateInput({
 			"w-input": true,
 			"u-form-field": true,
 			"rel": true,
-			"has-error": this.state.noDateFromFilterSpecified
+			"errstate": this.state.noDateFromFilterSpecified
 		});
 		var classesDateInputTo = cDateInput({
 			"w-input": true,
 			"u-form-field": true,
 			"rel": true,
-			"has-error": this.state.noDateToFilterSpecified
+			"errstate": this.state.noDateToFilterSpecified
 		});		
 		//представление фильтра
 		return (
