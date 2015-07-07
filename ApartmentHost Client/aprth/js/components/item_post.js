@@ -98,7 +98,7 @@ var PostItem = React.createClass({
 						<Rater total={5} rating={this.props.item.user.rating} ratingCount={this.props.item.user.ratingCount}/>
 					</div>
 					<div className="w-col w-col-4 w-col-small-4">
-						<div className="w-clearfix u-block-card-desc">
+						<div className="w-clearfix u-block-card-desc u-block-lnk" onClick={this.handlePostClick}>
 							<div>{this.props.item.user.lastName} {this.props.item.user.firstName}</div>
 							<h4>{Utils.getStrResource({lang: this.props.language, code: this.props.item.apartment.type})}</h4>
 							<div className="u-t-price price-sm">
@@ -113,22 +113,21 @@ var PostItem = React.createClass({
 								{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
 								{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD"})}
 							</div>
-							<div>
-								{favorBtn}						
-							</div>
 						</div>
+						<div className="w-clearfix u-block-card-desc">
+							{favorBtn}						
+						</div>						
 					</div>
 					<div className="w-col w-col-4 w-col-small-4">
-						<div>
-							<div></div>
-							<div>
-								{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}:&nbsp;
-								<strong>
-									<OptionsParser language={this.props.language}								
-										options={optionsFactory.parse(this.props.item.residentGender)}
-										view={OptionsParserView.ROW}/>									
-								</strong>
-							</div>
+						<div className="u-block-lnk" onClick={this.handlePostClick}>
+							{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}:&nbsp;
+							<strong>
+								<OptionsParser language={this.props.language}								
+									options={optionsFactory.parse(this.props.item.residentGender)}
+									view={OptionsParserView.ROW}/>									
+							</strong>
+						</div>
+						<div className="u-block-lnk" onClick={this.handlePostClick}>
 							{advOptions}
 						</div>
 					</div>
