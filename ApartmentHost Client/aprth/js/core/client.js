@@ -22,7 +22,9 @@ var Client = function (clientConfig) {
 		userAdvert: "Card", //работа с пользовательскими объявлениями
 		toggleAdvertFavor: "Favorite", //переключение состояния объявления в списке избранных
 		makeReservation: "Reservation/Make", //бронирование
-		userProfile: "Profile" //работа с профилем пользователя
+		reservation: "Reservation", //запросы на бронирование
+		userProfile: "Profile", //работа с профилем пользователя
+		review: "Review" //работа с отзывами
 	}
 	//коды стандартных ответов сервера
 	var serverStdErrCodes = {
@@ -243,7 +245,7 @@ var Client = function (clientConfig) {
 					return fillSrvStdReqData(serverActions.toggleAdvertFavor + "/" + prms.data, serverMethods.ins, "");
 					break;
 				}
-				//бронирование
+				//работа с заявками на бронирование - бронирование
 				case (serverActions.makeReservation): {
 					if(!prms.data) 
 						throw new Error(Utils.getStrResource({
@@ -270,6 +272,44 @@ var Client = function (clientConfig) {
 							values: ["ServerRequest", "dateTo"]
 						}));
 					return fillSrvStdReqData(serverActions.makeReservation + "/" + prms.data.postId + "/" + prms.data.dateFrom + "/" + prms.data.dateTo, serverMethods.ins, "");
+					break;
+				}
+				//работа с заявками на бронирование - полчение списка
+				case(serverActions.reservation): {
+					return fillSrvStdReqData(serverActions.reservation + "s", serverMethods.get, "");
+					break;
+				}
+				//отзывы
+				case(serverActions.review): {
+					if(!prms.method) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "method"]
+						}));
+					if(!prms.data) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));					
+					//работаем от метода
+					switch (prms.method) {
+						//считывание отзывов
+						case(serverMethods.get): {
+							return fillSrvStdReqData(serverActions.review + "s/" + prms.data.reviewType, serverMethods.get, "");
+							break;
+						}
+						//добавление отзывов
+						case(serverMethods.ins): {
+							return fillSrvStdReqData(serverActions.review + prms.data.resId, serverMethods.ins, prms.data);
+							break;
+						}
+						//неизвестный метод
+						default: {
+							throw new Error("Метод '" + prms.method + "' для действия '" + prms.action + "' не поддерживается сервером!");
+						}
+					}					
 					break;
 				}
 				//неизвестное действие
@@ -715,6 +755,59 @@ var Client = function (clientConfig) {
 				});
 			} catch (error) {
 				log(["UPDATE PROFILE ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//загрузка отзывов
+		getReviews: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.review,
+						method: serverMethods.get,
+						data: {reviewType: prms.reviewType}
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["GETING REVIEWS ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//загрузка заявок
+		getReservations: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.reservation,
+						method: serverMethods.get
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["GETING REVIEWS ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}

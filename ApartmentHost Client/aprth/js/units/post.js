@@ -52,7 +52,6 @@ var Post = React.createClass({
 	},
 	//отправка жалобы
 	onComplaintFormOK: function (values) {
-		console.log(values);
 		this.setState({displaySendComplaint: false});
 		this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
 			Utils.getStrResource({lang: this.props.language, code: "CLNT_COMPLAINT_ADDED"}));
@@ -68,7 +67,6 @@ var Post = React.createClass({
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
 			var postTmp = this.calcAdvertPricePeriod(resp.MESSAGE[0]);	
-			console.log(postTmp);
 			this.setState({post: postTmp, postReady: true});
 		}
 	},
@@ -320,114 +318,147 @@ var Post = React.createClass({
 										listStyle={ulOptions}/>				
 				}
 			}
-			//объявление
-			content =	<div className="w-section u-sect-card">
-							{complaintForm}
-							<div className="w-container">
-								<div className="w-row">							    
-									<div className="w-col w-col-5 u-col-card">
-										<div className="u-block-owner">
-											<img className="u-img-author-m" src={this.state.post.user.picture.url} width="96"/>
-											<div>{this.state.post.user.lastName} {this.state.post.user.firstName}</div>
-											<Rater total={5} rating={this.state.post.user.rating}/>
-										</div>
-										<div className="u-block-cardprice">
-											<div className="u-t-label-cardprice">
-												<OptionsParser language={this.props.language}								
-													options={optionsFactory.parse(this.state.post.residentGender)}
-													view={OptionsParserView.ROW}/>
-											</div>
-											<div className="u-block-ownertext">
-												<div className="u-t-price">
-													<strong>
-														{this.state.post.priceDay}&nbsp;
-														{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
-														{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"})}
-													</strong>
-												</div>
-												<div className="u-t-price2" style={pricePeriodStyle}>
-													{this.state.post.pricePeriod}&nbsp;
-													{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
-													{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD"})}
-												</div>
-											</div>
-											{bookFrm}
-											{bookBtn}											
-										</div>
-										<div className="u-block-owner addition">
-											<div>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAKE_CALL"})}</div>
-											{phone}
-										</div>
-										<div className="u-block-owner addition2">
-											<div>
-												{rate}												
-											</div>
-											<div className="u-t-small center">
-												<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleSendComplaintClick}>
-													{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SEND_COMPLAINT"})}
-												</a>
-											</div>
-										</div>
-										<div className="empty"></div>
-										<div className="u-block-spacer"></div>
-									</div>
-									<div className="w-col w-col-7 w-clearfix u-col-card">							
-										<Galery images={this.state.post.apartment.pictures}/>
-										<div>
-											<div className="w-row u-row-descr head">
-												<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
-													<h3>
-														{Utils.getStrResource({lang: this.props.language, code: this.state.post.apartment.type})}
-													</h3>
-												</div>
-												<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6 w-clearfix">
-													{favorBtn}
-												</div>
-											</div>
-											<div className="w-row u-row-descr">
-												<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
-													<div>
-														{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_EXTRAS"})}
-													</div>
-												</div>
-												<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
-													{advOptions}
-												</div>
-											</div>
-											<div className="w-row u-row-descr">
-												<div className="w-col w-col-4">
-													<div>
-														<div>{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_ADRESS"})}</div>
-													</div>
-												</div>
-												<div className="w-col w-col-8">
-													<div>{this.state.post.apartment.adress}</div>
-												</div>
-											</div>
-											<div className="w-row u-row-descr">
-												<div className="w-col w-col-4">
-													<div>
-														<div>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_DESCR"})}</div>
-													</div>
-												</div>
-												<div className="w-col w-col-8">
-													<div>{this.state.post.description}</div>
-												</div>
-											</div>
-											<div className="w-row u-row-descr">
-												<div className="w-col w-col-4">
-													<div>
-														<div>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ABOUT_OWNER"})}</div>
-													</div>
-												</div>
-												<div className="w-col w-col-8">
-													<div>{this.state.post.user.description}</div>
-												</div>
-											</div>
-										</div>
-									</div>								
+			//отзывы
+			var advReviews;
+			if((this.state.post.reviews)&&(Array.isArray(this.state.post.reviews))) {
+				var advReviewsItems = this.state.post.reviews.map(function (item, i) {
+					return (
+						<div className="w-row">
+							<div className="w-col w-col-3">
+								<div className="u-block-author-reviewlst">
+									<img className="u-img-author-review" 
+										src={item.fromUser.picture.url}
+										width="76"/>
+									<div>{item.fromUser.firstName}<br/>{item.fromUser.lastName}</div>
 								</div>
 							</div>
+							<div className="w-col w-col-9">
+								<div>
+									<Rater total={5} rating={item.rating} align={"left"}/>
+									<div className="u-t-small date1">{Utils.formatDate({lang: this.props.language, date: item.createdAt})}</div>
+									<p>{item.text}</p>
+								</div>
+							</div>
+						</div>						
+					);
+				}, this);
+				advReviews =	<section className="w-section u-sect-card-reviewlst">
+									<div className="w-container">
+										{advReviewsItems}
+									</div>
+								</section>
+			}
+			//объявление
+			content =	<div>
+							<section className="w-section u-sect-card">
+								{complaintForm}
+								<div className="w-container">
+									<div className="w-row">							    
+										<div className="w-col w-col-5 u-col-card">
+											<div className="u-block-owner">
+												<img className="u-img-author-m" src={this.state.post.user.picture.url} width="96"/>
+												<div>{this.state.post.user.lastName} {this.state.post.user.firstName}</div>
+												<Rater total={5} rating={this.state.post.user.rating}/>
+											</div>
+											<div className="u-block-cardprice">
+												<div className="u-t-label-cardprice">
+													<OptionsParser language={this.props.language}								
+														options={optionsFactory.parse(this.state.post.residentGender)}
+														view={OptionsParserView.ROW}/>
+												</div>
+												<div className="u-block-ownertext">
+													<div className="u-t-price">
+														<strong>
+															{this.state.post.priceDay}&nbsp;
+															{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
+															{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"})}
+														</strong>
+													</div>
+													<div className="u-t-price2" style={pricePeriodStyle}>
+														{this.state.post.pricePeriod}&nbsp;
+														{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
+														{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD"})}
+													</div>
+												</div>
+												{bookFrm}
+												{bookBtn}											
+											</div>
+											<div className="u-block-owner addition">
+												<div>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAKE_CALL"})}</div>
+												{phone}
+											</div>
+											<div className="u-block-owner addition2">
+												<div>
+													{rate}												
+												</div>
+												<div className="u-t-small center">
+													<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleSendComplaintClick}>
+														{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SEND_COMPLAINT"})}
+													</a>
+												</div>
+											</div>
+											<div className="empty"></div>
+											<div className="u-block-spacer"></div>
+										</div>
+										<div className="w-col w-col-7 w-clearfix u-col-card">							
+											<Galery images={this.state.post.apartment.pictures}/>
+											<div>
+												<div className="w-row u-row-descr head">
+													<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
+														<h3>
+															{Utils.getStrResource({lang: this.props.language, code: this.state.post.apartment.type})}
+														</h3>
+													</div>
+													<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6 w-clearfix">
+														{favorBtn}
+													</div>
+												</div>
+												<div className="w-row u-row-descr">
+													<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
+														<div>
+															{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_EXTRAS"})}
+														</div>
+													</div>
+													<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
+														{advOptions}
+													</div>
+												</div>
+												<div className="w-row u-row-descr">
+													<div className="w-col w-col-4">
+														<div>
+															<div>{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_ADRESS"})}</div>
+														</div>
+													</div>
+													<div className="w-col w-col-8">
+														<div>{this.state.post.apartment.adress}</div>
+													</div>
+												</div>
+												<div className="w-row u-row-descr">
+													<div className="w-col w-col-4">
+														<div>
+															<div>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_DESCR"})}</div>
+														</div>
+													</div>
+													<div className="w-col w-col-8">
+														<div>{this.state.post.description}</div>
+													</div>
+												</div>
+												<div className="w-row u-row-descr">
+													<div className="w-col w-col-4">
+														<div>
+															<div>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ABOUT_OWNER"})}</div>
+														</div>
+													</div>
+													<div className="w-col w-col-8">
+														<div>{this.state.post.user.description}</div>
+													</div>
+												</div>
+											</div>
+										</div>								
+									</div>
+								</div>
+							</section>
+							{advReviews}
 						</div>
 		} else {
 			content =	<InLineMessage type={Utils.getMessageTypeErr()}

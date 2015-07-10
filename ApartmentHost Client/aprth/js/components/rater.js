@@ -35,8 +35,7 @@ var Rater = React.createClass({
 		if((!tmpState.isActive)&&(Utils.isNumber(props.ratingCount))) {
 			tmpState.showCount = true;
 			tmpState.rateCount = props.ratingCount;
-		}
-		
+		}		
 		this.setState({
 			maxRate: tmpState.maxRate,
 			curRate: tmpState.curRate,
@@ -112,9 +111,16 @@ var Rater = React.createClass({
 		if(this.state.showCount) {			
 			counter = <span className="rater-count">&nbsp;{"(" + this.state.rateCount + ")"}</span>
 		}
+		//дополнительные стиили
+		var raterStyles;
+		if(this.props.align) {
+			raterStyles = {textAlign: this.props.align};
+		} else {
+			raterStyles = {textAlign: "center"};
+		}
 		//представление рейтинга
 		return (
-			<div className="rater">
+			<div className="rater" style={raterStyles}>
 				{stars}{counter}
 			</div>	
 		);

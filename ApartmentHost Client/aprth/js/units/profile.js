@@ -1,6 +1,24 @@
 /*
 	Профиль пользователя
 */
+//закладки отзывов/запросов
+var ProfileReviewsTabs = [
+	"UI_TAB_PROFILE_REVIEWS_IN", //меня бронировали
+	"UI_TAB_PROFILE_REVIEWS_OUT", //я бронировал
+	"UI_TAB_PROFILE_ORDERS" //заявки
+]
+//типы запросов на бронирование
+var ProfileOrdersTypes = {
+	owner: "DVAL_OWNER", //я хозяин, запрос мне
+	renter: "DVAL_RENTER" //я арендатор, запрос от меня
+}
+//состояния запросов на бронирование
+var ProfileOrdersStates = {	
+	accepted: "DVAL_ACCEPTED", //подтвержден
+	declined: "DVAL_DECLINED", //отклонен
+	pending: "DVAL_PENDING" //одидает подтверждения
+}
+//профиль пользователя
 var Profile = React.createClass({
 	//переменные окружения
 	contextTypes: {
@@ -13,16 +31,72 @@ var Profile = React.createClass({
 			profileTmp: {}, //буфер для редактирования профиля
 			profileReady: false, //профиль пользователя готов к отображению
 			modeEdit: false, //режим редактирования профиля	
-			notifyApp: false //флаг необходимости оповещения приложения о смене профиля пользователя 	
+			notifyApp: false, //флаг необходимости оповещения приложения о смене профиля пользователя
+			displayAddReview: false, //флаг отображения формы добавления отзыва
+			addReviewForm: {}, //форма добавления отзыва
+			reviewsIn: { //меня бронировали
+				loaded: false, //список загружен
+				count: 0, //количество отзывов
+				list: [] //список отзывов
+			},
+			reviewsOut: { //я бронировал
+				loaded: false, //список загружен
+				count: 0, //количество отзывов
+				list: [] //список отзывов
+			},
+			orders: { //запросы
+				loaded: false, //список загружен
+				count: 0, //количество запросов
+				list: [] //список запросов
+			},
+			activeReviewsTab: ProfileReviewsTabs[0] //активная закладка отзывов/запросов
 		}
 	},
+	//сборка формы отзыва
+	buildReviewForm: function (props) {
+		var formTmp = formFactory.buildForm({
+			language: props.language,
+			title: Utils.getStrResource({lang: props.language, code: "UI_TITLE_REVIEW"})
+		});
+		var rateItemTmp = formFactory.buildFormItem({
+			language: props.language,
+			label: Utils.getStrResource({lang: props.language, code: "UI_FLD_REVIEW_RATE"}),
+			name: "reviewRating",
+			dataType: formFactory.itemDataType.NUMB,
+			inputType: formFactory.itemInputType.RATE,
+			required: false
+		});
+		var textItemTmp = formFactory.buildFormItem({
+			language: props.language,
+			label: Utils.getStrResource({lang: props.language, code: "UI_FLD_REVIEW_TEXT"}),
+			name: "reviewText",
+			dataType: formFactory.itemDataType.STR,
+			inputType: formFactory.itemInputType.TEXT,
+			required: true
+		});
+		formFactory.appedFormItem(formTmp, rateItemTmp);
+		formFactory.appedFormItem(formTmp, textItemTmp);
+		this.setState({addReviewForm: formTmp});
+	},
+	//отправка отзыва
+	onAddReviewFormOK: function (values) {
+		//!!!! ТУТ ПОДУМАТЬ - ФОРМА ПОМНИТ ПРЕДЫДУЩЕЕ ЗНАЧЕНИЕ, А ЭТО - ЛАЖА!!!
+		console.log(values);
+		this.setState({displayAddReview: false});
+		this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
+			Utils.getStrResource({lang: this.props.language, code: "CLNT_REVIEW_ADDED"}));
+	},
+	//отмена отправки отзыва
+	onAddReviewFormChancel: function () {
+		this.setState({displayAddReview: false});
+	}, 
 	//обработка загруженных данных объявления
 	handleLoadProfileResult: function (resp) {
 		this.props.onHideProgress();
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			this.setState({profile: resp.MESSAGE, profileTmp: resp.MESSAGE, profileReady: true});
+			this.setState({profile: resp.MESSAGE, profileTmp: resp.MESSAGE, profileReady: true}, this.loadActiveTab);
 			if((this.state.notifyApp)||(resp.MESSAGE.cardCount != this.props.session.sessionInfo.user.profile.cardCount)) {
 				this.setState({notifyApp: false});
 				this.props.onProfileChange(resp.MESSAGE);
@@ -46,7 +120,52 @@ var Profile = React.createClass({
 		} else {
 			this.setState({modeEdit: false, notifyApp: true}, function () {this.loadProfile();});
 		}
-	},	
+	},
+	//обработка загруженных данных отзывов "Я бронировал"
+	handleLoadReviewsIn: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			console.log(resp.MESSAGE);
+			var tmpReviewsIn = {
+				loaded: true,
+				count: resp.MESSAGE.length,
+				list: resp.MESSAGE
+			};
+			this.setState({reviewsIn: tmpReviewsIn});
+		}
+	},
+	//обработка загруженных данных отзывов "Меня бронировали"
+	handleLoadReviewsOut: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			console.log(resp.MESSAGE);
+			var tmpReviewsOut = {
+				loaded: true,
+				count: resp.MESSAGE.length,
+				list: resp.MESSAGE
+			};
+			this.setState({reviewsOut: tmpReviewsOut});
+		}
+	},
+	//обработка загруженных данных заявок
+	handleLoadOrders: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			console.log(resp.MESSAGE);
+			var tmpOrders = {
+				loaded: true,
+				count: resp.MESSAGE.length,
+				list: resp.MESSAGE
+			};
+			this.setState({orders: tmpOrders});
+		}
+	},
 	//загрузка данных профиля
 	loadProfile: function () {
 		if(this.props.session.loggedIn) {
@@ -57,6 +176,62 @@ var Profile = React.createClass({
 				session: this.props.session.sessionInfo
 			}
 			clnt.getProfile(getPrms, this.handleLoadProfileResult);
+		}
+	},
+	//загрузка отзывов "Меня бронировали"
+	loadReviewsIn: function () {
+		if(this.props.session.loggedIn) {
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var getPrms = {
+				language: this.props.language, 
+				reviewType: ProfileOrdersTypes.owner,
+				session: this.props.session.sessionInfo
+			}
+			clnt.getReviews(getPrms, this.handleLoadReviewsIn);
+		}
+	},
+	//загрузка отзывов "Я бронировал"
+	loadReviewsOut: function () {
+		if(this.props.session.loggedIn) {
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var getPrms = {
+				language: this.props.language, 
+				reviewType: ProfileOrdersTypes.renter,
+				session: this.props.session.sessionInfo
+			}
+			clnt.getReviews(getPrms, this.handleLoadReviewsOut);
+		}
+	},
+	//загрузка заявок
+	loadOrders: function () {
+		if(this.props.session.loggedIn) {
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var getPrms = {
+				language: this.props.language, 
+				session: this.props.session.sessionInfo
+			}
+			clnt.getReservations(getPrms, this.handleLoadOrders);
+		}
+	},
+	//загрузка данных активной закладки
+	loadActiveTab: function () {
+		switch(this.state.activeReviewsTab) {
+			//меня бронировали
+			case(ProfileReviewsTabs[0]): {
+				if(!this.state.reviewsIn.loaded) this.loadReviewsIn();
+				break;
+			}
+			//я бронировал
+			case(ProfileReviewsTabs[1]): {
+				if(!this.state.reviewsOut.loaded) this.loadReviewsOut();
+				break;
+			}
+			//запросы
+			case(ProfileReviewsTabs[2]): {
+				if(!this.state.orders.loaded) this.loadOrders();
+				break;
+			}
+			default: {}
 		}
 	},
 	//обработка изменения поля формы редактирования профиля
@@ -112,16 +287,40 @@ var Profile = React.createClass({
 		}
 		clnt.removeAdvert(delPrms, this.handleDeletePostResult);
 	},
+	//обработка нажатия на закладку отзыва/запроса
+	handleReviewsTabClick: function (tab) {
+		this.setState({activeReviewsTab: tab}, this.loadActiveTab);
+	},
+	//обоработка надатия на отправку отзыва
+	handleAddReviewClick: function (item) {
+		this.setState({displayAddReview: true});
+	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
+		this.buildReviewForm(this.props);
 		this.loadProfile();
-	},	
+	},
+	//обновление свойств компонента
+	componentWillReceiveProps: function (newProps) {
+		if(newProps.language != this.props.language) {
+			this.buildReviewForm(newProps);
+		}
+	},
 	//генерация представления страницы по-умолчанию
 	render: function () {
 		//содержимое профиля
 		var content;
 		if(this.props.session.loggedIn) {
 			if(this.state.profileReady) {
+				//форма отзыва
+				var addReviewForm;
+				if(this.state.displayAddReview) {
+					addReviewForm =	<FormBuilder form={this.state.addReviewForm} 
+						onOK={this.onAddReviewFormOK} 
+						onChancel={this.onAddReviewFormChancel} 
+						onShowError={this.props.onShowError}
+						language={this.props.language}/>
+				}
 				//имя пользователя
 				var userName;
 				if(this.state.modeEdit) {
@@ -264,8 +463,347 @@ var Profile = React.createClass({
 										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_EDIT"})}
 									</a>
 				}
-				//непосредственно профиль с объявлениями
+				//табы отзывов/запросов
+				var reviewsTabsItems;
+				if((this.state.reviewsIn.loaded)||(this.state.reviewsOut.loaded)||(this.state.orders.loaded)) {
+					reviewsTabsItems = ProfileReviewsTabs.map(function (item, i) {
+						var cTabItem = React.addons.classSet;
+						var classesTabItem = cTabItem({
+							"w-tab-link": true,
+							"w-inline-block": true,
+							"w--current": (this.state.activeReviewsTab == item)
+						});
+						return (
+								<a className={classesTabItem} onClick={this.handleReviewsTabClick.bind(this, item)}>
+									<div>{Utils.getStrResource({lang: this.props.language, code: item})}</div>
+								</a>	
+						);
+					}, this);
+				}
+				var reviewsTabsMenu = <div className="w-tab-menu">{reviewsTabsItems}</div>
+				//содержимое активного таба отзывов/запросов
+				var activeReviewsTabContent;
+				if((this.state.reviewsIn.loaded)||(this.state.reviewsOut.loaded)||(this.state.orders.loaded)) {
+					var tmpTabContent;
+					switch(this.state.activeReviewsTab) {
+						//меня бронировали
+						case(ProfileReviewsTabs[0]): {
+							if(this.state.reviewsIn.count > 0) {
+								var tabHeader =	<div className="w-row w-hidden-small w-hidden-tiny u-row-underline header">
+													<div className="w-col w-col-2 w-col-medium-4 w-col-small-4">
+														<div className="u-block-author-reviewlst">
+															<div className="u-block-spacer"></div>
+														</div>
+													</div>
+													<div className="w-col w-col-5 w-col-medium-4 w-col-small-4">
+														<div>
+															<p><strong>
+																{Utils.getStrResource({lang: this.props.language, code: "UI_TBL_HDR_PROFILE_REVIEW_TO_ME"})}
+															</strong></p>
+														</div>
+													</div>
+													<div className="w-col w-col-5 w-col-medium-4 w-col-small-4">
+														<div>
+															<p><strong>
+																{Utils.getStrResource({lang: this.props.language, code: "UI_TBL_HDR_PROFILE_REVIEW_FROM_ME"})}
+															</strong></p>
+														</div>
+													</div>
+												</div>
+								var tabItems = this.state.reviewsIn.list.map(function (item, i) {
+									var reviewToMe;
+									if(item.renterReview) {
+										reviewToMe =	<div className="w-col w-col-5 w-clearfix">
+															<div>
+																<Rater total={5} rating={item.renterReview.rating} align={"left"}/>
+																<p>{item.renterReview.text}</p>
+															</div>
+															<div className="u-t-small u-t-right u-t-rel">
+																{Utils.formatDate({lang: this.props.language, 
+																	date: item.renterReview.createdAt})}
+															</div>
+														</div>
+									} else {
+										reviewToMe =	<div className="w-col w-col-5">
+															<p className="u-t-light">
+																{Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_POST"})}
+															</p>
+														</div>
+									}
+									var myReview;
+									if(item.ownerReview) {
+										myReview =	<div className="w-col w-col-5 w-clearfix">
+														<div>
+															<Rater total={5} rating={item.ownerReview.rating} align={"left"}/>
+															<p>{item.ownerReview.text}</p>
+														</div>
+														<div className="u-t-small u-t-right u-t-rel">
+															{Utils.formatDate({lang: this.props.language, 
+																	date: item.ownerReview.createdAt})}
+														</div>
+													</div>
+									} else {
+										myReview =	<div className="w-col w-col-5">
+														<a className="u-btn btn-sm" href="javascript:void(0);" onClick={this.handleAddReviewClick.bind(this, item)}>
+															{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD_REVIEW"})}
+														</a>
+													</div>
+									}
+									return (
+										<div className="w-row u-row-underline">
+											<div className="w-col w-col-2">
+												<div className="u-block-author-reviewlst">
+													<img className="u-img-author-review" 
+														src={item.reservation.user.picture.url} 
+														width="76"/>
+													<div>{item.reservation.user.firstName + " " + item.reservation.user.lastName}</div>
+													<div className="u-t-small date1">
+														{Utils.formatDate({lang: this.props.language, 
+															date: item.reservation.dateFrom}) + " - " + 
+														Utils.formatDate({lang: this.props.language, 
+															date: item.reservation.dateTo})}
+													</div>
+												</div>
+											</div>
+											{reviewToMe}
+											{myReview}
+										</div>				
+									);
+								}, this);
+								tmpTabContent = <div>
+													{tabHeader}
+													{tabItems}
+												</div>
+							} else {
+								tmpTabContent = <InLineMessage type={Utils.getMessageTypeErr()}
+													message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_DATA"})}/>
+							}
+							break;
+						}
+						//я бронировал
+						case(ProfileReviewsTabs[1]): {
+							if(this.state.reviewsOut.count > 0) {
+								var tabHeader =	<div className="w-row w-hidden-tiny u-row-underline header">
+													<div className="w-col w-col-4 w-col-small-4">
+														<div>
+															<p><strong>
+																{Utils.getStrResource({lang: this.props.language, code: "UI_TBL_HDR_PROFILE_REVIEW_POST"})}
+															</strong></p>
+														</div>
+													</div>
+													<div className="w-col w-col-4 w-col-small-4">
+														<div>
+															<p><strong>
+																{Utils.getStrResource({lang: this.props.language, code: "UI_TBL_HDR_PROFILE_REVIEW_TO_ME"})}
+															</strong></p>
+														</div>
+													</div>
+													<div className="w-col w-col-4 w-col-small-4">
+														<div>
+															<p><strong>
+																{Utils.getStrResource({lang: this.props.language, code: "UI_TBL_HDR_PROFILE_REVIEW_FROM_ME"})}
+															</strong></p>
+														</div>
+													</div>
+												</div>
+								var tabItems = this.state.reviewsOut.list.map(function (item, i) {
+									var reviewToMe;
+									if(item.ownerReview) {
+										reviewToMe =	<div className="w-col w-col-4 w-col-small-4 w-clearfix">
+															<div>
+																<Rater total={5} rating={item.ownerReview.rating} align={"left"}/>
+																<p>{item.ownerReview.text}</p>
+															</div>
+															<div className="u-t-small u-t-right u-t-rel">
+																{Utils.formatDate({lang: this.props.language, 
+																		date: item.ownerReview.createdAt})}
+															</div>
+														</div>
+									} else {
+										reviewToMe =	<div className="w-col w-col-4 w-col-small-4">
+															<p className="u-t-light">
+																{Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_POST"})}
+															</p>
+														</div>
+									}
+									var myReview;
+									if(item.renterReview) {
+										myReview =	<div className="w-col w-col-4 w-col-small-4 w-clearfix">
+														<div>
+															<Rater total={5} rating={item.renterReview.rating} align={"left"}/>
+															<p>{item.renterReview.text}</p>
+														</div>
+														<div className="u-t-small u-t-right u-t-rel">
+															{Utils.formatDate({lang: this.props.language, 
+																date: item.renterReview.createdAt})}
+														</div>
+													</div>
+									} else {
+										if(item.canResponse) {
+											myReview =	<div className="w-col w-col-4 w-col-small-4">
+															<a className="u-btn btn-sm" href="javascript:void(0);"  onClick={this.handleAddReviewClick.bind(this, item)}>
+																{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD_REVIEW"})}
+															</a>
+														</div>
+										} else {
+											myReview =	<div className="w-col w-col-4 w-col-small-4">
+															<p className="u-t-light">
+																{Utils.getStrResource({lang: this.props.language, code: "CLNT_CAN_NOT_ADD_REVIEW"})}
+															</p>
+														</div>
+										}
+									}									
+									return (
+										<div className="w-row u-row-underline">
+											<div className="w-col w-col w-col-4 w-col-small-4">
+												<div className="w-row u-row-cardhist">
+													<div className="w-col w-col-6 w-col-stack">
+														<div>
+															<img src="images/2013-10-04_151552.jpg"/>
+															<img className="u-img-author-sm sm"
+																src={item.reservation.card.user.picture.url}/>
+														</div>
+													</div>
+													<div className="w-col w-col-6 w-col-stack">
+														<div className="u-block-card-desc">
+															<p>
+																{item.reservation.card.user.firstName + " " + item.reservation.card.user.lastName}
+																<br/>
+																{item.reservation.card.apartment.adress}, Квартира
+															</p>
+															<div className="u-t-price price-sm">
+																<strong>
+																	{item.reservation.card.priceDay}&nbsp;
+																	{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
+																	{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"})}
+																</strong>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div className="w-row u-row-cardhist bottom">
+													<div className="w-col w-col-6 w-col-stack u-col-cardhist">
+														<div>
+															<Rater total={5} rating={item.reservation.card.user.rating} ratingCount={item.reservation.card.user.ratingCount}/>
+														</div>
+													</div>
+													<div className="w-col w-col-6 w-col-stack u-col-cardhist">
+														<div className="u-t-small date1">
+															{Utils.formatDate({lang: this.props.language, 
+																date: item.reservation.dateFrom}) + " - " + 
+															Utils.formatDate({lang: this.props.language, 
+																date: item.reservation.dateTo})}
+														</div>
+													</div>
+												</div>
+											</div>
+											{reviewToMe}
+											{myReview}
+										</div>				
+									);
+								}, this);
+								tmpTabContent = <div>
+													{tabHeader}
+													{tabItems}
+												</div>
+							} else {
+								tmpTabContent = <InLineMessage type={Utils.getMessageTypeErr()}
+													message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_DATA"})}/>
+							}							
+							break;
+						}
+						//запросы
+						case(ProfileReviewsTabs[2]): {
+							if(this.state.orders.count > 0) {
+								var tabItems = this.state.orders.list.map(function (item, i) {
+									var arrow;
+									if(item.type == ProfileOrdersTypes.owner) {
+										arrow = <span>&#8594;</span>
+									} else {
+										arrow = <span>&#8592;</span>
+									}
+									var orderState;
+									if(item.type == ProfileOrdersTypes.owner) {
+										if((item.status == ProfileOrdersStates.accepted)||(item.status == ProfileOrdersStates.declined)) {
+											orderState = <span>
+															{Utils.getStrResource({lang: this.props.language, code: item.status}) + " " +
+																Utils.formatDate({lang: this.props.language, date: item.updatedAt})}
+														 </span>
+										} else {
+											orderState =	<span>
+																<a className="u-btn btn-sm" href="javascript:void(0);">
+																	{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ACCEPT"})}
+																</a>
+																<a className="u-btn-grey btn-sm" href="javascript:void(0);">
+																	{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_DECLINE"})}
+																</a>
+															</span>											
+										}
+									} else {
+										if(item.status == ProfileOrdersStates.accepted) {
+											orderState = <span>
+															{Utils.getStrResource({lang: this.props.language, code: "CLNT_RESERVATION_ACCEPTED"}) + " " +
+																Utils.formatDate({lang: this.props.language, date: item.updatedAt})}
+														 </span>
+										} else {
+											if(item.status == ProfileOrdersStates.declined) {
+												orderState =	<span>
+																	{Utils.getStrResource({lang: this.props.language, code: "CLNT_RESERVATION_DECLINED"}) + " " +
+																		Utils.formatDate({lang: this.props.language, date: item.updatedAt})}
+														 		</span>
+											} else {
+												orderState =	<span>
+																	{Utils.getStrResource({lang: this.props.language, code: item.status})}
+														 		</span>
+											}
+										}
+									}
+									return (
+										<div className="w-row u-row-underline">
+											<div className="w-col w-col-1">
+												<div>{arrow}</div>
+											</div>
+											<div className="w-col w-col-1">
+												<div className="u-block-author-reviewlst">
+													<img className="u-img-author-m" 
+														src={item.user.picture.url}
+														width="76"/>
+												</div>
+											</div>
+											<div className="w-col w-col-2 u-col-query u-t-center">
+												<div>{item.user.firstName + " " + item.user.lastName}</div>
+												<Rater total={5} rating={item.user.rating}/>
+											</div>
+											<div className="w-col w-col-3 u-col-query">
+												<div>
+													{Utils.formatDate({lang: this.props.language, 
+														date: item.dateFrom}) + " - " + 
+													Utils.formatDate({lang: this.props.language, 
+														date: item.dateTo})}
+												</div>
+											</div>
+											<div className="w-col w-col-5 w-clearfix u-col-query">
+												{orderState}
+											</div>
+										</div>										
+									);
+								}, this);
+								tmpTabContent = <div>
+													{tabItems}
+												</div>
+							} else {
+								tmpTabContent = <InLineMessage type={Utils.getMessageTypeErr()}
+													message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_DATA"})}/>
+							}							
+							break;
+						}
+						default: {}
+					}
+					activeReviewsTabContent = <div className="w-tab-content u-tab-cont1">{tmpTabContent}</div>
+				}
+				//непосредственно профиль с объявлениями отзывами и запросами
 				content =	<section className="w-container">
+								{addReviewForm}
 								<div className="w-section u-sect-card">
 									<div className="w-row">
 										<div className="w-col w-col-6 u-col-card">
@@ -328,6 +866,11 @@ var Profile = React.createClass({
 									</div>
 								</div>
 								<div className="u-block-spacer"></div>
+								<div className="u-block-spacer"></div>
+								<div className="w-tabs u-block-tabs" data-duration-in="300" data-duration-out="100">
+									{reviewsTabsMenu}
+								</div>
+								{activeReviewsTabContent}
 								<div className="u-block-spacer"></div>
 							</section>
 			} else {

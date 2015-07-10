@@ -13,7 +13,11 @@ var InLineMessage = React.createClass({
 		});
 		//финальная сборка представления
 		return (
-			<h1 className={classesText}>{this.props.message}</h1>
+			<div>
+				<div className="u-block-spacer"></div>
+				<h1 className={classesText}>{this.props.message}</h1>
+				<div className="u-block-spacer"></div>
+			</div>
 		);
 	}
 });

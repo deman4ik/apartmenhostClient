@@ -12,7 +12,8 @@ var FormFactory = function () {
 	var itemInputType = {
 		MANUAL: "manual", //ручной ввод
 		TEXT: "text", //ручной ввод в текстовое многострочное поле
-		DICT: "dict" //выбор из словаря
+		DICT: "dict", //выбор из словаря
+		RATE: "rate", //ввод через указание рейтинга
 	}
 	//конвертация серверного типа данных в клиентский
 	var convertDataTypeToClient = function (serverDataType) {
