@@ -64,7 +64,8 @@ var Profile = React.createClass({
 			name: "reviewRating",
 			dataType: formFactory.itemDataType.NUMB,
 			inputType: formFactory.itemInputType.RATE,
-			required: false
+			required: false,
+			value: 0
 		});
 		var textItemTmp = formFactory.buildFormItem({
 			language: props.language,
@@ -72,23 +73,23 @@ var Profile = React.createClass({
 			name: "reviewText",
 			dataType: formFactory.itemDataType.STR,
 			inputType: formFactory.itemInputType.TEXT,
-			required: true
+			required: true,
+			value: ""
 		});
 		formFactory.appedFormItem(formTmp, rateItemTmp);
 		formFactory.appedFormItem(formTmp, textItemTmp);
 		this.setState({addReviewForm: formTmp});
 	},
 	//отправка отзыва
-	onAddReviewFormOK: function (values) {
-		//!!!! ТУТ ПОДУМАТЬ - ФОРМА ПОМНИТ ПРЕДЫДУЩЕЕ ЗНАЧЕНИЕ, А ЭТО - ЛАЖА!!!
+	onAddReviewFormOK: function (values) {		
 		console.log(values);
-		this.setState({displayAddReview: false});
+		this.setState({displayAddReview: false}, function() {this.buildReviewForm(this.props);});
 		this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
 			Utils.getStrResource({lang: this.props.language, code: "CLNT_REVIEW_ADDED"}));
 	},
 	//отмена отправки отзыва
 	onAddReviewFormChancel: function () {
-		this.setState({displayAddReview: false});
+		this.setState({displayAddReview: false}, function() {this.buildReviewForm(this.props);});
 	}, 
 	//обработка загруженных данных объявления
 	handleLoadProfileResult: function (resp) {
@@ -291,7 +292,7 @@ var Profile = React.createClass({
 	handleReviewsTabClick: function (tab) {
 		this.setState({activeReviewsTab: tab}, this.loadActiveTab);
 	},
-	//обоработка надатия на отправку отзыва
+	//обоработка нажатия на отправку отзыва
 	handleAddReviewClick: function (item) {
 		this.setState({displayAddReview: true});
 	},
@@ -659,7 +660,7 @@ var Profile = React.createClass({
 												<div className="w-row u-row-cardhist">
 													<div className="w-col w-col-6 w-col-stack">
 														<div>
-															<img src="images/2013-10-04_151552.jpg"/>
+															<img src={item.reservation.card.apartment.defaultPicture.url}/>
 															<img className="u-img-author-sm sm"
 																src={item.reservation.card.user.picture.url}/>
 														</div>

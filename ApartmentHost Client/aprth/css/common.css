@@ -110,3 +110,7 @@ td.disabled.disabled-date.day:hover {
 .rater-item-rw:hover {
 	color: #FFB000;
 }
+
+.has-success .u-form-field {
+	border-color: #3c763d;
+}

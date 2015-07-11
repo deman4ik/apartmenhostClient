@@ -191,6 +191,9 @@ var FormFactory = function () {
 					values: ["FormItem", "dict"]
 				}));
 		}
+		if(!("value" in params)) {
+			params.value = "";
+		}
 		return {
 			label: params.label,
 			name: params.name,
@@ -198,7 +201,8 @@ var FormFactory = function () {
 			inputType: params.inputType,
 			required: params.required,
 			visible: params.visible,
-			dict: params.dict
+			dict: params.dict,
+			value: params.value
 		}
 	}
 	//валидация элемента формы

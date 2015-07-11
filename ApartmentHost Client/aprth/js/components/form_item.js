@@ -66,10 +66,8 @@ var FormItem = React.createClass({
 							break;
 						}
 						case(formFactory.itemInputType.RATE): {
-							content = 	<Rater item={this.state.item}
-											total={5}
-											rating={0}
-											onRate={this.onItemValueChange} 
+							content = 	<FormItemRate item={this.state.item} 
+											onItemValueChange={this.onItemValueChange} 
 											onInvalidItem={this.onInvalidItem}
 											language={this.props.language}/>
 							break;

@@ -27,15 +27,17 @@ var FormBuilder = React.createClass({
 		this.setFormState(newProps.form);
 	},
 	//валиадция формы
-	validate: function () {
+	validate: function (itemName) {
 		var valid = true;
 		var formTmp = _.extend({}, this.state.form);
 		formTmp.items.forEach(function (formItem, i) {
-			if((formItem.required)&&(!formItem.value)) {
-				valid = false;
-				formItem.valid = false;
-			} else {
-				formItem.valid = true;
+			if((!itemName)||(formItem.name == itemName)) {
+				if((formItem.required)&&(!formItem.value)) {
+					valid = false;
+					formItem.valid = false;
+				} else {
+					formItem.valid = true;
+				}
 			}
 		});
 		this.setState({form: formTmp});
@@ -49,7 +51,7 @@ var FormBuilder = React.createClass({
 	onItemValueChange: function (itemName, value) {		
 		var formTmp = _.extend({}, this.state.form);
 		_.findWhere(formTmp.items, {name: itemName}).value = value;
-		this.setState({form: formTmp});
+		this.setState({form: formTmp}, function () {this.validate(itemName);});
 	},
 	//обработка кнопки "ОК"
 	handleOKClick: function () {

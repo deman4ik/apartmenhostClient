@@ -32,7 +32,8 @@ var Post = React.createClass({
 			name: "complaintText",
 			dataType: formFactory.itemDataType.STR,
 			inputType: formFactory.itemInputType.TEXT,
-			required: true
+			required: true,
+			value: ""
 		});
 		formFactory.appedFormItem(formTmp, textItemTmp);
 		this.setState({sendComplaintForm: formTmp});
@@ -52,13 +53,13 @@ var Post = React.createClass({
 	},
 	//отправка жалобы
 	onComplaintFormOK: function (values) {
-		this.setState({displaySendComplaint: false});
+		this.setState({displaySendComplaint: false}, function() {this.buildComplaintForm(this.props);});
 		this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
 			Utils.getStrResource({lang: this.props.language, code: "CLNT_COMPLAINT_ADDED"}));
 	},
 	//отмена отправки жалобы
 	onComplaintFormChancel: function () {
-		this.setState({displaySendComplaint: false});
+		this.setState({displaySendComplaint: false}, function() {this.buildComplaintForm(this.props);});
 	}, 
 	//обработка загруженных данных объявления
 	handleLoadPostResult: function (resp) {
