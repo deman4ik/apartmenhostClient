@@ -22,6 +22,7 @@ var Client = function (clientConfig) {
 		userAdvert: "Card", //работа с пользовательскими объявлениями
 		toggleAdvertFavor: "Favorite", //переключение состояния объявления в списке избранных
 		makeReservation: "Reservation/Make", //бронирование
+		acceptDeclineReservation: "Reservation/AcceptDecline", //подтверждение/отклонение резерва
 		reservation: "Reservation", //запросы на бронирование
 		userProfile: "Profile", //работа с профилем пользователя
 		review: "Review" //работа с отзывами

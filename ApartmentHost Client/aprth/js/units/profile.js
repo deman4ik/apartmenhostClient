@@ -670,7 +670,7 @@ var Profile = React.createClass({
 															<p>
 																{item.reservation.card.user.firstName + " " + item.reservation.card.user.lastName}
 																<br/>
-																{item.reservation.card.apartment.adress}, Квартира
+																{item.reservation.card.apartment.adress + ", " + Utils.getStrResource({lang: this.props.language, code: item.reservation.card.apartment.type})}
 															</p>
 															<div className="u-t-price price-sm">
 																<strong>
