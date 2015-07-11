@@ -4,8 +4,6 @@
 var Client = function (clientConfig) {
 	//флаг отладки: true - в консоль пишется всё что проходит через log, false - в консоль не пишется ничего, из того, что проходит через log
 	var debug = true;
-	//серверные объекты, поддерживающие метаописания
-	var serverMetaObjects = ["Apartment", "Card", "User"];
 	//поддерживаемые серверные методы
 	var serverMethods = {
 		get: "GET",
@@ -17,8 +15,6 @@ var Client = function (clientConfig) {
 	var serverActions = {
 		login: "StandartLogin", //аутентификация
 		getUserInfo: "User", //получение сведений о пользователе
-		getMeta: "Metadata", //получение метаописания объекта
-		userApart: "Apartment", //работа с пользовательскими объектами недвижимости
 		userAdvert: "Card", //работа с пользовательскими объявлениями
 		toggleAdvertFavor: "Favorite", //переключение состояния объявления в списке избранных
 		makeReservation: "Reservation/Make", //бронирование
@@ -120,18 +116,6 @@ var Client = function (clientConfig) {
 					return fillSrvStdReqData(serverActions.getUserInfo, serverMethods.get, "");
 					break;
 				}
-				//получение метаданных объекта
-				case (serverActions.getMeta): {
-					if(!prms.data) 
-						throw new Error(Utils.getStrResource({
-							lang: prms.language,
-							code: "CLNT_NO_ELEM",
-							values: ["ServerRequest", "data"]
-						}));					
-					if(_.indexOf(serverMetaObjects, prms.data) == -1) throw new Error("Объекты типа '" + prms.data + "' не поддерживаются сервером!");
-					return fillSrvStdReqData(serverActions.getMeta + "/" + prms.data, serverMethods.get, "");
-					break;
-				}
 				//работа с профилем пользователя
 				case (serverActions.userProfile): {
 					if(!prms.method) 
@@ -158,38 +142,6 @@ var Client = function (clientConfig) {
 							throw new Error("Метод '" + prms.method + "' для действия '" + prms.action + "' не поддерживается сервером!");
 						}
 					}
-					break;
-				}
-				//работа с недвижимостью пользователя
-				case (serverActions.userApart): {
-					if(!prms.method) 
-						throw new Error(Utils.getStrResource({
-							lang: prms.language,
-							code: "CLNT_NO_ELEM",
-							values: ["ServerRequest", "method"]
-						}));
-					//работаем от метода
-					switch (prms.method) {
-						//добавление
-						case(serverMethods.ins): {
-							//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-							//return fillSrvStdReqData(serverActions.userApart, serverMethods.ins, apartmentFactory.buildInsert(prms.data));
-							//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-							break;
-						}
-						//удаление
-						case(serverMethods.del): {
-							//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-							//var delData = apartmentFactory.buildDel(prms.data);
-							//return fillSrvStdReqData(serverActions.userApart + "/" + delData.id, serverMethods.del, delData);
-							//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-							break;
-						}
-						//неизвестный метод
-						default: {
-							throw new Error("Метод '" + prms.method + "' для действия '" + prms.action + "' не поддерживается сервером!");
-						}
-					}					
 					break;
 				}
 				//работа с объявлениями пользователя
@@ -220,11 +172,23 @@ var Client = function (clientConfig) {
 						}
 						//исправление
 						case(serverMethods.upd): {
+							if(!prms.data.postId) 
+								throw new Error(Utils.getStrResource({
+									lang: prms.language,
+									code: "CLNT_NO_ELEM",
+									values: ["ServerRequest", "postId"]
+								}));	
 							return fillSrvStdReqData(serverActions.userAdvert + "/" + prms.data.postId, serverMethods.upd, prms.data);		
 							break;
 						}
 						//удаление
 						case(serverMethods.del): {
+							if(!prms.data.postId) 
+								throw new Error(Utils.getStrResource({
+									lang: prms.language,
+									code: "CLNT_NO_ELEM",
+									values: ["ServerRequest", "postId"]
+								}));
 							return fillSrvStdReqData(serverActions.userAdvert + "/" + prms.data.postId, serverMethods.del, "");		
 							break;
 						}
@@ -280,6 +244,29 @@ var Client = function (clientConfig) {
 					return fillSrvStdReqData(serverActions.reservation + "s", serverMethods.get, "");
 					break;
 				}
+				//работа с заявками на бронирование - подтверждение/отклонение
+				case(serverActions.acceptDeclineReservation): {
+					if(!prms.data) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));
+					if(!prms.data.reservId) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "reservId"]
+						}));
+					if(!prms.data.status) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "status"]
+						}));
+					return fillSrvStdReqData(serverActions.acceptDeclineReservation + "/" + prms.data.reservId + "/" + prms.data.status, serverMethods.ins, "");
+					break;
+				}
 				//отзывы
 				case(serverActions.review): {
 					if(!prms.method) 
@@ -298,12 +285,24 @@ var Client = function (clientConfig) {
 					switch (prms.method) {
 						//считывание отзывов
 						case(serverMethods.get): {
+							if(!prms.data.reviewType) 
+								throw new Error(Utils.getStrResource({
+									lang: prms.language,
+									code: "CLNT_NO_ELEM",
+									values: ["ServerRequest", "reviewType"]
+								}));
 							return fillSrvStdReqData(serverActions.review + "s/" + prms.data.reviewType, serverMethods.get, "");
 							break;
 						}
 						//добавление отзывов
 						case(serverMethods.ins): {
-							return fillSrvStdReqData(serverActions.review + prms.data.resId, serverMethods.ins, prms.data);
+							if(!prms.data.resId) 
+								throw new Error(Utils.getStrResource({
+									lang: prms.language,
+									code: "CLNT_NO_ELEM",
+									values: ["ServerRequest", "resId"]
+								}));							
+							return fillSrvStdReqData(serverActions.review + "/" + prms.data.resId, serverMethods.ins, prms.data);
 							break;
 						}
 						//неизвестный метод
@@ -481,72 +480,6 @@ var Client = function (clientConfig) {
 				log(["LOGIN VIA FB ERROR:", error]);
 			});
 		},
-		//получение метаописания объекта
-		getObjectMeta: function (prms, callBack) {
-			try {
-				execServerApi({
-					language: prms.language,
-					req: buildServerRequest({
-						language: prms.language,
-						action: serverActions.getMeta,
-						method: serverMethods.get,
-						data: prms.data
-					}),
-					callBack: function (resp) {
-						if(resp.STATE == respStates.ERR)
-							callBack(resp);
-						else {
-							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
-							callBack(resp);
-						}
-					}
-				});
-			} catch (error) {
-				log(["GETTING METADATA ERROR", error]);
-				if(Utils.isFunction(callBack))
-					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
-			}
-		},		
-		//добавление объекта недвижимости пользователя
-		addUserApart: function (prms, callBack) {
-			try {
-				execServerApi({
-					language: prms.language,
-					session: prms.session,
-					req: buildServerRequest({
-						language: prms.language,
-						action: serverActions.userApart,
-						method: serverMethods.ins,
-						data: prms.apartItem
-					}),
-					callBack: callBack
-				});
-			} catch (error) {
-				log(["ADDING APARTMENT ERROR", error]);
-				if(Utils.isFunction(callBack))
-					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
-			}
-		},
-		//удаление объекта недвижимости пользователя
-		removeUserApart: function (prms, callBack) {
-			try {
-				execServerApi({
-					language: prms.language,
-					session: prms.session,
-					req: buildServerRequest({
-						language: prms.language,
-						action: serverActions.userApart,
-						method: serverMethods.del,
-						data: prms.apartItem
-					}),
-					callBack: callBack
-				});
-			} catch (error) {
-				log(["REMOVING APARTMENT ERROR", error]);
-				if(Utils.isFunction(callBack))
-					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
-			}
-		},
 		//смена статуса объявления в избранном
 		toggleAdvertFavor: function (prms, callBack) {
 			try {
@@ -574,7 +507,7 @@ var Client = function (clientConfig) {
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
 		},
-		//смена статуса объявления в избранном
+		//формирование заявки на бронирование
 		makeReservation: function (prms, callBack) {
 			try {
 				execServerApi({
@@ -597,6 +530,33 @@ var Client = function (clientConfig) {
 				});
 			} catch (error) {
 				log(["MAKE RESERVATION ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//подтверждение/отклонение заявки на бронирование
+		acceptDeclineReservation: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.acceptDeclineReservation,
+						method: serverMethods.ins,
+						data: {reservId: prms.reservId, status: prms.status}
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["PROCESS RESERVATION ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
@@ -783,6 +743,33 @@ var Client = function (clientConfig) {
 				});
 			} catch (error) {
 				log(["GETING REVIEWS ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//добавление отзыва
+		addReview: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.review,
+						method: serverMethods.ins,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["ADDING REVIEW ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}

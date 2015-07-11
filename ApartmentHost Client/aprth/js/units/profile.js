@@ -34,6 +34,7 @@ var Profile = React.createClass({
 			notifyApp: false, //флаг необходимости оповещения приложения о смене профиля пользователя
 			displayAddReview: false, //флаг отображения формы добавления отзыва
 			addReviewForm: {}, //форма добавления отзыва
+			currentReviewItem: {}, //элемент, на который оставляем отзыв
 			reviewsIn: { //меня бронировали
 				loaded: false, //список загружен
 				count: 0, //количество отзывов
@@ -82,10 +83,11 @@ var Profile = React.createClass({
 	},
 	//отправка отзыва
 	onAddReviewFormOK: function (values) {		
-		console.log(values);
-		this.setState({displayAddReview: false}, function() {this.buildReviewForm(this.props);});
-		this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
-			Utils.getStrResource({lang: this.props.language, code: "CLNT_REVIEW_ADDED"}));
+		this.addReview(
+			this.state.currentReviewItem.reservation.id, 
+			_.find(values, {name: "reviewRating"}).value, 
+			_.find(values, {name: "reviewText"}).value
+		);
 	},
 	//отмена отправки отзыва
 	onAddReviewFormChancel: function () {
@@ -128,7 +130,6 @@ var Profile = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			console.log(resp.MESSAGE);
 			var tmpReviewsIn = {
 				loaded: true,
 				count: resp.MESSAGE.length,
@@ -143,7 +144,6 @@ var Profile = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			console.log(resp.MESSAGE);
 			var tmpReviewsOut = {
 				loaded: true,
 				count: resp.MESSAGE.length,
@@ -158,7 +158,6 @@ var Profile = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			console.log(resp.MESSAGE);
 			var tmpOrders = {
 				loaded: true,
 				count: resp.MESSAGE.length,
@@ -167,6 +166,27 @@ var Profile = React.createClass({
 			this.setState({orders: tmpOrders});
 		}
 	},
+	//обработка результатов подтверждения/отклонения заявки
+	handleProcessReservation: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			this.loadOrders();
+		}
+	},
+	//обработка результатов добавления отзыва
+	handleAddReview: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			this.setState({displayAddReview: false}, function() {
+				this.buildReviewForm(this.props);
+				this.loadActiveTab(true);
+			});
+		}
+	},	
 	//загрузка данных профиля
 	loadProfile: function () {
 		if(this.props.session.loggedIn) {
@@ -215,24 +235,53 @@ var Profile = React.createClass({
 		}
 	},
 	//загрузка данных активной закладки
-	loadActiveTab: function () {
+	loadActiveTab: function (force) {
 		switch(this.state.activeReviewsTab) {
 			//меня бронировали
 			case(ProfileReviewsTabs[0]): {
-				if(!this.state.reviewsIn.loaded) this.loadReviewsIn();
+				if((!this.state.reviewsIn.loaded)||(force)) this.loadReviewsIn();
 				break;
 			}
 			//я бронировал
 			case(ProfileReviewsTabs[1]): {
-				if(!this.state.reviewsOut.loaded) this.loadReviewsOut();
+				if((!this.state.reviewsOut.loaded)||(force)) this.loadReviewsOut();
 				break;
 			}
 			//запросы
 			case(ProfileReviewsTabs[2]): {
-				if(!this.state.orders.loaded) this.loadOrders();
+				if((!this.state.orders.loaded)||(force)) this.loadOrders();
 				break;
 			}
 			default: {}
+		}
+	},
+	//подтверждение/отклонение заявки на бронирование
+	processReservation: function (reservId, status) {
+		if(this.props.session.loggedIn) {
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var processPrms = {
+				language: this.props.language, 
+				session: this.props.session.sessionInfo,
+				reservId: reservId,
+				status: status
+			}
+			clnt.acceptDeclineReservation(processPrms, this.handleProcessReservation);
+		}		
+	},
+	//добавление отзыва
+	addReview: function (reservId, rating, text) {
+		if(this.props.session.loggedIn) {
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var addPrms = {
+				language: this.props.language, 
+				session: this.props.session.sessionInfo,
+				data: {
+					resId: reservId,
+					rating: rating,
+					text: text
+				}				
+			}
+			clnt.addReview(addPrms, this.handleAddReview);
 		}
 	},
 	//обработка изменения поля формы редактирования профиля
@@ -294,7 +343,15 @@ var Profile = React.createClass({
 	},
 	//обоработка нажатия на отправку отзыва
 	handleAddReviewClick: function (item) {
-		this.setState({displayAddReview: true});
+		this.setState({currentReviewItem: item, displayAddReview: true});
+	},
+	//обработка нажатия на подтверждение заявки
+	handleAcceptReservation: function (item) {
+		this.processReservation(item.id, ProfileOrdersStates.accepted);
+	},
+	//обработка нажатия на отклонение заявки
+	handleDeclineReservation: function (item) {
+		this.processReservation(item.id, ProfileOrdersStates.declined);
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
@@ -713,7 +770,7 @@ var Profile = React.createClass({
 							}							
 							break;
 						}
-						//запросы
+						//запросы на бронирование
 						case(ProfileReviewsTabs[2]): {
 							if(this.state.orders.count > 0) {
 								var tabItems = this.state.orders.list.map(function (item, i) {
@@ -732,10 +789,10 @@ var Profile = React.createClass({
 														 </span>
 										} else {
 											orderState =	<span>
-																<a className="u-btn btn-sm" href="javascript:void(0);">
+																<a className="u-btn btn-sm" href="javascript:void(0);" onClick={this.handleAcceptReservation.bind(this, item)}>
 																	{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ACCEPT"})}
 																</a>
-																<a className="u-btn-grey btn-sm" href="javascript:void(0);">
+																<a className="u-btn-grey btn-sm" href="javascript:void(0);" onClick={this.handleDeclineReservation.bind(this, item)}>
 																	{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_DECLINE"})}
 																</a>
 															</span>											

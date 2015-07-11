@@ -38,15 +38,11 @@ var PostsFilter = React.createClass({
 		filterParams.price = this.state.price;
 		filterParams.filterToggle = this.state.filterToggle;
 		Utils.saveObjectState("filterParams", filterParams);
-		console.log("SAVED FILTER: ");
-		console.log(filterParams);
 		return filterParams;
 	},
 	//загрузка сохраненного фильтра
 	loadFilterState: function (callBack) {
 		var filterParams = Utils.loadObjectState("filterParams");
-		console.log("LOADED FILTER: ");
-		console.log(filterParams);
 		if(filterParams) {
 			this.setState({
 				adress: filterParams.adress,
@@ -148,7 +144,6 @@ var PostsFilter = React.createClass({
 				}
 			}
 		}
-		console.log(prices);
 		this.setState({priceFrom: prices.from, priceTo: prices.to, price: price}, this.handleFindClick);
 	},
 	//обработка нажатия на кнопку "Фильтр" (сокрытие/отображение)
