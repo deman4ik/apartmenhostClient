@@ -421,7 +421,7 @@ p {
 .u-img-author-sm {
   position: absolute;
   right: 2px;
-  bottom: 28px;
+  bottom: 38px;
   z-index: 50;
   width: 62px;
   height: 62px;
@@ -1087,7 +1087,10 @@ textarea.w-input {
   display:inline-block;
   margin:6px;
 }
-
+.u-img-card {
+  max-width:300px;
+  max-height:225px;
+}
 .glyphicon.u-request-direct {
   font-size: 24px;
   font-weight: 200;

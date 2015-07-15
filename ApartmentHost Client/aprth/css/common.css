@@ -37,14 +37,20 @@ h1.txt.search-result {
 }
 .modal-body {
 	background-color: #FFF;
+	padding:0px 12px 0px 12px;
 }
-
+.modal-header {
+	padding:10px 12px 8px 12px;
+}
+.modal-footer {
+	padding:12px;
+}
 textarea.u-form-area-v {
 	resize: vertical;
 }
 
 .panel-body {
-	padding:0px;
+	padding:10px;
 }
 .panel-default {
 	border-style:none;
@@ -87,7 +93,7 @@ td.disabled.disabled-date.day:hover {
 }
 
 .rater {
-	padding: 5px;
+	padding: 5px 5px 5px 0px;
 }
 
 .rater-item {
