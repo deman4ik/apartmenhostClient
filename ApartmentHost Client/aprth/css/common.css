@@ -43,6 +43,9 @@ textarea.u-form-area-v {
 	resize: vertical;
 }
 
+.panel-body {
+	padding:0px;
+}
 .panel-default {
 	border-style:none;
 }

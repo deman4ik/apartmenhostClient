@@ -776,9 +776,9 @@ var Profile = React.createClass({
 								var tabItems = this.state.orders.list.map(function (item, i) {
 									var arrow;
 									if(item.type == ProfileOrdersTypes.owner) {
-										arrow = <span>&#8594;</span>
+										arrow = <span className="glyphicon u-request-direct glyphicon-arrow-right"></span>
 									} else {
-										arrow = <span>&#8592;</span>
+										arrow = <span className="glyphicon u-request-direct glyphicon-arrow-left my"></span>
 									}
 									var orderState;
 									if(item.type == ProfileOrdersTypes.owner) {
@@ -818,12 +818,12 @@ var Profile = React.createClass({
 									}
 									return (
 										<div className="w-row u-row-underline">
-											<div className="w-col w-col-1">
-												<div>{arrow}</div>
+											<div className="w-col w-col-1 u-col-query">
+												{arrow}
 											</div>
-											<div className="w-col w-col-1">
+											<div className="w-col w-col-1 u-col-query">
 												<div className="u-block-author-reviewlst">
-													<img className="u-img-author-m" 
+													<img className="u-img-author-m sm" 
 														src={item.user.picture.url}
 														width="76"/>
 												</div>
@@ -832,15 +832,13 @@ var Profile = React.createClass({
 												<div>{item.user.firstName + " " + item.user.lastName}</div>
 												<Rater total={5} rating={item.user.rating}/>
 											</div>
-											<div className="w-col w-col-3 u-col-query">
-												<div>
+											<div className="w-col w-col-3 u-col-query u-t-center">
 													{Utils.formatDate({lang: this.props.language, 
 														date: item.dateFrom}) + " - " + 
 													Utils.formatDate({lang: this.props.language, 
 														date: item.dateTo})}
-												</div>
 											</div>
-											<div className="w-col w-col-5 w-clearfix u-col-query">
+											<div className="w-col w-col-5 w-clearfix u-col-query u-t-center">
 												{orderState}
 											</div>
 										</div>										

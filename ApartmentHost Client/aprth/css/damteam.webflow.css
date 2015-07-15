@@ -75,6 +75,12 @@ p {
 .u-btn:hover {
   border-color: #bbd645;
   background-color: #bbd645;
+  text-decoration: none;
+}
+.u-btn-primary:visited,
+.u-btn-primary:focus,
+.u-btn-primary:active {
+  text-decoration: none;
 }
 .u-btn.right {
   float:right;
@@ -184,24 +190,15 @@ p {
   position: static;
   display: block;
   margin-right: auto;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
   margin-left: auto;
   float: none;
   border-radius: 79px;
   box-shadow: none;
   text-align: center;
 }
-.img_stars {
-  display: inline-block;
-  margin-top: 4px;
-  margin-bottom: 4px;
-  margin-left: -7px;
-  float: none;
-  clear: none;
-  -webkit-transform: none;
-  -ms-transform: none;
-  transform: none;
-  text-align: left;
+.u-img-author-m.sm {
+  width:62px;
 }
 .u-block-owner {
   display: block;
@@ -753,7 +750,9 @@ p {
   font-weight: 300;
 }
 .u-col-query {
-  padding-top: 14px;
+  padding-top: 6px;
+  padding-left:2px; 
+  padding-right:2px;
 }
 .u-col-footer {
   padding-top: 10px;
@@ -1087,4 +1086,15 @@ textarea.w-input {
 .u-block-img-holder > img {
   display:inline-block;
   margin:6px;
+}
+
+.glyphicon.u-request-direct {
+  font-size: 24px;
+  font-weight: 200;
+  margin-top: 14px;
+  margin-left:14px;
+  color: lightgrey;
+}
+.glyphicon.u-request-direct.my {
+  color:#00ccc5;
 }
