@@ -91,7 +91,7 @@ var FormBuilder = React.createClass({
 								<div className="modal-body">
 									<br/>
 									<form className="form-horizontal loginForm" role="form">
-										<div className="panel panel-default">
+										<div className="panel-default">
 											<div className="panel-body">
 												{items}
 											</div>

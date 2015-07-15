@@ -60,7 +60,7 @@ var LogInForm = React.createClass({
 							<div className="modal-body">
 								<br/>
 								<form className="form-horizontal loginForm" role="form" id="loginForm">
-									<div className="panel panel-default">
+									<div className="panel-default">
 										<div className="panel-body">
 											<div className="form-group">
 												<label for="inputLogin" className="control-label hidden-xs hidden-sm col-md-4 col-lg-4">
