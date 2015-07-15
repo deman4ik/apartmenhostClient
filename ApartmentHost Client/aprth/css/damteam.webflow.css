@@ -70,6 +70,7 @@ p {
   color: #296573;
   text-align: center;
   text-decoration: none;
+  cursor:pointer;
 }
 .u-btn:hover {
   border-color: #bbd645;
@@ -1087,4 +1088,12 @@ textarea.w-input {
   display: block;
   width: 100%;
   vertical-align: middle;
+}
+
+.u-block-img-holder {
+  display:inline-block;
+}
+.u-block-img-holder > img {
+  display:inline-block;
+  margin:6px;
 }
