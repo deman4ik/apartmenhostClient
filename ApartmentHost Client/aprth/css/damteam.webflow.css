@@ -795,9 +795,6 @@ p {
 .u-col-lang {
   text-align: right;
 }
-.u-t-arrow-right {
-  font-family:'Entypo Icons', sans-serif;
-}
 .u-row-cardhist {
   max-width: 310px;
   padding: 4px;
@@ -1037,13 +1034,7 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   }
 }
 
-@font-face {
-  font-family: 'Entypo Icons';
-  src: url('../fonts/entypo.woff') format('woff'), url('../fonts/entypo.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-}
-
+/* --------- added ----------*/
 textarea.w-input {
   height: 88px;
 }
