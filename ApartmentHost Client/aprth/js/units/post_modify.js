@@ -438,21 +438,19 @@ var ModifyPost = React.createClass({
 														onChange={this.handleFormItemChange}/>
 													<label className="u-form-label n1 rel">{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}</label>
 												</div>
-											</div>	
-
+											</div>
 											<div className="w-row">
-						            <div className="w-col w-col-3">
-						              <label className="u-form-label n1" for="name">Фото:</label>
-						            </div>
-						            <div className="w-col w-col-9 w-clearfix">
-						              <div>
-						                <div id="img_holder" className="u-block-img-holder"></div>
-						                <input id="upload_widget_apt" className="w-button u-btn-round u-btn round" type="button" value="+" data-wait="Подождите..." wait="Подождите..." title="Добавить фото"/>
-						              </div>
-						              <div className="u-block-spacer"></div>
-						            </div>
-						          </div>		
-
+												<div className="w-col w-col-3">
+													<label className="u-form-label n1" for="name">Фото:</label>
+												</div>
+												<div className="w-col w-col-9 w-clearfix">
+													<div>
+														<div id="img_holder" className="u-block-img-holder"></div>
+														<input id="upload_widget_apt" className="w-button u-btn-round u-btn round" type="button" value="+" data-wait="Подождите..." wait="Подождите..." title="Добавить фото"/>
+													</div>
+													<div className="u-block-spacer"></div>
+												</div>
+											</div>
 											<input className="w-button u-btn-primary"
 												type="button"
 												value={Utils.getStrResource({lang: this.props.language, code: (this.state.mode == ModifyPostModes.ADD)?"UI_BTN_ADD_RENT_POST":"UI_BTN_UPD_RENT_POST"})}

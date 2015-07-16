@@ -32,6 +32,7 @@ var Profile = React.createClass({
 			profileReady: false, //профиль пользователя готов к отображению
 			modeEdit: false, //режим редактирования профиля	
 			notifyApp: false, //флаг необходимости оповещения приложения о смене профиля пользователя
+			confirmDeletePost: false, //флаг отображения подтверждения удаления объявления
 			displayAddReview: false, //флаг отображения формы добавления отзыва
 			addReviewForm: {}, //форма добавления отзыва
 			currentReviewItem: {}, //элемент, на который оставляем отзыв
@@ -50,7 +51,8 @@ var Profile = React.createClass({
 				count: 0, //количество запросов
 				list: [] //список запросов
 			},
-			activeReviewsTab: ProfileReviewsTabs[0] //активная закладка отзывов/запросов
+			activeReviewsTab: ProfileReviewsTabs[0], //активная закладка отзывов/запросов
+			deletingPostItemId: "" //удаляемое объявление
 		}
 	},
 	//сборка формы отзыва
@@ -329,13 +331,29 @@ var Profile = React.createClass({
 	},
 	//обработка нажатия на кнопку удаления объявления
 	handleDeletePostClick: function (postId) {
-		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
-		var delPrms = {
-			language: this.props.language, 
-			postId: postId,
-			session: this.props.session.sessionInfo
+		if((postId)&&(postId != "")) {
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var delPrms = {
+				language: this.props.language, 
+				postId: postId,
+				session: this.props.session.sessionInfo
+			}
+			clnt.removeAdvert(delPrms, this.handleDeletePostResult);
 		}
-		clnt.removeAdvert(delPrms, this.handleDeletePostResult);
+	},
+	//запрос подтверждения удаления объявления
+	askRemoveAdvert: function (postId) {
+		this.setState({confirmDeletePost: true, deletingPostItemId: postId});
+	},
+	//подтверждение удаления объявления получено
+	doRemoveAdvert: function () {
+		this.setState({confirmDeletePost: false}, function () {
+			this.handleDeletePostClick(this.state.deletingPostItemId);
+		});		
+	},
+	//отмена удаления обявления
+	doNotRemoveAdvert: function () {
+		this.setState({confirmDeletePost: false, deletingPostItemId: ""});
 	},
 	//обработка нажатия на закладку отзыва/запроса
 	handleReviewsTabClick: function (tab) {
@@ -364,7 +382,7 @@ var Profile = React.createClass({
 			this.buildReviewForm(newProps);
 		}
 	},
-	//генерация представления страницы по-умолчанию
+	//генерация представления страницы профиля
 	render: function () {
 		//содержимое профиля
 		var content;
@@ -378,6 +396,15 @@ var Profile = React.createClass({
 						onChancel={this.onAddReviewFormChancel} 
 						onShowError={this.props.onShowError}
 						language={this.props.language}/>
+				}
+				//подтверждение удаления объявления профиля
+				var confDeleteDlg;
+				if(this.state.confirmDeletePost) {
+					confDeleteDlg = <MessageConf language={this.props.language}
+										title={Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_CONFIRM"})}
+										text={Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_CONFIRM_REMOVE"})}
+										onOk={this.doRemoveAdvert}
+										onCancel={this.doNotRemoveAdvert}/>
 				}
 				//имя пользователя
 				var userName;
@@ -490,7 +517,7 @@ var Profile = React.createClass({
 								<div className="w-clearfix u-block-right">
 									<a className="u-btn btn-sm u-btn-danger"
 										href="javascript:void(0);"
-										onClick={this.handleDeletePostClick.bind(this, item.id)}>
+										onClick={this.askRemoveAdvert.bind(this, item.id)}>
 										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_DELETE_ADVERT"})}										
 									</a>
 								</div>
@@ -860,6 +887,7 @@ var Profile = React.createClass({
 				//непосредственно профиль с объявлениями отзывами и запросами
 				content =	<section className="w-container">
 								{addReviewForm}
+								{confDeleteDlg}
 								<div className="w-section u-sect-card">
 									<div className="w-row">
 										<div className="w-col w-col-6 u-col-card">
