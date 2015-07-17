@@ -28,13 +28,14 @@ var ModifyPost = React.createClass({
 				dates: [], //набор периодов недоступности
 				description: "", //описание жилья
 				options: "", //дополнительные параметры с разделителем
-				price: 0 //цена
+				price: 0, //цена
+				pictures: [] //картинки
 			}
 		}
 	},	
 	//зачистка формы
 	clearPostForm: function () {		
-		this.setState({post: {phone: "", sex: "", apartType: "", address: "", dFrom: "", dTo: "", dates: [], description: "", options: "", price: 0}});		
+		this.setState({post: {phone: "", sex: "", apartType: "", address: "", dFrom: "", dTo: "", dates: [], description: "", options: "", price: 0, pictures: []}});		
 	},
 	//обработка результата добавления/исправления объявления
 	handleModifyPostResult: function (resp) {
@@ -92,6 +93,7 @@ var ModifyPost = React.createClass({
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 			this.setState({formReady: false});
 		} else {
+			console.log(resp.MESSAGE[0]);
 			this.setState({
 				post: {
 					phone: this.props.session.sessionInfo.user.profile.phone,
@@ -103,7 +105,8 @@ var ModifyPost = React.createClass({
 					dates: resp.MESSAGE[0].dates,
 					description: resp.MESSAGE[0].description,
 					options: resp.MESSAGE[0].apartment.options,
-					price: resp.MESSAGE[0].priceDay
+					price: resp.MESSAGE[0].priceDay,
+					pictures: resp.MESSAGE[0].apartment.pictures
 				},
 				formReady: true
 			});
@@ -292,6 +295,19 @@ var ModifyPost = React.createClass({
 				);
 			}, this);
 		}
+		//миниатюры загруженных картинок
+		var picts;
+		if(Array.isArray(this.state.post.pictures)) {
+			picts = this.state.post.pictures.map(function (item, i) {
+				pictItemDivStyle = {display: "inline"};
+				pictItemImgStyle = {height: "100px"};
+				return (
+					<div key={i} style={pictItemDivStyle}>
+						<img src={item.xsmall} style={pictItemImgStyle}/>
+					</div>
+				);
+			}, this);
+		}
 		//содержимое формы
 		var content;
 		if(this.state.formReady) {
@@ -441,12 +457,19 @@ var ModifyPost = React.createClass({
 											</div>
 											<div className="w-row">
 												<div className="w-col w-col-3">
-													<label className="u-form-label n1" for="name">Фото:</label>
+													<label className="u-form-label n1" for="name">
+														{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PHOTO"})}:
+													</label>
 												</div>
 												<div className="w-col w-col-9 w-clearfix">
 													<div>
-														<div id="img_holder" className="u-block-img-holder"></div>
-														<input id="upload_widget_apt" className="w-button u-btn-round u-btn round" type="button" value="+" data-wait="Подождите..." wait="Подождите..." title="Добавить фото"/>
+														<div id="img_holder" className="u-block-img-holder">
+															{picts}
+														</div>
+														<input id="upload_widget_apt" 
+															className="w-button u-btn-round u-btn round" 
+															type="button" value="+"
+															title={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD_PHOTO"})}/>
 													</div>
 													<div className="u-block-spacer"></div>
 												</div>

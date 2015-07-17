@@ -225,17 +225,19 @@ var Posts = React.createClass({
 										language={this.props.language}
 										items={this.state.adverts}
 										mode={this.props.mode}/>
-					} else {					
-						postsList =	<InLineMessage type={Utils.getMessageTypeInf()} 
-											message={Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_FAVORITES"})}/>					
+					} else {
+						if((this.state.advertsReady)&&(this.state.advertsCnt == 0)) {				
+							postsList =	<InLineMessage type={Utils.getMessageTypeInf()} 
+											message={Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_FAVORITES"})}/>
+						}
 					}
 				} else {
 					postsList =	<InLineMessage type={Utils.getMessageTypeErr()} 
-										message={Utils.getStrResource({lang: this.props.language, code: "SRV_UNAUTH"})}/>					
+									message={Utils.getStrResource({lang: this.props.language, code: "SRV_UNAUTH"})}/>					
 
 				}
 				//соберем финальный вид компонента
-				content = <div className="w-section u-sect-page-cardlst">
+				content =	<div className="w-section u-sect-page-cardlst">
 								<div className="w-row">
 									<div className="w-col w-col-12 w-col-stack u-col-cardlst1">										
 										{postsList}

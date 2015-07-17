@@ -39,7 +39,11 @@ var LogInForm = React.createClass({
 				e.message
 			);
 		}		
-	},	
+	},
+	//обработка кнопки "Войти через FB"
+	handleLogInFbClick: function () {
+		clnt.loginFB();		
+	},
 	//обработка кнопки "Отмена"
 	handleCloseClick: function () {
 		this.props.onLogInCancel();
@@ -93,6 +97,9 @@ var LogInForm = React.createClass({
 							<div className="modal-footer">
 								<button type="button" className="w-button u-btn-primary" onClick={this.handleLogInClick}>
 									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN"})}
+								</button>
+								<button type="button" className="w-button u-btn-regular" onClick={this.handleLogInFbClick}>
+									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN_FB"})}
 								</button>
 								<button type="button" className="w-button u-btn-regular" onClick={this.handleCloseClick}>
 									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHANCEL"})}

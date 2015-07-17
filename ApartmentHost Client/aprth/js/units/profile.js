@@ -957,9 +957,6 @@ var Profile = React.createClass({
 								{activeReviewsTabContent}
 								<div className="u-block-spacer"></div>
 							</section>
-			} else {
-				content =	<InLineMessage type={Utils.getMessageTypeErr()}
-								message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_DATA"})}/>
 			}
 		} else {
 			content =	<InLineMessage type={Utils.getMessageTypeErr()}
