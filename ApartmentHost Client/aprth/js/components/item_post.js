@@ -92,8 +92,8 @@ var PostItem = React.createClass({
 						<a className="w-inline-block u-block-card-desc"
 							href="javascript:void(0);" 
 							onClick={this.handlePostClick}>
-							<img src={_.find(this.props.item.apartment.pictures, {default: true}).large}/>
-							<img className="u-img-author-sm" src={this.props.item.user.picture.url}/>
+							<img src={_.find(this.props.item.apartment.pictures, {default: true}).mid}/>
+							<img className="u-img-author-sm" src={this.props.item.user.picture.mid}/>
 						</a>						
 						<Rater total={5} rating={this.props.item.user.rating} ratingCount={this.props.item.user.ratingCount}/>
 					</div>
