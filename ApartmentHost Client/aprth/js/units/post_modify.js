@@ -546,11 +546,9 @@ var ModifyPost = React.createClass({
 														language={this.props.language}
 														inputClasses={classesDateInput}
 														disabledDates={Utils.buildDaysList({lang: this.props.language, dates: this.state.post.dates})}/>
-													<input className="w-button u-btn-round u-btn round" 
-														type="button"
-														value="+"
-														title={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD"})}
-														onClick={this.handleAppendPeriodClick}/>
+													<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleAppendPeriodClick}>
+														{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD"})}
+													</a>
 												</div>
 											</div>
 											<div className="u-block-spacer2"></div>
