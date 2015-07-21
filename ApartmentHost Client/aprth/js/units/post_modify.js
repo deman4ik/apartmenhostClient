@@ -59,6 +59,7 @@ var ModifyPost = React.createClass({
 						session: this.props.session.sessionInfo
 					}
 					clnt.getProfile(getPrms, Utils.bind(function (resp) {
+						this.props.onHideProgress();
 						if(resp.STATE == clnt.respStates.ERR) {
 							this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 						} else {
