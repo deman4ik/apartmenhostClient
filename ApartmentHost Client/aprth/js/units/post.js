@@ -269,6 +269,15 @@ var Post = React.createClass({
 			} else {
 				phone = <div><strong>{this.state.post.user.phone}</strong></div>
 			}
+			//картинки
+			var galery;
+			if(Array.isArray(this.state.post.apartment.pictures)) {
+				if(!_.findWhere(this.state.post.apartment.pictures, {id: "default"})) {
+					galery = <Galery images={this.state.post.apartment.pictures}/>
+				} else {
+					galery = <center><img width={256} src={this.state.post.apartment.pictures[0].url}/></center>
+				}
+			}
 			//отзыв
 			var rate;
 			if((this.state.postBooked)&&(false)) {
@@ -402,7 +411,7 @@ var Post = React.createClass({
 											<div className="u-block-spacer"></div>
 										</div>
 										<div className="w-col w-col-7 w-clearfix u-col-card">							
-											<Galery images={this.state.post.apartment.pictures}/>
+											{galery}
 											<div>
 												<div className="w-row u-row-descr head">
 													<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
@@ -461,9 +470,6 @@ var Post = React.createClass({
 							</section>
 							{advReviews}
 						</div>
-		} else {
-			content =	<InLineMessage type={Utils.getMessageTypeErr()}
-							message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_DATA"})}/>
 		}
 		//генератор		
 		return (

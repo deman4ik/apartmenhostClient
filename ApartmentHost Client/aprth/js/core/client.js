@@ -21,7 +21,9 @@ var Client = function (clientConfig) {
 		acceptDeclineReservation: "Reservation/AcceptDecline", //подтверждение/отклонение резерва
 		reservation: "Reservation", //запросы на бронирование
 		userProfile: "Profile", //работа с профилем пользователя
-		review: "Review" //работа с отзывами
+		review: "Review", //работа с отзывами
+		uploadApartmentPicture: "Picture/Upload/Apartment", //загрузка картинки недвижимости
+		removeApartmentPicture: "Picture/Delete/Apartment" //удаление картинки недвижимости
 	}
 	//коды стандартных ответов сервера
 	var serverStdErrCodes = {
@@ -199,6 +201,40 @@ var Client = function (clientConfig) {
 					}					
 					break;
 				}
+				//работа с картинками недвижимости - загрузка
+				case (serverActions.uploadApartmentPicture): {
+					if(!prms.data.apartId) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "apartId"]
+						}));
+					if(!prms.data.pictures) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "pictures"]
+						}));
+					return fillSrvStdReqData(serverActions.uploadApartmentPicture + "/" + prms.data.apartId, serverMethods.ins, prms.data.pictures);
+					break;
+				}
+				//работа с картинками недвижимости - удаление
+				case (serverActions.removeApartmentPicture): {
+					if(!prms.data.apartId) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "apartId"]
+						}));
+					if(!prms.data.pictIds) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "pictIds"]
+						}));
+					return fillSrvStdReqData(serverActions.removeApartmentPicture + "/" + prms.data.apartId, serverMethods.ins, prms.data.pictIds);
+					break;
+				}				
 				//изменение статуса объявления в избранном
 				case (serverActions.toggleAdvertFavor): {
 					if(!prms.data) 
@@ -239,7 +275,7 @@ var Client = function (clientConfig) {
 					return fillSrvStdReqData(serverActions.makeReservation + "/" + prms.data.postId + "/" + prms.data.dateFrom + "/" + prms.data.dateTo, serverMethods.ins, "");
 					break;
 				}
-				//работа с заявками на бронирование - полчение списка
+				//работа с заявками на бронирование - получение списка
 				case(serverActions.reservation): {
 					return fillSrvStdReqData(serverActions.reservation + "s", serverMethods.get, "");
 					break;
@@ -400,6 +436,25 @@ var Client = function (clientConfig) {
 						callBack(resp);
 					else {
 						resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+						resp.MESSAGE.map(function (item, i) {
+							if(item.apartment.pictures.length == 0) {
+								item.apartment.pictures.push({
+									default: true,
+									id: "default",
+									large: config.defaultPictureUrl,
+									mid: config.defaultPictureUrl,
+									name: "default",
+									small: config.defaultPictureUrl,
+									url: config.defaultPictureUrl,
+									xlarge: config.defaultPictureUrl,
+									xsmall: config.defaultPictureUrl
+								});								
+							} else {
+								if(!_.find(item.apartment.pictures, {default: true})) {
+									item.apartment.pictures[0].default = true;
+								}
+							}
+						}, this);
 						callBack(resp);
 					}
 				}
@@ -628,6 +683,66 @@ var Client = function (clientConfig) {
 						action: serverActions.userAdvert,
 						method: serverMethods.del,
 						data:  {postId: prms.postId}
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["REMOVE CARD ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//загрузка картинки недвижимости пользователя
+		uploadApartmentPicture: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.uploadApartmentPicture,
+						method: serverMethods.ins,
+						data: {
+							apartId: prms.apartId,
+							pictures: prms.pictures
+						}
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["REMOVE CARD ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//удаление картинки недвижимости пользователя
+		removeApartmentPicture: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.removeApartmentPicture,
+						method: serverMethods.del,
+						data: {
+							apartId: prms.apartId,
+							pictIds: prms.pictIds
+						}
 					}),
 					callBack: function (resp) {
 						if(resp.STATE == respStates.ERR)

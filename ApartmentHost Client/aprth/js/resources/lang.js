@@ -217,7 +217,27 @@ var langs = [
 		CLNT_CAN_NOT_ADD_REVIEW: "Вы пока не можете оставить отзыв",
 		CLNT_RESERVATION_DECLINED: "Ваш запрос отклонене",
 		CLNT_RESERVATION_ACCEPTED: "Ваш запрос подтвержден",
-		CLNT_REVIEW_ADDED: "Ваш отзыв отправлен!"
+		CLNT_REVIEW_ADDED: "Ваш отзыв отправлен!",
+		//загрузчик картинок
+		IUPLDR_SOURCES_LOCAL_TITLE: "Файлы",
+		IUPLDR_SOURCES_LOCAL_DROP_FILE: "Перетащите файл с картинкой сюда",
+		IUPLDR_SOURCES_LOCAL_DROP_FILES: "Перетащите файлы с картинками сюда",
+		IUPLDR_SOURCES_LOCAL_DROP_OR: "или",
+		IUPLDR_SOURCES_LOCAL_SELECT_FILE: "Укажите",
+		IUPLDR_SOURCES_LOCAL_SELECT_FILES: "Укажите",
+		IUPLDR_SOURCES_URL_TITLE: "URL",
+		IUPLDR_SOURCES_URL_NOTE: "Общедоступный URL файла с картинкой:",
+		IUPLDR_SOURCES_URL_UPLOAD: "Загрузить",
+		IUPLDR_SOURCES_URL_ERROR: "Пожалуйста, укажите корректный адрес URL.",
+		IUPLDR_SOURCES_CAMERA_TITLE: "Камера",
+		IUPLDR_SOURCES_CAMERA_NOTE: "Убедитесь что Ваш браузер поддерживает управление камерой, разместите объект перед ней и нажмите Захватить:",
+		IUPLDR_SOURCES_CAMERA_CAPTURE: "Захватить",
+		IUPLDR_PROGRESS_UPLOADING: "Загружаю...",
+		IUPLDR_PROGRESS_UPLOAD_CROPPED: "Загрузить",
+		IUPLDR_PROGRESS_PROCESSING: "Обрабатываю...",
+		IUPLDR_PROGRESS_RETRY_UPLOAD: "Попробуйте еще раз",
+		IUPLDR_PROGRESS_USE_SUCCEEDED: "OK",
+		IUPLDR_PROGRESS_FAILED_NOTE: "Некоторые картинки не смогли загрузиться."
 	},
 	//английский
 	{
@@ -421,6 +441,26 @@ var langs = [
 		CLNT_CAN_NOT_ADD_REVIEW: "You can not add review now",
 		CLNT_RESERVATION_DECLINED: "Your reservation declined",
 		CLNT_RESERVATION_ACCEPTED: "Your reservation accepted",
-		CLNT_REVIEW_ADDED: "Your review sent!"
+		CLNT_REVIEW_ADDED: "Your review sent!",
+		//загрузчик картинок
+		IUPLDR_SOURCES_LOCAL_TITLE: "Files",
+		IUPLDR_SOURCES_LOCAL_DROP_FILE: "Move image here",
+		IUPLDR_SOURCES_LOCAL_DROP_FILES: "Move images here",
+		IUPLDR_SOURCES_LOCAL_DROP_OR: "or",
+		IUPLDR_SOURCES_LOCAL_SELECT_FILE: "Pick a file",
+		IUPLDR_SOURCES_LOCAL_SELECT_FILES: "Pick a files",
+		IUPLDR_SOURCES_URL_TITLE: "URL",
+		IUPLDR_SOURCES_URL_NOTE: "Public picture URL:",
+		IUPLDR_SOURCES_URL_UPLOAD: "Upload",
+		IUPLDR_SOURCES_URL_ERROR: "Please type a valid HTTP URL.",
+		IUPLDR_SOURCES_CAMERA_TITLE: "Camera",
+		IUPLDR_SOURCES_CAMERA_NOTE: "Make sure your browser allows camera capture, position yourself and click Capture:",
+		IUPLDR_SOURCES_CAMERA_CAPTURE: "Capture",
+		IUPLDR_PROGRESS_UPLOADING: "Uploading...",
+		IUPLDR_PROGRESS_UPLOAD_CROPPED: "Upload",
+		IUPLDR_PROGRESS_PROCESSING: "Processing...",
+		IUPLDR_PROGRESS_RETRY_UPLOAD: "Try one more time",
+		IUPLDR_PROGRESS_USE_SUCCEEDED: "OK",
+		IUPLDR_PROGRESS_FAILED_NOTE: "Some pictures was not uploaded."
 	}
 ]

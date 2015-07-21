@@ -6,6 +6,8 @@ var config = {
 	serverAppUrl: "https://apartmenthost.azure-mobile.net/",
 	//ключ сервера
 	serverAppKey: "ntYnnTKTdxhWcfEDGPQMMYvNKyiUtx61",
+	//имя облака Cloudinary для хранения картинок
+	cloudinaryCloudName: "apartmenthost",
 	//имя демонстрационного пользователя
 	demoUser: "parus@parus.ru",
 	//пароль демонстрационного пользователя
@@ -13,5 +15,7 @@ var config = {
 	//доступность смены языка интерфейса
 	languagesEnabled: true,
 	//язык интерфейса по умолчанию
-	languageDefault: "RU"
+	languageDefault: "RU",
+	//картинка по-умолчанию для карточек
+	defaultPictureUrl: "aprth/img/def_photo.png"
 }

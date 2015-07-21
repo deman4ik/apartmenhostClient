@@ -29,23 +29,55 @@ var ModifyPost = React.createClass({
 				description: "", //описание жилья
 				options: "", //дополнительные параметры с разделителем
 				price: 0, //цена
+				apartId: "", //идентификатор объекта недвижимости
 				pictures: [] //картинки
 			}
 		}
 	},	
 	//зачистка формы
 	clearPostForm: function () {		
-		this.setState({post: {phone: "", sex: "", apartType: "", address: "", dFrom: "", dTo: "", dates: [], description: "", options: "", price: 0, pictures: []}});		
+		this.setState({post: {phone: "", sex: "", apartType: "", address: "", dFrom: "", dTo: "", dates: [], description: "", options: "", price: 0, apartId: "", pictures: []}});		
+	},
+	//отработка успешного добавления/исправления объявления
+	afterSuccessModify: function () {
+		this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
+			Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_DONE"}));
+		this.context.router.transitionTo("profile");
 	},
 	//обработка результата добавления/исправления объявления
 	handleModifyPostResult: function (resp) {
 		this.props.onHideProgress();
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
-		} else {
-			this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
-				Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_DONE"}));
-			this.context.router.transitionTo("profile");
+		} else {			
+			switch(this.state.mode) {
+				case(ModifyPostModes.ADD): {
+					this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+					var getPrms = {
+						language: this.props.language, 
+						profileId: this.props.session.sessionInfo.user.profile.id,
+						session: this.props.session.sessionInfo
+					}
+					clnt.getProfile(getPrms, Utils.bind(function (resp) {
+						if(resp.STATE == clnt.respStates.ERR) {
+							this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+						} else {
+							var tmp = {};
+							_.extend(tmp, this.state.post);
+							tmp.apartId = resp.MESSAGE.adverts[resp.MESSAGE.adverts.length-1].apartment.id;
+							this.setState({post: tmp}, Utils.bind(function () {
+								this.uploadPicture(this.state.post.pictures);
+							}, this));
+						}
+					}, this));					
+					break;
+				}
+				case(ModifyPostModes.EDIT): {					
+					this.afterSuccessModify();
+					break;
+				}
+				default: {}
+			}
 		}
 	},
 	//добавление/исправление объявления
@@ -83,8 +115,7 @@ var ModifyPost = React.createClass({
 				break;
 			}
 			default: {}
-		}
-		
+		}		
 	},
 	//обработка загруженных данных объявления
 	handleLoadPostResult: function (resp) {
@@ -93,7 +124,6 @@ var ModifyPost = React.createClass({
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 			this.setState({formReady: false});
 		} else {
-			console.log(resp.MESSAGE[0]);
 			this.setState({
 				post: {
 					phone: this.props.session.sessionInfo.user.profile.phone,
@@ -106,7 +136,8 @@ var ModifyPost = React.createClass({
 					description: resp.MESSAGE[0].description,
 					options: resp.MESSAGE[0].apartment.options,
 					price: resp.MESSAGE[0].priceDay,
-					pictures: resp.MESSAGE[0].apartment.pictures
+					apartId: resp.MESSAGE[0].apartment.id,
+					pictures: _.without(resp.MESSAGE[0].apartment.pictures, _.findWhere(resp.MESSAGE[0].apartment.pictures, {id: "default"}))
 				},
 				formReady: true
 			});
@@ -122,6 +153,59 @@ var ModifyPost = React.createClass({
 				session: this.props.session.sessionInfo
 			}
 			clnt.getAdverts(getPrms, this.handleLoadPostResult);
+		}
+	},
+	//обработка результата загрузки картинки
+	handleUploadPictureResult: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			switch(this.state.mode) {
+				case(ModifyPostModes.ADD): {
+					this.afterSuccessModify();
+					break;
+				}
+				case(ModifyPostModes.EDIT): {					
+					break;
+				}
+				default: {}
+			}		
+		}
+	},
+	//загрузка картинки карточки объявления
+	uploadPicture: function (pictures) {
+		if(this.props.session.loggedIn) {
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var uplPrms = {
+				language: this.props.language, 
+				filter: {id: this.state.postId},
+				session: this.props.session.sessionInfo,
+				apartId: this.state.post.apartId,
+				pictures: pictures
+			}
+			clnt.uploadApartmentPicture(uplPrms, this.handleUploadPictureResult);
+		}
+	},
+	//обработка результата удаления картинки
+	handleDeletePictureResult: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		}
+	},
+	//удаление картинки карточки объявления
+	deletePicture: function (pictIds) {
+		if(this.props.session.loggedIn) {
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var delPrms = {
+				language: this.props.language, 
+				filter: {id: this.state.postId},
+				session: this.props.session.sessionInfo,
+				apartId: this.state.post.apartId,
+				pictIds: pictIds
+			}
+			clnt.removeApartmentPicture(delPrms, this.handleDeletePictureResult);
 		}
 	},
 	//проверка обязательных параметров
@@ -208,6 +292,45 @@ var ModifyPost = React.createClass({
 			}
 		}
 	},
+	//обработка закрытия виджета загрузки фотографий
+	handlePictureUploaded: function (error, result) {
+		if(error) {
+			if(error.message != ImageUpLoaderErrs.CLOSED)
+				this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), error.message);
+		} else {
+			if(result) {
+				var tmp = {};
+				var picturesForUpload = [];
+				_.extend(tmp, this.state.post);
+				result.map(function (pict, i) {
+					var tmpPict = {name: pict.path, cloudinaryPublicId: pict.public_id, xsmall: pict.url};
+					tmp.pictures.push(tmpPict);
+					picturesForUpload.push(tmpPict);
+				}, this);
+				this.setState({post: tmp});
+				switch(this.state.mode) {
+					case(ModifyPostModes.ADD): {						
+						break;
+					}
+					case(ModifyPostModes.EDIT): {
+						this.uploadPicture(picturesForUpload);
+						break;
+					}
+					default: {}
+				}
+			}
+		}
+	},
+	//обработка удаления картинки из списка
+	handleDeletePictureClick: function (index) {
+		var tmp = {};
+		_.extend(tmp, this.state.post);
+		if("id" in tmp.pictures[index]) {
+			this.deletePicture([tmp.pictures[index].id]);
+		}
+		tmp.pictures.splice(index, 1);
+		this.setState({post: tmp});
+	},
 	//нажатие на кнопку удаления периода недоступности
 	handleDeletePeriodClick: function (index) {
 		var tmp = {};
@@ -256,8 +379,7 @@ var ModifyPost = React.createClass({
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {		
-		this.setState({mode: this.context.router.getCurrentParams().mode}, this.initForm);
-		$("#upload_widget_apt").bind("click", openUploadPicApt);
+		this.setState({mode: this.context.router.getCurrentParams().mode}, this.initForm);		
 	},
 	//генерация представления страницы размещения объявления
 	render: function () {
@@ -300,14 +422,34 @@ var ModifyPost = React.createClass({
 		if(Array.isArray(this.state.post.pictures)) {
 			picts = this.state.post.pictures.map(function (item, i) {
 				pictItemDivStyle = {display: "inline"};
+				pictItemDivContStyle = {display: "inline-block"};
 				pictItemImgStyle = {height: "100px"};
+				pictItemDivContDelStyle = {textAlign: "center"};
 				return (
 					<div key={i} style={pictItemDivStyle}>
-						<img src={item.xsmall} style={pictItemImgStyle}/>
+						<div style={pictItemDivContStyle}>
+							<div><img src={item.xsmall} style={pictItemImgStyle}/></div>
+							<div style={pictItemDivContDelStyle}>	
+								<a className="u-lnk-norm" 
+									href="javascript:void(0);" 
+									onClick={this.handleDeletePictureClick.bind(this, i)}>
+									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_DEL"})}
+								</a>
+							</div>
+						</div>
 					</div>
 				);
 			}, this);
 		}
+		//управление картинками
+		var pictsManager;
+		pictsManager =	<div>
+							<div className="u-block-img-holder">
+								{picts}
+							</div>
+							<ImageUpLoader language={this.props.language}
+								onUpLoaded={this.handlePictureUploaded}/>
+						</div>
 		//содержимое формы
 		var content;
 		if(this.state.formReady) {
@@ -403,9 +545,11 @@ var ModifyPost = React.createClass({
 														language={this.props.language}
 														inputClasses={classesDateInput}
 														disabledDates={Utils.buildDaysList({lang: this.props.language, dates: this.state.post.dates})}/>
-													<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleAppendPeriodClick}>
-														{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD"})}
-													</a>
+													<input className="w-button u-btn-round u-btn round" 
+														type="button"
+														value="+"
+														title={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD"})}
+														onClick={this.handleAppendPeriodClick}/>
 												</div>
 											</div>
 											<div className="u-block-spacer2"></div>
@@ -462,15 +606,7 @@ var ModifyPost = React.createClass({
 													</label>
 												</div>
 												<div className="w-col w-col-9 w-clearfix">
-													<div>
-														<div id="img_holder" className="u-block-img-holder">
-															{picts}
-														</div>
-														<input id="upload_widget_apt" 
-															className="w-button u-btn-round u-btn round" 
-															type="button" value="+"
-															title={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD_PHOTO"})}/>
-													</div>
+													{pictsManager}
 													<div className="u-block-spacer"></div>
 												</div>
 											</div>
@@ -489,8 +625,6 @@ var ModifyPost = React.createClass({
 			} else {			
 				content = <InLineMessage type={Utils.getMessageTypeErr()} message={Utils.getStrResource({lang: this.props.language, code: "SRV_UNAUTH"})}/>
 			}
-		} else {
-			content = <InLineMessage type={Utils.getMessageTypeErr()} message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_DATA"})}/>
 		}
 		//генератор
 		return (
