@@ -232,7 +232,7 @@ var Client = function (clientConfig) {
 							code: "CLNT_NO_ELEM",
 							values: ["ServerRequest", "pictIds"]
 						}));
-					return fillSrvStdReqData(serverActions.removeApartmentPicture + "/" + prms.data.apartId, serverMethods.ins, prms.data.pictIds);
+					return fillSrvStdReqData(serverActions.removeApartmentPicture + "/" + prms.data.apartId, serverMethods.del, prms.data.pictIds);
 					break;
 				}				
 				//изменение статуса объявления в избранном
