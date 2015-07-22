@@ -1088,7 +1088,7 @@ textarea.w-input {
   width: 100%;
   vertical-align: middle;
 }
-
+/*-----*/
 .u-block-img-holder {
   display:inline-block;
 }
@@ -1109,4 +1109,27 @@ textarea.w-input {
 }
 .glyphicon.u-request-direct.my {
   color:#00ccc5;
+}
+.u-block-loader-bg {
+    display: none;
+    position: fixed;
+    z-index: 2001;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 6px;
+    cursor: progress;
+}
+.u-block-loader-bg > .spinner {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    width: 36px;
+    height: 36px;    
+    margin-top: -9px;
+    margin-left: -9px;
+    background-image: url("../img/loader.gif");
+    background-repeat: no-repeat;
 }
