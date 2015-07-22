@@ -79,21 +79,32 @@ h1.txt.search-result {
 	color:#DA9E00 !important;
 }
 /*danger, success*/
+.text-success {
+	color: #4e7325;
+}
 .text-danger {
 	color: #E8263D;
+}
+.modal-content.success {
+  color: #4e7325 !important;
+  background-color: #EFFAE4;
+  border-color: #d2e8b8;	
 }
 .modal-content.danger {
 	color: #E8263D !important;
 	background-color: #FFEFEA;
 	border-color: #FACCD1;
 }
+.modal-content.success .modal-body {
+	background-color: #EFFAE4;
+}
 .modal-content.danger .modal-body {
 	background-color: #FFEFEA;
 }
-.modal-content.danger .modal-header {
+.modal-content.danger .modal-header, .modal-content.success .modal-header {
 	border-bottom-style: none;
 }
-.modal-content.danger .modal-footer {
+.modal-content.danger .modal-footer, .modal-content.success .modal-footer {
 	border-top-style: none;
 }
 
