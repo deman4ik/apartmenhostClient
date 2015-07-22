@@ -16,6 +16,12 @@ var MessageBox = React.createClass({
 			"text-success": (this.props.message.type == Utils.getMessageTypeInf())
 		});
 		//классы тела
+		var cContent = React.addons.classSet;
+		var classesContent = cContent({
+			"modal-content": true,
+			"danger": (this.props.message.type == Utils.getMessageTypeErr()),
+			"success": (this.props.message.type == Utils.getMessageTypeInf())
+		});		
 		var cBody = React.addons.classSet;
 		var classesBody = cBody({
 			"modal-body": true,
@@ -37,23 +43,21 @@ var MessageBox = React.createClass({
 		});
 		//генерация диалога
 		return (
-			<div className="modal fade show in messagebox-wraper">
-				<div className="modal-dialog">
-					<div className="modal-content">
-						<div className="modal-header">
-							<h4 className={classesTitle}>{this.props.message.title}</h4>
-						</div>
-						<div className={classesBody}>
-							<p className={classesBodyText}>{this.props.message.text}</p>
-						</div>
-						<div className="modal-footer">
-							<button type="button" className={classesButton} onClick={this.handleClose}>
-								{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CLOSE"})}
-							</button>
+			  <div className="modal show messagebox-wraper ">
+					<div className="modal-dialog">
+						<div className={classesContent}>
+							<div className="modal-header">
+								<button type="button" className="close" onClick={this.handleClose}>×</button>						
+								<h4 className={classesTitle}>{this.props.message.title}</h4>
+							</div>
+							<div className={classesBody}>
+								<p className={classesBodyText}>{this.props.message.text}</p>
+							</div>
+							<div className="modal-footer">			
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 		);
 	}
 });

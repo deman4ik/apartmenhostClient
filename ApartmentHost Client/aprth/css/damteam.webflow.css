@@ -248,6 +248,12 @@ p {
   border-bottom: 3px solid transparent;
   color: #00ccc5;
 }
+.u-nav-link:visited,
+.u-nav-link:focus,
+.u-nav-link:active {
+  color: #00c7c0;
+  text-decoration: none;
+}
 .u-nav-link:hover {
   border-bottom-style: solid;
   border-bottom-color: #00ccc5;
@@ -291,7 +297,7 @@ p {
   text-align: center;
 }
 .u-nav-content {
-  max-width: 1280px;
+  max-width: none;
   margin-bottom: 0px;
   padding-bottom: 0px;
 }
@@ -318,7 +324,10 @@ p {
   color: #00ccc5;
   text-shadow: #373d40 1px 1px 5px;
 }
-.u-lnk-norm {
+.u-lnk-norm,
+.u-lnk-norm:visited,
+.u-lnk-norm:focus,
+.u-lnk-norm:active {
   display: inline-block;
   margin-right: auto;
   margin-left: auto;

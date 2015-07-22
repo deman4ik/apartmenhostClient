@@ -57,7 +57,6 @@ var MainMenu = React.createClass({
 	//генерация представления главного меню
 	render: function () {
 		//дополнительные стили для пункта меню
-		var aStyle = {textDecoration: "none"}
 		var cNav = React.addons.classSet;
 		var classesNav = cNav({
 			"w-nav-menu": true,
@@ -86,7 +85,6 @@ var MainMenu = React.createClass({
 						<a className={classesItem} 
 							key={i}
 							href={"#/" + menuItem.link}
-							style={aStyle}
 							onClick={this.handleMenuItemClick.bind(this, i)}>
 								{Utils.getStrResource({lang: this.props.language, code: menuItem.title})}
 						</a>
@@ -97,7 +95,7 @@ var MainMenu = React.createClass({
 		//кнопка "Сдать жильё"
 		var rentButton;
 		if((!this.props.session.loggedIn)||((this.props.session.loggedIn)&&(this.props.session.sessionInfo.user.profile.cardCount == 0))) {
-			rentButton = 	<a className="u-btn nav" href="javascript:void(0);" style={aStyle} onClick={this.handleAddPostClick}>
+			rentButton = 	<a className="u-btn nav" href="javascript:void(0);" onClick={this.handleAddPostClick}>
 								{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LEASE"})}
 							</a>;
 		}

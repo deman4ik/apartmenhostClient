@@ -19,6 +19,11 @@ var MessageConf = React.createClass({
 			"text-warning": true
 		});
 		//классы тела
+		var cContent = React.addons.classSet;
+		var classesContent = cContent({
+			"modal-content": true,
+			"warning": true
+		});
 		var cBody = React.addons.classSet;
 		var classesBody = cBody({
 			"modal-body": true,
@@ -35,32 +40,31 @@ var MessageConf = React.createClass({
 			"btn": true,
 			"btn-warning": true
 		});
-		//классы кнопки Отмена
-		var cCancelButton = React.addons.classSet;
-		var classesCancelButton = cCancelButton({
-			"btn": true
-		});
 		//генерация диалога
 		return (
-			<div className="modal fade show in messagebox-wraper">
-				<div className="modal-dialog">
-					<div className="modal-content">
-						<div className="modal-header">
-							<h4 className={classesTitle}>{this.props.title}</h4>
-						</div>
-						<div className={classesBody}>
-							<p className={classesBodyText}>{this.props.text}</p>
-						</div>
-						<div className="modal-footer">
-							<button type="button" className={classesOkButton} onClick={this.handleOk}>
-								{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_OK"})}
-							</button>
-							<button type="button" className={classesCancelButton} onClick={this.handleCancel}>
-								{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHANCEL"})}
-							</button>
+			<div>
+			  <div className="modal show messagebox-wraper ">
+					<div className="modal-dialog">
+						<div className={classesContent}>
+							<div className="modal-header">
+								<button type="button" className="close" onClick={this.handleCancel}>×</button>						
+								<h4 className={classesTitle}>{this.props.title}</h4>
+							</div>
+							<div className={classesBody}>
+								<p className={classesBodyText}>{this.props.text}</p>
+							</div>
+							<div className="modal-footer">
+								<a className={classesBodyText} href="javascript:void(0);" onClick={this.handleCancel}>
+									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHANCEL"})}
+								</a><span>&nbsp;&nbsp;</span>
+								<button type="button" className={classesOkButton} onClick={this.handleOk}>
+									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_OK"})}
+								</button>							
+							</div>
 						</div>
 					</div>
 				</div>
+				<div className="modal-backdrop fade in"></div>
 			</div>
 		);
 	}
