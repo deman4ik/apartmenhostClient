@@ -22,13 +22,17 @@
 h1.txt.search-result {
 	margin-top: 10px;
 }
-
+textarea.u-form-area-v {
+	resize: vertical;
+}
 .username {
 	padding-left: 38px !important;
 }
-
 .img-circle {
 	border-radius: 50% !important;
+}
+.has-success .u-form-field {
+	border-color: #3c763d;
 }
 
 /*диалоги bootstrap*/
@@ -107,10 +111,6 @@ h1.txt.search-result {
 .modal-content.danger .modal-footer, .modal-content.success .modal-footer {
 	border-top-style: none;
 }
-
-textarea.u-form-area-v {
-	resize: vertical;
-}
 .panel-body {
 	padding:10px;
 }
@@ -131,6 +131,7 @@ textarea.u-form-area-v {
 	background-color: #EEE;
 }
 
+/*datepicker*/
 .table-condensed>tbody>tr>td, 
 .table-condensed>tbody>tr>th {
 	padding-top:2px; padding-bottom: 0px;
@@ -141,15 +142,19 @@ textarea.u-form-area-v {
 .table-condensed>tfoot>tr>th {
 	padding-top:2px; padding-bottom: 2px;
 }
-
-td.disabled.disabled-date.day {
-	color: red;
+.datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
+  background-color: #ECF0F1;
+  border-radius: 0px;
+  color:#D0D0D0;
+}
+.datepicker table tr td.active, .datepicker table tr td.active.active, .datepicker table tr td.active:hover{
+	color: #FFF;
+  text-shadow: 0 -1px 0 rgba(99, 184, 42, 0.39);
+	background-image: none;
+  background-color: #BBE75D;
 }
 
-td.disabled.disabled-date.day:hover {
-	color: red;
-}
-
+/*rater*/
 .rater {
 	padding: 5px 5px 5px 0px;
 }
@@ -178,6 +183,3 @@ td.disabled.disabled-date.day:hover {
 	color: #FFB000;
 }
 
-.has-success .u-form-field {
-	border-color: #3c763d;
-}
