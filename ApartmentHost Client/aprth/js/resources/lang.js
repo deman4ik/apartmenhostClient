@@ -214,8 +214,8 @@ var langs = [
 		CLNT_DATES_INTERVAL_LIMITS: "Дата начала диапазона должна быть раньше даты его завершения!",
 		CLNT_DATES_INTERVAL_CROSS: "Указаны пересекающиеся диапазоны дат!",
 		CLNT_NO_POST: "Отзыв пока не оставили",
-		CLNT_CAN_NOT_ADD_REVIEW: "Вы пока не можете оставить отзыв",
-		CLNT_RESERVATION_DECLINED: "Ваш запрос отклонене",
+		CLNT_CAN_NOT_ADD_REVIEW: "Вы не можете оставить отзыв, пока не закончился период бронирования",
+		CLNT_RESERVATION_DECLINED: "Ваш запрос отклонен",
 		CLNT_RESERVATION_ACCEPTED: "Ваш запрос подтвержден",
 		CLNT_REVIEW_ADDED: "Ваш отзыв отправлен!",
 		//загрузчик картинок
