@@ -1091,6 +1091,7 @@ textarea.w-input {
 /*-----*/
 .u-block-img-holder {
   display:inline-block;
+  vertical-align: top;
 }
 .u-block-img-holder > img {
   display:inline-block;

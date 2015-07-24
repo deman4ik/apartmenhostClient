@@ -53,7 +53,7 @@ var LogInForm = React.createClass({
 		//генерация представления
 		return (
 			<div>
-				<div className="modal fade show in" id="loginBox">
+				<div className="modal show messagebox-wraper" id="loginBox">
 					<div className="modal-dialog">
 						<div className="modal-content">
 							<div className="modal-header">
@@ -108,6 +108,7 @@ var LogInForm = React.createClass({
 						</div>
 					</div>
 				</div>
+				<div className="modal-backdrop fade in"></div>
 			</div>
 		);
 	}

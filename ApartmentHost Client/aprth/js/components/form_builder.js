@@ -82,7 +82,8 @@ var FormBuilder = React.createClass({
 				}, this);
 			}
 			//собираем форму
-			form =	<div className="modal fade show in">
+			form =	<div>
+			    <div className="modal show messagebox-wraper">
 						<div className="modal-dialog">
 							<div className="modal-content">
 								<div className="modal-header">
@@ -105,6 +106,8 @@ var FormBuilder = React.createClass({
 							</div>
 						</div>
 					</div>
+					<div className="modal-backdrop fade in"></div>
+				</div>
 		} else {
 			form = <InLineMessage type={Utils.getMessageTypeErr()} message={Utils.getStrResource({lang: this.props.language, code: "CLNT_FORM_BAD_META"})}/>
 		}

@@ -36,11 +36,14 @@ textarea.u-form-area-v {
 }
 
 /*диалоги bootstrap*/
+.messagebox-wraper {
+  z-index: 2000;
+}
 .modal-dialog {
 	z-index:2000;
 }
 .modal-backdrop.in {
-    opacity: 0.2;
+    opacity: 0.1;
     z-index: 1999;
 }
 .modal-content {
@@ -147,11 +150,31 @@ textarea.u-form-area-v {
   border-radius: 0px;
   color:#D0D0D0;
 }
-.datepicker table tr td.active, .datepicker table tr td.active.active, .datepicker table tr td.active:hover{
+.datepicker table tr td.active, 
+.datepicker table tr td.active.active, 
+.datepicker table tr td.active:hover, 
+.datepicker table tr td.active.active:hover {
 	color: #FFF;
-  text-shadow: 0 -1px 0 rgba(99, 184, 42, 0.39);
+  text-shadow: 0 -1px 0 rgba(99, 184, 42, 0.4);
 	background-image: none;
   background-color: #BBE75D;
+}
+.datepicker table tr td.today, 
+.datepicker table tr td.today:hover {
+	background-image: none;
+	background-color: initial;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;	
+  border-style: solid;
+  border-width: 1px;
+  border-color: #D5D4D4;
+}
+.datepicker table {
+	border-collapse: initial;
+}
+.datepicker table tr td.today:hover:hover, .datepicker table tr td.today:hover {
+	background:#eee;
 }
 
 /*rater*/
@@ -183,3 +206,6 @@ textarea.u-form-area-v {
 	color: #FFB000;
 }
 
+a > .rater, a.u-block-card-desc:hover, a.u-block-card-desc .rater .rater-item, a.u-block-card-desc .rater .rater-count {
+	text-decoration: none; cursor:pointer;
+}
