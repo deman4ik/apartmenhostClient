@@ -179,7 +179,7 @@ var langs = [
 		SRV_APARTMENT_REQUIRED: "Незаполнено обязательное поле \"%1$s\"!",
 		SRV_APARTMENT_DEPENDENCY: "У данного объекта есть зависимости!",
 		SRV_CARD_EXISTS: "У Вас уже есть объявление!",
-		SRV_RESERVATION_EXISTS: "Объект уже забронирован на указанные даты!",
+		SRV_RESERVATION_EXISTS: "Вы уже отрправили запрос на указанные даты!",
 		SRV_CARD_WRONG_DATE: "Некорректно указаны даты! Проверьте границы диапазона!",
 		SRV_RESERVATION_UNAVAILABLE_DATE: "Некорректно указаны даты! Объект недоступен в указанное время!",
 		SRV_CARD_INVALID_FILTER: "Не заданы параметры отбора карточек объявлений!",

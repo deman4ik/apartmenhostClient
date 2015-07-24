@@ -686,7 +686,7 @@ p {
 .u-tab-cont1 {
   border-style: solid none;
   border-width: 1px;
-  border-color: #f2f2f2;
+  border-color: #E0E7F0;
 }
 .u-btn-grey {
   display: inline-block;
@@ -696,6 +696,12 @@ p {
   background-color: #ecf0f1;
   color: #6a6a6a;
   font-size: 13px;
+  text-decoration: none;
+}
+.u-btn-grey:visited,
+.u-btn-grey:focus,
+.u-btn-grey:active {
+  color: #6a6a6a;
   text-decoration: none;
 }
 .u-btn-grey:hover {
@@ -744,10 +750,11 @@ p {
   background-color: #f8f8f8;
 }
 .u-row-underline.header {
+  color:678796;
   padding-right: 8px;
   padding-bottom: 0px;
   padding-left: 8px;
-  background-color: whitesmoke;
+  background-color: #BCD3F3;
 }
 .u-btn-booked {
   display: none;
