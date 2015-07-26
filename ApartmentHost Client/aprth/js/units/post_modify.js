@@ -180,7 +180,6 @@ var ModifyPost = React.createClass({
 			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 			var uplPrms = {
 				language: this.props.language, 
-				filter: {id: this.state.postId},
 				session: this.props.session.sessionInfo,
 				apartId: this.state.post.apartId,
 				pictures: pictures
@@ -201,7 +200,6 @@ var ModifyPost = React.createClass({
 			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 			var delPrms = {
 				language: this.props.language, 
-				filter: {id: this.state.postId},
 				session: this.props.session.sessionInfo,
 				apartId: this.state.post.apartId,
 				pictIds: pictIds
@@ -512,17 +510,19 @@ var ModifyPost = React.createClass({
 														emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}/>
 												</div>
 											</div>
-											<div className="u-block">
-												<label className="u-form-label n1" for="address">
-													{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_ADRESS"})}:
-												</label>
-												<input className="w-input" 
-													type="text"
-													placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_ADRESS"})}
-													ref="address"
-													id="address"
-													value={this.state.post.address}
-													onChange={this.handleFormItemChange}/>
+											<div className="w-row">
+												<div className="w-col w-col-3">
+													<label className="u-form-label n1" for="address">
+														{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_ADRESS"})}:
+													</label>
+												</div>
+												<div className="w-col w-col-9">
+													<AddressInput classes={"w-input u-form-field"}
+														name="address"
+														value={this.state.post.address}
+														placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_ADRESS"})}
+														onAddressChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "address", value: value}})}, this)}/>
+												</div>
 											</div>
 											<div className="u-block-spacer2"></div>
 											<div className="w-row">
@@ -557,7 +557,7 @@ var ModifyPost = React.createClass({
 													<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_APARTMENT_DESC"})}:</label>
 												</div>
 												<div className="w-col w-col-9">
-													<textarea className="w-input" 
+													<textarea className="w-input u-form-field" 
 														placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_APARTMENT_DESC"})}
 														ref="description"
 														id="description"
@@ -574,7 +574,7 @@ var ModifyPost = React.createClass({
 													</div>
 												</div>
 												<div className="w-col w-col-9">
-													<textarea className="w-input"
+													<textarea className="w-input u-form-field"
 														placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_RENT_EXTRA"})}
 														ref="options"
 														id="options"

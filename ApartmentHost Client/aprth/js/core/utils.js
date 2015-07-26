@@ -183,6 +183,44 @@ var Utils = {
 			if(tmp.length == tmpUniq.length) res = true;
 		}
 		return res;
+	},
+	//установка изображения по умолчанию для объекта недвижимости
+	setApartmentDefaultPicture: function (apartment) {
+		var defPict = {
+			default: true,
+			id: "default",
+			large: config.defaultPictureUrl,
+			mid: config.defaultPictureUrl,
+			name: "default",
+			small: config.defaultPictureUrl,
+			url: config.defaultPictureUrl,
+			xlarge: config.defaultPictureUrl,
+			xsmall: config.defaultPictureUrl
+		}
+		if(apartment.pictures) {
+			if(apartment.pictures.length == 0) {
+				apartment.pictures.push(defPict);								
+			} else {
+				if(!_.find(apartment.pictures, {default: true})) {
+					apartment.pictures[0].default = true;
+				}
+			}
+		} else {
+			apartment.pictures = [];
+			apartment.pictures.push(defPict);
+		}
+		if((!apartment.defaultPicture)||((apartment.defaultPicture)&&(!apartment.defaultPicture.url))) {
+			apartment.defaultPicture = defPict;
+		}
+	},
+	//установка изображения по умолчанию для пользователя
+	setProfileDefaultPicture: function (user) {
+		if((!user.picture)||(!user.picture.url)) {
+			user.picture = {};
+			user.picture.url = config.defaultProfilePictureUrl;
+			user.picture.mid = config.defaultProfilePictureUrl;
+			user.picture.default = true;
+		}
 	}
 }
 

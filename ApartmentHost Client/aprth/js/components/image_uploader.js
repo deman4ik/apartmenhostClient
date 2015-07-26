@@ -5,6 +5,11 @@
 var ImageUpLoaderErrs = {
 	CLOSED: "User closed widget"
 }
+//стили загрузчика
+var ImageUpLoaderStyles = {
+	ANCOR: "a",
+	IMAGE_BUTTON: "image_button"
+}
 //загрузчик картинок
 var ImageUpLoader = React.createClass({
 	//состояние загрузчика
@@ -51,6 +56,7 @@ var ImageUpLoader = React.createClass({
 				upload_preset: "obj_pics",
 				theme: "white",
 				sources: ["local", "url"],
+				multiple: (this.props.single?false:true),
 				text: translation
 			},
 			Utils.bind(function (error, result) { 
@@ -61,14 +67,24 @@ var ImageUpLoader = React.createClass({
 		);
 	},
 	//генерация представления компонента загрузчика
-	render: function () {		
-		//представление компонента загрузчика
-		return (			
-			<input className="w-button u-btn-round u-btn round" 
+	render: function () {
+		//сборка представления загрузчика
+		var content;
+		if((!this.props.style)||(this.props.style == ImageUpLoaderStyles.IMAGE_BUTTON))	{
+			content = <input className="w-button u-btn-round u-btn round" 
 				type="button"
 				value="+"
 				title={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD_PHOTO"})}
 				onClick={this.handleOpenUploaderClick}/>
-		);
+		}
+		if((this.props.style == ImageUpLoaderStyles.ANCOR)&&(this.props.caption))	{
+			content =	<a href="javascript:void(0);" 
+							className="u-lnk-norm" 
+							onClick={this.handleOpenUploaderClick}>
+							{this.props.caption}
+						</a>
+		}
+		//представление компонента загрузчика
+		return content;
 	}
 });

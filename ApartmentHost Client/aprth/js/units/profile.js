@@ -371,6 +371,65 @@ var Profile = React.createClass({
 	handleDeclineReservation: function (item) {
 		this.processReservation(item.id, ProfileOrdersStates.declined);
 	},
+	//обработка результата загрузки изображения пользователя
+	handleUploadProfilePictureResult: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			this.setState({notifyApp: true}, function () {
+				this.loadProfile();
+				if(this.state.activeReviewsTab == ProfileReviewsTabs[2]) this.loadActiveTab(true);
+			});
+		}
+	},
+	//обработка нажатия на изменение изображения пользователя
+	handleUploadProfilePicture: function (error, result) {
+		if(error) {
+			if(error.message != ImageUpLoaderErrs.CLOSED)
+				this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), error.message);
+		} else {
+			if(result) {
+				if(this.props.session.loggedIn) {
+					this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+					var uplPrms = {
+						language: this.props.language, 
+						session: this.props.session.sessionInfo,
+						profileId: this.state.profile.id,
+						picture: {
+							name: result[0].path, 
+							cloudinaryPublicId: result[0].public_id
+						}
+					}
+					clnt.uploadProfilePicture(uplPrms, this.handleUploadProfilePictureResult);
+				}			
+			}
+		}
+	},
+	//обработка результата удаления изображения пользователя
+	handleDeleteProfilePictureResult: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			this.setState({notifyApp: true}, function () {
+				this.loadProfile();
+				if(this.state.activeReviewsTab == ProfileReviewsTabs[2]) this.loadActiveTab(true);
+			});
+		}
+	},
+	//обработка нажатия на удаления изображения пользователя
+	handleDeleteProfilePicture: function () {
+		if(this.props.session.loggedIn) {
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var delPrms = {
+				language: this.props.language, 
+				session: this.props.session.sessionInfo,
+				profileId: this.state.profile.id
+			}
+			clnt.removeProfilePicture(delPrms, this.handleDeleteProfilePictureResult);
+		}
+	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
 		this.buildReviewForm(this.props);
@@ -405,6 +464,28 @@ var Profile = React.createClass({
 										text={Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_CONFIRM_REMOVE"})}
 										onOk={this.doRemoveAdvert}
 										onCancel={this.doNotRemoveAdvert}/>
+				}
+				//аватар
+				var userPictureEditor;
+				if(this.state.modeEdit) {
+					userPictureEditor =	<div className="w-row u-row-descr">												
+											<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
+												<div>Изображение</div>
+											</div>
+											<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
+												<ImageUpLoader language={this.props.language}
+													onUpLoaded={this.handleUploadProfilePicture}
+													style={ImageUpLoaderStyles.ANCOR}
+													caption={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_UPD"})}
+													single={true}/>
+												&nbsp;&nbsp;
+												<a href="javascript:void(0);"
+													className="u-lnk-norm"
+													onClick={this.handleDeleteProfilePicture}>
+													{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_DEL"})}
+												</a>										
+											</div>
+										</div>
 				}
 				//имя пользователя
 				var userName;
@@ -898,6 +979,7 @@ var Profile = React.createClass({
 												<img className="u-img-author-m" src={this.state.profile.picture.url} width="96"/>
 												{userName}												
 											</div>
+											{userPictureEditor}
 											<div className="w-row u-row-descr">
 												<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
 													<div>{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_GENDER"})}</div>
@@ -905,8 +987,8 @@ var Profile = React.createClass({
 												<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
 													{userGender}													
 												</div>
-											</div>
-											<div className="w-row u-row-descr">
+											</div>											
+											<div className="w-row u-row-descr">												
 												<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
 													<div>{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_MAIL"})}</div>
 												</div>

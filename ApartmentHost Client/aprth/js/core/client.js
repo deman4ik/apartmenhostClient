@@ -22,8 +22,11 @@ var Client = function (clientConfig) {
 		reservation: "Reservation", //запросы на бронирование
 		userProfile: "Profile", //работа с профилем пользователя
 		review: "Review", //работа с отзывами
-		uploadApartmentPicture: "Picture/Upload/Apartment", //загрузка картинки недвижимости
-		removeApartmentPicture: "Picture/Delete/Apartment" //удаление картинки недвижимости
+		uploadApartmentPicture: "Picture/Upload/Apartment", //работа с картинками - загрузка картинки недвижимости
+		removeApartmentPicture: "Picture/Delete/Apartment", //работа с картинками - удаление картинки недвижимости
+		uploadProfilePicture: "Picture/Upload/Profile", //работа с картинками - загрузка картинки профиля
+		removeProfilePicture: "Picture/Delete/Profile" //работа с картинками - удаление картинки профиля
+
 	}
 	//коды стандартных ответов сервера
 	var serverStdErrCodes = {
@@ -234,7 +237,35 @@ var Client = function (clientConfig) {
 						}));
 					return fillSrvStdReqData(serverActions.removeApartmentPicture + "/" + prms.data.apartId, serverMethods.del, prms.data.pictIds);
 					break;
-				}				
+				}
+				//работа с картинками профиля - загрузка
+				case (serverActions.uploadProfilePicture): {
+					if(!prms.data.profileId) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "profileId"]
+						}));
+					if(!prms.data.picture) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "picture"]
+						}));
+					return fillSrvStdReqData(serverActions.uploadProfilePicture + "/" + prms.data.profileId, serverMethods.ins, prms.data.picture);
+					break;
+				}
+				//работа с картинками профиля - удаление
+				case (serverActions.removeProfilePicture): {
+					if(!prms.data.profileId) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "profileId"]
+						}));
+					return fillSrvStdReqData(serverActions.removeProfilePicture + "/" + prms.data.profileId, serverMethods.del, "");
+					break;
+				}
 				//изменение статуса объявления в избранном
 				case (serverActions.toggleAdvertFavor): {
 					if(!prms.data) 
@@ -435,24 +466,14 @@ var Client = function (clientConfig) {
 					if(resp.STATE == respStates.ERR)
 						callBack(resp);
 					else {
-						resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+						resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);						
 						resp.MESSAGE.map(function (item, i) {
-							if(item.apartment.pictures.length == 0) {
-								item.apartment.pictures.push({
-									default: true,
-									id: "default",
-									large: config.defaultPictureUrl,
-									mid: config.defaultPictureUrl,
-									name: "default",
-									small: config.defaultPictureUrl,
-									url: config.defaultPictureUrl,
-									xlarge: config.defaultPictureUrl,
-									xsmall: config.defaultPictureUrl
-								});								
-							} else {
-								if(!_.find(item.apartment.pictures, {default: true})) {
-									item.apartment.pictures[0].default = true;
-								}
+							if(item.apartment) Utils.setApartmentDefaultPicture(item.apartment);
+							if(item.user) Utils.setProfileDefaultPicture(item.user);
+							if((item.reviews)&&(Array.isArray(item.reviews))) {
+								item.reviews.map(function (review, i) {
+									Utils.setProfileDefaultPicture(review.fromUser);
+								}, this);
 							}
 						}, this);
 						callBack(resp);
@@ -724,7 +745,7 @@ var Client = function (clientConfig) {
 					}
 				});
 			} catch (error) {
-				log(["REMOVE CARD ERROR", error]);
+				log(["UPLOAD APARTMENT PICTURE ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
@@ -754,7 +775,7 @@ var Client = function (clientConfig) {
 					}
 				});
 			} catch (error) {
-				log(["REMOVE CARD ERROR", error]);
+				log(["REMOVE APARTMENT PICTURE ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
@@ -793,6 +814,11 @@ var Client = function (clientConfig) {
 							} else {
 								profileItem.adverts = [];
 								profileItem.advertsCount = 0;								
+							}
+							if((!profileItem.picture)||(!profileItem.picture.url)) {
+								profileItem.picture = {};
+								profileItem.picture.url = config.defaultProfilePictureUrl;
+								profileItem.picture.default = true;
 							}
 							log(["GETING PROFILE SERVER RESULT:", profileItem]);
 							callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, profileItem));
@@ -835,6 +861,65 @@ var Client = function (clientConfig) {
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
 		},
+		//загрузка картинки профиля
+		uploadProfilePicture: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.uploadProfilePicture,
+						method: serverMethods.ins,
+						data: {
+							profileId: prms.profileId,
+							picture: prms.picture
+						}
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["UPLOAD PROFILE PICTURE ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//удаление картинки профиля
+		removeProfilePicture: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.removeProfilePicture,
+						method: serverMethods.del,
+						data: {
+							profileId: prms.profileId
+						}
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["REMOVE PROFILE PICTURE ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
 		//загрузка отзывов
 		getReviews: function (prms, callBack) {
 			try {
@@ -852,6 +937,15 @@ var Client = function (clientConfig) {
 							callBack(resp);
 						else {
 							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							resp.MESSAGE.map(function (item, i) {
+								if(item.reservation) {
+									if(item.reservation.user) Utils.setProfileDefaultPicture(item.reservation.user);
+									if(item.reservation.card) {
+										if(item.reservation.card.user) Utils.setProfileDefaultPicture(item.reservation.card.user);
+										if(item.reservation.card.apartment) Utils.setApartmentDefaultPicture(item.reservation.card.apartment);
+									}
+								}								
+							}, this);
 							callBack(resp);
 						}
 					}
@@ -905,12 +999,19 @@ var Client = function (clientConfig) {
 							callBack(resp);
 						else {
 							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							resp.MESSAGE.map(function (item, i) {
+								if(item.card) {
+									if(item.card.apartment) Utils.setApartmentDefaultPicture(item.card.apartment);									
+								}
+								if(item.user) Utils.setProfileDefaultPicture(item.user);
+							}, this);
+							console.log(resp.MESSAGE);
 							callBack(resp);
 						}
 					}
 				});
 			} catch (error) {
-				log(["GETING REVIEWS ERROR", error]);
+				log(["GETING RESERVATIONS ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}

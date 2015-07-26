@@ -67,6 +67,7 @@ var Post = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
+			console.log(resp.MESSAGE[0]);
 			var postTmp = this.calcAdvertPricePeriod(resp.MESSAGE[0]);	
 			this.setState({post: postTmp, postReady: true});
 		}
@@ -467,6 +468,11 @@ var Post = React.createClass({
 										</div>								
 									</div>
 								</div>
+							</section>
+							<section className="w-section u-sect-card-map">
+								<Map title={this.state.post.apartment.name}
+								latitude={this.state.post.apartment.latitude} 
+								longitude={this.state.post.apartment.longitude}/>
 							</section>
 							{advReviews}
 						</div>

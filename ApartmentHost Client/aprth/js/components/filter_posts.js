@@ -216,12 +216,11 @@ var PostsFilter = React.createClass({
 				<div className="w-form u-form-wrapper" style={formWrapperStyle}>
 					<form className="w-clearfix u-form-body">
 						<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_ADVERTS_FILER"})}</h3>
-						<input className={classesAdrInput}
-							type="text"
-							ref="adress"
+						<AddressInput classes={classesAdrInput}
+							name="adress"
+							value={this.state.adress}
 							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FILTER_ADRESS"})}
-							onChange={this.handleAddrChange}
-							value={this.state.adress}/>
+							onAddressChanged={Utils.bind(function (value) {this.handleAddrChange({target: {id: "adress", value: value}})}, this)}/>
 						<div className="w-row">
 							<div className="w-col w-col-3">
 								<label className="u-form-label">
