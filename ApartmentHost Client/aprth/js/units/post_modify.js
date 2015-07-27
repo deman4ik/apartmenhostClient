@@ -23,6 +23,9 @@ var ModifyPost = React.createClass({
 				sex: "", //пол постояльца
 				apartType: "", //тип жилья
 				address: "", //адрес
+				formattedAdress: "", //геокодированный адрес
+				latitude: "", //широта
+				longitude: "", //долгота
 				dFrom: "", //дата начала периода недоступности
 				dTo: "", //дата коночания периода недоступности
 				dates: [], //набор периодов недоступности
@@ -36,7 +39,7 @@ var ModifyPost = React.createClass({
 	},	
 	//зачистка формы
 	clearPostForm: function () {		
-		this.setState({post: {phone: "", sex: "", apartType: "", address: "", dFrom: "", dTo: "", dates: [], description: "", options: "", price: 0, apartId: "", pictures: []}});		
+		this.setState({post: {phone: "", sex: "", apartType: "", address: "", formattedAdress: "", latitude: "", longitude: "", dFrom: "", dTo: "", dates: [], description: "", options: "", price: 0, apartId: "", pictures: []}});		
 	},
 	//отработка успешного добавления/исправления объявления
 	afterSuccessModify: function () {
@@ -93,6 +96,9 @@ var ModifyPost = React.createClass({
 				phone: this.state.post.phone,
 				apartment: {
 					adress: this.state.post.address,
+					formattedAdress: this.state.post.formattedAdress,
+					latitude: this.state.post.latitude,
+					longitude: this.state.post.longitude,
 					Name: this.state.post.description,
 					type: this.state.post.apartType,
 					options: this.state.post.options
@@ -131,6 +137,9 @@ var ModifyPost = React.createClass({
 					sex: resp.MESSAGE[0].residentGender,
 					apartType: resp.MESSAGE[0].apartment.type,
 					address: resp.MESSAGE[0].apartment.adress,
+					formattedAdress: resp.MESSAGE[0].apartment.formattedAdress,
+					latitude: resp.MESSAGE[0].apartment.latitude,
+					longitude: resp.MESSAGE[0].apartment.longitude,
 					dFrom: "",
 					dTo: "",
 					dates: resp.MESSAGE[0].dates,
@@ -347,10 +356,28 @@ var ModifyPost = React.createClass({
 		}
 	},
 	//нажатие на кнопку отмены добавления/исправления объявления
-	handleChancelModifyPostClick: function() {
+	handleChancelModifyPostClick: function () {
 		if(!this.context.router.goBack()) {
 			this.context.router.transitionTo("profile");
 		}	
+	},	
+	//выбор адреса на карте
+	handleAddressPicked: function (point) {		
+		var tmp = {};
+		_.extend(tmp, this.state.post);
+		tmp["address"] = point.address;
+		tmp["formattedAdress"] = point.address;
+		tmp["latitude"] = point.latitude;
+		tmp["longitude"] = point.longitude;
+		this.setState({pickAddress: false, post: tmp});
+	},
+	//отмена выбора адреса на карте
+	handleAddressPickCancel: function () {
+		this.setState({pickAddress: false});
+	},
+	//нажатие на выбор адреса на карте
+	handlePickAddressClick: function () {
+		this.setState({pickAddress: true});
 	},
 	//инициализация формы карточки объявления
 	initForm: function () {		
@@ -449,6 +476,16 @@ var ModifyPost = React.createClass({
 							<ImageUpLoader language={this.props.language}
 								onUpLoaded={this.handlePictureUploaded}/>
 						</div>
+		//указание адреса на карте
+		var mapPicker;
+		if(this.state.pickAddress) {
+			mapPicker =	<MapPicker language={this.props.language}
+							onOK={this.handleAddressPicked}
+							onCancel={this.handleAddressPickCancel}
+							latitude={this.state.post.latitude} 
+							longitude={this.state.post.longitude}
+							address={this.state.post.address}/>
+		}
 		//содержимое формы
 		var content;
 		if(this.state.formReady) {
@@ -521,7 +558,13 @@ var ModifyPost = React.createClass({
 														name="address"
 														value={this.state.post.address}
 														placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_ADRESS"})}
-														onAddressChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "address", value: value}})}, this)}/>
+														onAddressChanged={this.handleAddressPicked}/>
+													<a href="javascript:void(0);"
+														className="u-t-right u-lnk-norm"
+														onClick={this.handlePickAddressClick}>
+														{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_PICK_ON_MAP"})}
+													</a>
+													{mapPicker}
 												</div>
 											</div>
 											<div className="u-block-spacer2"></div>
@@ -615,7 +658,7 @@ var ModifyPost = React.createClass({
 												onClick={this.handleModifyPostClick}/>
 											<input className="w-button u-btn-regular"
 												type="button"
-												value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHANCEL"})}
+												value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CLOSE"})}
 												onClick={this.handleChancelModifyPostClick}/>											
 										</form>						
 									</div>

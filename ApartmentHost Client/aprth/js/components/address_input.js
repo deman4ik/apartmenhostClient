@@ -5,24 +5,17 @@ var AddressInput = React.createClass({
 	//состояние
 	getInitialState: function () {
 		return {
-			value: "" //значение
+			latitude: "", //широта
+			longitude: "", //долгота
+			address: "" //адрес
 		};
 	},
 	//установка значений состояния
 	initState: function (props) {
-		this.setState({value: props.value});
+		this.setState({address: props.value});
 		var autocomplete = new google.maps.places.Autocomplete(React.findDOMNode(this.refs[this.props.name]));
-		google.maps.event.addListener(autocomplete, "place_changed", Utils.bind(function() {
-			var address = "";
-			var place = autocomplete.getPlace();
-			if(place) {
-				if(place.formatted_address) {
-					address = place.formatted_address					
-				}
-			} else {
-				address = $("#" + this.props.name).val();
-			}
-			this.handleChange({target: {id: this.props.name, value: address}});			
+		google.maps.event.addListener(autocomplete, "place_changed", Utils.bind(function () {			
+			this.handlePlacePick(autocomplete.getPlace());						
 		}, this));
 	},
 	//инициализация
@@ -36,12 +29,32 @@ var AddressInput = React.createClass({
 	componentWillReceiveProps: function (newProps) {
 		this.initState(newProps);
 	},
-	handleChange: function (e) {
-		this.setState({value: e.target.value});
-		if((this.props.onAddressChanged)&&(Utils.isFunction(this.props.onAddressChanged))) {
-			this.props.onAddressChanged(e.target.value);
+	//отработка выбора точки из подсказки
+	handlePlacePick: function (place) {
+		var tmp = {address: "", latitude: "", longitude: ""}
+		if((place)&&(place.geometry)) {
+			tmp.address = (place.formatted_address)?place.formatted_address:place.name;
+			tmp.latitude = place.geometry.location.lat();
+			tmp.longitude = place.geometry.location.lng();
+		} else {
+			tmp.address = $("#" + this.props.name).val();
 		}
-	},	
+		this.setState({address: tmp.address, latitude: tmp.latitude, longitude: tmp.longitude}, this.notifyParent);
+	},
+	//отработка ручного изменения адреса
+	handleChange: function (e) {
+		this.setState({address: e.target.value, latitude: "", longitude: ""}, this.notifyParent);
+	},
+	//оповещение родителя о смене состояния адреса
+	notifyParent: function () {
+		if((this.props.onAddressChanged)&&(Utils.isFunction(this.props.onAddressChanged))) {
+			this.props.onAddressChanged({
+				address: this.state.address, 
+				latitude: this.state.latitude, 
+				longitude: this.state.longitude
+			});
+		}
+	},
 	//генерация представления
 	render: function () {
 		//классы стилей
@@ -62,7 +75,7 @@ var AddressInput = React.createClass({
 				className={clName}
 				id={this.props.name}
 				ref={this.props.name}
-				value={this.state.value}
+				value={this.state.address}
 				placeholder={plh}
 				onChange={this.handleChange}/>	
 		);

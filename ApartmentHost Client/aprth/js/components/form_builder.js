@@ -83,31 +83,31 @@ var FormBuilder = React.createClass({
 			}
 			//собираем форму
 			form =	<div>
-			    <div className="modal show messagebox-wraper">
-						<div className="modal-dialog">
-							<div className="modal-content">
-								<div className="modal-header">
-									<h4 className="modal-title">{this.state.form.title}</h4>
-								</div>
-								<div className="modal-body">
-									<br/>
-									<form className="form-horizontal loginForm" role="form">
-										<div className="panel-default">
-											<div className="panel-body">
-												{items}
+						<div className="modal show messagebox-wraper">
+							<div className="modal-dialog">
+								<div className="modal-content">
+									<div className="modal-header">
+										<h4 className="modal-title">{this.state.form.title}</h4>
+									</div>
+									<div className="modal-body">
+										<br/>
+										<form className="form-horizontal" role="form">
+											<div className="panel-default">
+												<div className="panel-body">
+													{items}
+												</div>
 											</div>
-										</div>
-									</form>
-								</div>
-								<div className="modal-footer">
-									<button type="button" className="w-button u-btn-primary" onClick={this.handleOKClick}>{this.state.form.okButtonCaption}</button>
-									<button type="button" className="w-button u-btn-regular" onClick={this.handleChancelClick}>{this.state.form.chancelButtonCaption}</button>
+										</form>
+									</div>
+									<div className="modal-footer">
+										<button type="button" className="w-button u-btn-primary" onClick={this.handleOKClick}>{this.state.form.okButtonCaption}</button>
+										<button type="button" className="w-button u-btn-regular" onClick={this.handleChancelClick}>{this.state.form.chancelButtonCaption}</button>
+									</div>
 								</div>
 							</div>
 						</div>
+						<div className="modal-backdrop fade in"></div>
 					</div>
-					<div className="modal-backdrop fade in"></div>
-				</div>
 		} else {
 			form = <InLineMessage type={Utils.getMessageTypeErr()} message={Utils.getStrResource({lang: this.props.language, code: "CLNT_FORM_BAD_META"})}/>
 		}

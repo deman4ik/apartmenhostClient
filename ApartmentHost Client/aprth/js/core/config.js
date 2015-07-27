@@ -8,6 +8,10 @@ var config = {
 	serverAppKey: "ntYnnTKTdxhWcfEDGPQMMYvNKyiUtx61",
 	//ключ для Google APIs
 	googleAppKey: "AIzaSyCE7mx3wrx6GChi6odnbAZ8jSejP2YnTbM",
+	//широта центра карты по-умолчанию
+	latitude: 55.755833,
+	//долгота центра карты по-умолчанию
+	longitude: 37.617778,
 	//имя облака Cloudinary для хранения картинок
 	cloudinaryCloudName: "apartmenthost",
 	//имя демонстрационного пользователя

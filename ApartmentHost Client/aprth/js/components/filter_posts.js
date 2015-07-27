@@ -109,8 +109,8 @@ var PostsFilter = React.createClass({
 		}
 	},
 	//ввод адреса
-	handleAddrChange: function (e) {
-		this.setState({adress: e.target.value});
+	handleAddrChange: function (val) {
+		this.setState({adress: val.address});
 	},
 	//выбор пола
 	handleSelectedSex: function (sex) {
@@ -220,7 +220,7 @@ var PostsFilter = React.createClass({
 							name="adress"
 							value={this.state.adress}
 							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FILTER_ADRESS"})}
-							onAddressChanged={Utils.bind(function (value) {this.handleAddrChange({target: {id: "adress", value: value}})}, this)}/>
+							onAddressChanged={this.handleAddrChange}/>
 						<div className="w-row">
 							<div className="w-col w-col-3">
 								<label className="u-form-label">

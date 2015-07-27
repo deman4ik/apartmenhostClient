@@ -621,7 +621,7 @@ var Profile = React.createClass({
 											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_OK"})}
 										</button>
 										<button type="button" className="w-button u-btn-regular" onClick={this.handleCancelEditClick}>
-											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHANCEL"})}
+											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CLOSE"})}
 										</button>
 									</div>
 				} else {
