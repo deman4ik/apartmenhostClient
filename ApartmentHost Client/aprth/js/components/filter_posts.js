@@ -15,6 +15,9 @@ var PostsFilter = React.createClass({
 			noAdressFilterSpecified: false, //флаг отсуствия фильтра по адресу
 			noDateFromFilterSpecified: false, //флаг отсуствия фильтра по дате начала периода бронирования
 			noDateToFilterSpecified: false, //флаг отсуствия фильтра по дате окончания периода бронирования
+			radius: config.searchRadius, //радиус поиска по карте
+			latitude: "", //широта выбранной точки поиска
+			longitude: "", //долгота выбранной точки поиска
 			adress: "", //адрес жилья		
 			swLat: "", //широта ЮВ угла квадрата поиска по выбранной точке
 			swLong: "", //долгота ЮВ угла квадрата поиска по выбранной точке
@@ -32,6 +35,9 @@ var PostsFilter = React.createClass({
 	//сохранение и сборка фильтра
 	saveFilterState: function () {
 		var filterParams = {language: this.props.language};
+		if(this.state.radius) filterParams.radius = this.state.radius;
+		if(this.state.latitude) filterParams.latitude = this.state.latitude;
+		if(this.state.longitude) filterParams.longitude = this.state.longitude;
 		if(this.state.adress) filterParams.adress = this.state.adress;
 		if(this.state.swLat) filterParams.swLat = this.state.swLat;
 		if(this.state.swLong) filterParams.swLong = this.state.swLong;
@@ -53,6 +59,9 @@ var PostsFilter = React.createClass({
 		var filterParams = Utils.loadObjectState("filterParams");
 		if(filterParams) {
 			this.setState({
+				radius: filterParams.radius,
+				latitude: filterParams.latitude,
+				longitude: filterParams.longitude,
 				adress: filterParams.adress,
 				swLat: filterParams.swLat,
 				swLong: filterParams.swLong,
@@ -127,18 +136,46 @@ var PostsFilter = React.createClass({
 	//ввод адреса
 	handleAddrChange: function (val) {
 		if((val.latitude)&&(val.longitude)) {
-			var c = new google.maps.Circle({center: new google.maps.LatLng(val.latitude, val.longitude), radius: config.searchRadius});
+			var c = new google.maps.Circle({
+				center: new google.maps.LatLng(val.latitude, val.longitude),
+				radius: this.state.radius
+			});
 			var bounds = c.getBounds();			
 			this.setState({
 				adress: val.address,
+				latitude: val.latitude,
+				longitude: val.longitude,
 				swLat: bounds.getSouthWest().lat(),
 				swLong: bounds.getSouthWest().lng(),
 				neLat: bounds.getNorthEast().lat(),
 				neLong: bounds.getNorthEast().lng()
+			}, function () {
+				if(val.notifyParent) this.handleFindClick()
 			});
 		} else {
-			this.setState({adress: val.address, swLat: "", swLong: "", neLat: "", neLong: ""});
+			this.setState({
+				adress: val.address,
+				latitude: "",
+				longitude: "",
+				swLat: "",
+				swLong: "",
+				neLat: "",
+				neLong: ""
+			});
 		}
+	},
+	//смена радиуса поиска
+	handleRadiusChanged: function (radius) {
+		this.setState({radius: radius}, function () {
+			if((this.state.adress)&&(this.state.latitude)&&(this.state.longitude)) {
+				this.handleAddrChange({
+					address: this.state.adress,
+					latitude: this.state.latitude,
+					longitude: this.state.longitude,
+					notifyParent: true
+				});
+			}
+		});		
 	},
 	//выбор пола
 	handleSelectedSex: function (sex) {
@@ -186,6 +223,9 @@ var PostsFilter = React.createClass({
 				noAdressFilterSpecified: false,
 				noDateFromFilterSpecified: false,
 				noDateToFilterSpecified: false,
+				radius: config.searchRadius,
+				latitude: "",
+				longitude: "",
 				adress: "",
 				swLat: "",
 				swLong: "",
@@ -379,6 +419,21 @@ var PostsFilter = React.createClass({
 											defaultOptionsState={this.state.apartType}
 											appendEmptyOption={true}
 											emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}/>
+									</div>
+								</div>
+								<div className="w-row">
+									<div className="w-col w-col-4">
+										<label className="u-form-label n1">
+											{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_SEARCH_RADIUS"})}:
+										</label>
+									</div>
+									<div className="w-col w-col-8">
+										<Slider step={config.searchRadiusStep}
+											curVal={this.state.radius}
+											minVal={config.searchRadiusMin}
+											maxVal={config.searchRadiusMax}
+											meas={Utils.getStrResource({lang: this.props.language, code: "METER"})}
+											onStep={this.handleRadiusChanged}/>
 									</div>
 								</div>
 							</form>

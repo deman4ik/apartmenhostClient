@@ -13,10 +13,15 @@ var Map = React.createClass({
 		return {
 			latitude: "", //широта маркера
 			longitude: "", //долгота маркера
+			swLat: "", //широта ЮВ угла области поиска
+			swLong: "", //долгота ЮВ угла области поиска
+			neLat: "", //широта СЗ угла области поиска
+			neLong: "", //долгота СЗ угла области поиска
 			address: "", //адрес маркера
 			title: "", //заголовок маркера
 			map: {}, //карта
 			markers: [], //маркеры
+			radius: 0, //радиус поиска
 			centerIsChanged: false //признак изменения центра карты
 		};
 	},
@@ -49,6 +54,17 @@ var Map = React.createClass({
 					}
 				}, this);
 			}
+			if((this.state.radius)&&(this.state.radius > 0)) {
+				var cO = {
+					fillColor: "#FF0000",
+					fillOpacity: 0.35,
+					strokeWeight: 0,
+					map: this.state.map,
+					center: point,
+					radius: this.state.radius
+				};
+    			var c = new google.maps.Circle(cO);
+			}
 		}
 		this.setState({centerIsChanged: true}, this.state.map.setCenter(point));
 	},
@@ -63,11 +79,12 @@ var Map = React.createClass({
 				this.setMapCenterAndMarkers();
 			} else {
 				if((this.state.swLat)&&(this.state.swLong)&&(this.state.neLat)&&(this.state.neLong)) {
-					var b = new google.maps.LatLngBounds(
-						new google.maps.LatLng(this.state.swLat, this.state.swLong),
-						new google.maps.LatLng(this.state.neLat, this.state.neLong)
-					);
-					this.setState({latitude: b.getCenter().lat(), longitude: b.getCenter().lng}, this.setMapCenterAndMarkers);
+					var sw = new google.maps.LatLng(this.state.swLat, this.state.swLong);
+					var ne = new google.maps.LatLng(this.state.neLat, this.state.neLong);
+					var b = new google.maps.LatLngBounds(sw, ne);
+					var r = google.maps.geometry.spherical.computeDistanceBetween(sw, ne, 0) / 2;
+					console.log(r);
+					this.setState({latitude: b.getCenter().lat(), longitude: b.getCenter().lng(), radius: r}, this.setMapCenterAndMarkers);
 				} else {
 					var geocoder = new google.maps.Geocoder();
 					geocoder.geocode({"address": this.state.address}, Utils.bind(function(results, status) {
@@ -102,10 +119,14 @@ var Map = React.createClass({
 		this.setState({
 			latitude: props.latitude,
 			longitude: props.longitude,
+			swLat: props.swLat,
+			swLong: props.swLong,
+			neLat: props.neLat,
+			neLong: props.neLong,
 			address: props.address,
 			title: props.title,
 			map: mapTmp,
-			markers: props.markers,
+			markers: props.markers
 		}, this.initMapCenterAndMarkers);
 	},
 	//инициализация

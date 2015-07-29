@@ -26,6 +26,12 @@ var config = {
 	defaultPictureUrl: "aprth/img/def_photo.png",
 	//аватар по-умолчани
 	defaultProfilePictureUrl: "aprth/img/def_ava.png",
-	//радиус поиска на карте (метры)
-	searchRadius: 5000
+	//радиус поиска на карте по умолчанию (метры)
+	searchRadius: 5000,
+	//минимальный радиус поиска на карте (метры)
+	searchRadiusMin: 1000,
+	//максимальный радиус поиска на карте (метры)
+	searchRadiusMax: 15000,
+	//шаг увеличения/уменьшения радиуса поиска (метры)
+	searchRadiusStep: 1000
 }

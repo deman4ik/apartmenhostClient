@@ -221,7 +221,15 @@ var Posts = React.createClass({
 									onFilterChange={this.onFilterChange}/>
 				//карта
 				var map;
-				if((this.state.advertsReady)&&(this.state.advertsCnt > 0)) {
+				if(
+					//(this.state.advertsReady)
+					//&&(this.state.advertsCnt > 0)
+					//&&
+					(this.state.filter.swLat)
+					&&(this.state.filter.swLong)
+					&&(this.state.filter.neLat)
+					&&(this.state.filter.neLong)
+				) {
 					map = 	<Map swLat={this.state.filter.swLat}
 								swLong={this.state.filter.swLong}
 								neLat={this.state.filter.neLat}
@@ -229,7 +237,7 @@ var Posts = React.createClass({
 								address={this.state.filter.adress}
 								markers={this.state.markers}
 								mode={mapModes.modeGroup}
-								zoom={12}
+								zoom={10}
 								height={"400px"}/>
 				}
 				//список объявлений

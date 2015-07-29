@@ -25,6 +25,8 @@ var langs = [
 		//код языка каленаря и формат даты
 		CALENDAR: "ru",
 		DATE_FORMAT: "dd.mm.yyyy",
+		//метрики
+		METER: "м",
 		//общая ошибка
 		UNDEFINED_RESOURCE: "Неопределенное сообщение!",
 		//ресурсы для пользовательского интерфейса
@@ -105,6 +107,7 @@ var langs = [
 		UI_FLD_MAIL: "Почта",
 		UI_FLD_ABOUT_ME: "О себе",
 		UI_FLD_PHOTO: "Фото",
+		UI_FLD_SEARCH_RADIUS: "Радиус поиска",
 		UI_PLH_USER: "Имя пользователя",
 		UI_PLH_PASS: "Пароль пользователя",
 		UI_PLH_DATE_FROM: "Дата с",
@@ -254,6 +257,8 @@ var langs = [
 		//код языка каленаря и формат даты
 		CALENDAR: "en",
 		DATE_FORMAT: "mm/dd/yyyy",
+		//метрики
+		METER: "m",
 		//общая ошибка
 		UNDEFINED_RESOURCE: "Undefined message!",
 		//ресурсы для пользовательского интерфейса
@@ -334,6 +339,7 @@ var langs = [
 		UI_FLD_MAIL: "E-mail",
 		UI_FLD_ABOUT_ME: "About myself",
 		UI_FLD_PHOTO: "Photo",
+		UI_FLD_SEARCH_RADIUS: "Search radius",
 		UI_PLH_USER: "User name",		
 		UI_PLH_PASS: "User password",
 		UI_PLH_DATE_FROM: "Date from",
