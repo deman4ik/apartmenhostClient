@@ -469,7 +469,8 @@ var Post = React.createClass({
 								</div>
 							</section>
 							<section className="w-section u-sect-card-map">
-								<Map title={this.state.post.apartment.name}
+								<Map mode={mapModes.modeSignle} 
+									title={this.state.post.apartment.name}
 									latitude={this.state.post.apartment.latitude} 
 									longitude={this.state.post.apartment.longitude}
 									address={this.state.post.apartment.adress}/>

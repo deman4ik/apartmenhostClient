@@ -16,6 +16,7 @@ var Posts = React.createClass({
 	getInitialState: function () {
 		return {
 			adverts: [], //список объявлений
+			markers: [], //список маркеров для карты
 			advertsCnt: 0, //количество объявлений
 			advertsReady: false, //флаг доступности списка объявлений для отображения
 			filterIsSet: false, //флаг установленности фильтра
@@ -40,10 +41,34 @@ var Posts = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
+			var markers = [];
 			//обработаем ответ в зависимости от режима
 			switch(this.props.mode) {
 				//режим поиска
-				case(PostsModes.SEARCH): {
+				case(PostsModes.SEARCH): {					
+					//наделаем маркеров для карты
+					resp.MESSAGE.map(function (item, i) {
+						if((item.apartment.latitude)&&(item.apartment.longitude)) {
+							var link = "#/posts/" + item.id;
+							if(("availableDateFrom" in this.state.filter)&&("availableDateTo" in this.state.filter)) {
+								link += "?dFrom=" + this.state.filter.availableDateFrom + "&dTo=" + this.state.filter.availableDateTo;
+							}							
+							var content = "<div>" +
+								"<b>" + Utils.getStrResource({lang: this.props.language, code: item.apartment.type}) + "</b><br>" + 
+								item.user.lastName + " " + item.user.firstName + "<br>" +								
+								item.priceDay + " " + Utils.getStrResource({lang: this.props.language, code: "CURRENCY"}) + "/" +
+								Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"}) + "<br>" +
+								item.description + "<br>" +
+								"<b><a href='" + link + "'>>>></a></b>" +
+								"</div>";							 
+							markers.push({
+								latitude: item.apartment.latitude,
+								longitude: item.apartment.longitude,
+								title: item.apartment.name,
+								content: content
+							});
+						}
+					}, this);
 					//если это поиск, то необходимо расчитать цену за период для каждого объявления
 					if(("availableDateFrom" in this.state.filter)&&("availableDateTo" in this.state.filter))
 						this.calcAdvertsPricePeriod(
@@ -65,7 +90,7 @@ var Posts = React.createClass({
 				default: {}
 			}
 			//теперь выставляем состояние компоненты
-			this.setState({adverts: resp.MESSAGE, advertsCnt: resp.MESSAGE.length, advertsReady: true, filterIsSet: true});
+			this.setState({adverts: resp.MESSAGE, advertsCnt: resp.MESSAGE.length, markers: markers, advertsReady: true, filterIsSet: true});
 		}
 	},
 	//получение ответа о смене статуса в избранном
@@ -103,7 +128,7 @@ var Posts = React.createClass({
 			session: this.props.session.sessionInfo
 		}
 		clnt.toggleAdvertFavor(togglePrms, function (resp) {self.handleFavorChange(resp, itemId)});
-	},
+	},	
 	//смена фильтра
 	onFilterChange: function (filter) {		
 		if(!$.isEmptyObject(filter)) {			
@@ -194,6 +219,19 @@ var Posts = React.createClass({
 									cntFound={this.state.advertsCnt}
 									filterIsSet={this.state.filterIsSet}
 									onFilterChange={this.onFilterChange}/>
+				//карта
+				var map;
+				if((this.state.advertsReady)&&(this.state.advertsCnt > 0)) {
+					map = 	<Map swLat={this.state.filter.swLat}
+								swLong={this.state.filter.swLong}
+								neLat={this.state.filter.neLat}
+								neLong={this.state.filter.neLong}
+								address={this.state.filter.adress}
+								markers={this.state.markers}
+								mode={mapModes.modeGroup}
+								zoom={12}
+								height={"400px"}/>
+				}
 				//список объявлений
 				var postsList;
 				if((this.state.advertsReady)&&(this.state.advertsCnt > 0)) {
@@ -208,6 +246,7 @@ var Posts = React.createClass({
 								<div className="w-row">
 									<div className="w-col w-col-12 w-col-stack u-col-cardlst1">
 										{postsFilter}
+										{map}
 										{postsList}
 									</div>
 								</div>

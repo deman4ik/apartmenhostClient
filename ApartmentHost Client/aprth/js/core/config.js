@@ -25,5 +25,7 @@ var config = {
 	//картинка по-умолчанию для карточек
 	defaultPictureUrl: "aprth/img/def_photo.png",
 	//аватар по-умолчани
-	defaultProfilePictureUrl: "aprth/img/def_ava.png"
+	defaultProfilePictureUrl: "aprth/img/def_ava.png",
+	//радиус поиска на карте (метры)
+	searchRadius: 5000
 }

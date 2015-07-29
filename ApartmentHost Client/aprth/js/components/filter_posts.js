@@ -15,7 +15,11 @@ var PostsFilter = React.createClass({
 			noAdressFilterSpecified: false, //флаг отсуствия фильтра по адресу
 			noDateFromFilterSpecified: false, //флаг отсуствия фильтра по дате начала периода бронирования
 			noDateToFilterSpecified: false, //флаг отсуствия фильтра по дате окончания периода бронирования
-			adress: "", //адрес жилья
+			adress: "", //адрес жилья		
+			swLat: "", //широта ЮВ угла квадрата поиска по выбранной точке
+			swLong: "", //долгота ЮВ угла квадрата поиска по выбранной точке
+			neLat: "", //широта СЗ угла квадрата поиска по выбранной точке
+			neLong: "", //долгота СЗ угла квадрата поиска по выбранной точке
 			dFrom: "", //дата начала периода бронирования
 			dTo: "", //дата коночания периода бронирования
 			sex: "", //пол постояльца
@@ -28,7 +32,11 @@ var PostsFilter = React.createClass({
 	//сохранение и сборка фильтра
 	saveFilterState: function () {
 		var filterParams = {language: this.props.language};
-		if(this.state.adress) filterParams.adress = this.state.adress;			
+		if(this.state.adress) filterParams.adress = this.state.adress;
+		if(this.state.swLat) filterParams.swLat = this.state.swLat;
+		if(this.state.swLong) filterParams.swLong = this.state.swLong;
+		if(this.state.neLat) filterParams.neLat = this.state.neLat;
+		if(this.state.neLong) filterParams.neLong = this.state.neLong;
 		if(this.state.sex) filterParams.sex = this.state.sex;
 		if(this.state.dFrom) filterParams.dFrom = this.state.dFrom;
 		if(this.state.dTo) filterParams.dTo = this.state.dTo;
@@ -46,6 +54,10 @@ var PostsFilter = React.createClass({
 		if(filterParams) {
 			this.setState({
 				adress: filterParams.adress,
+				swLat: filterParams.swLat,
+				swLong: filterParams.swLong,
+				neLat: filterParams.neLat,
+				neLong: filterParams.neLong,
 				sex: filterParams.sex,
 				dFrom: filterParams.dFrom,
 				dTo: filterParams.dTo,
@@ -61,6 +73,10 @@ var PostsFilter = React.createClass({
 	buildSrvAdvertsFilter: function () {
 		var serverFilter = {};
 		if(this.state.adress) serverFilter.adress = this.state.adress;
+		if(this.state.swLat) serverFilter.swLat = this.state.swLat;
+		if(this.state.swLong) serverFilter.swLong = this.state.swLong;
+		if(this.state.neLat) serverFilter.neLat = this.state.neLat;
+		if(this.state.neLong) serverFilter.neLong = this.state.neLong;
 		if(this.state.sex) serverFilter.residentGender = [this.state.sex];
 		if(this.state.dFrom) serverFilter.availableDateFrom = this.state.dFrom;
 		if(this.state.dFrom) serverFilter.availableDateTo = this.state.dTo;
@@ -110,7 +126,19 @@ var PostsFilter = React.createClass({
 	},
 	//ввод адреса
 	handleAddrChange: function (val) {
-		this.setState({adress: val.address});
+		if((val.latitude)&&(val.longitude)) {
+			var c = new google.maps.Circle({center: new google.maps.LatLng(val.latitude, val.longitude), radius: config.searchRadius});
+			var bounds = c.getBounds();			
+			this.setState({
+				adress: val.address,
+				swLat: bounds.getSouthWest().lat(),
+				swLong: bounds.getSouthWest().lng(),
+				neLat: bounds.getNorthEast().lat(),
+				neLong: bounds.getNorthEast().lng()
+			});
+		} else {
+			this.setState({adress: val.address, swLat: "", swLong: "", neLat: "", neLong: ""});
+		}
 	},
 	//выбор пола
 	handleSelectedSex: function (sex) {
@@ -159,6 +187,10 @@ var PostsFilter = React.createClass({
 				noDateFromFilterSpecified: false,
 				noDateToFilterSpecified: false,
 				adress: "",
+				swLat: "",
+				swLong: "",
+				neLat: "",
+				neLong: "",
 				dFrom: "", 
 				dTo: "",
 				sex: "",

@@ -101,6 +101,7 @@ var PostItem = React.createClass({
 						<div className="w-clearfix u-block-card-desc u-block-lnk" onClick={this.handlePostClick}>
 							<div>{this.props.item.user.lastName} {this.props.item.user.firstName}</div>
 							<h4>{Utils.getStrResource({lang: this.props.language, code: this.props.item.apartment.type})}</h4>
+							<div>{this.props.item.apartment.adress}</div>
 							<div className="u-t-price price-sm">
 								<strong>
 									{this.props.item.priceDay}&nbsp;
