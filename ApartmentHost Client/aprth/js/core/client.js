@@ -556,6 +556,15 @@ var Client = function (clientConfig) {
 				log(["LOGIN VIA FB ERROR:", error]);
 			});
 		},
+		//аутентификация через VK
+		loginVK: function () {
+			log(["LOGIN VIA VK"]);
+			clnt.login("VK").then(function () {
+				log(["LOGIN VIA VK RESULT:", clnt.currentUser]);
+			}, function (error) {
+				log(["LOGIN VIA VK ERROR:", error]);
+			});
+		},
 		//смена статуса объявления в избранном
 		toggleAdvertFavor: function (prms, callBack) {
 			try {

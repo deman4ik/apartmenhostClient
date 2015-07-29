@@ -44,6 +44,10 @@ var LogInForm = React.createClass({
 	handleLogInFbClick: function () {
 		clnt.loginFB();		
 	},
+	//обработка кнопки "Войти через VK"
+	handleLogInVkClick: function () {
+		clnt.loginVK();		
+	},
 	//обработка кнопки "Отмена"
 	handleCloseClick: function () {
 		this.props.onLogInCancel();
@@ -100,6 +104,9 @@ var LogInForm = React.createClass({
 								</button>
 								<button type="button" className="w-button u-btn-regular" onClick={this.handleLogInFbClick}>
 									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN_FB"})}
+								</button>
+								<button type="button" className="w-button u-btn-regular" onClick={this.handleLogInVkClick}>
+									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN_VK"})}
 								</button>
 								<button type="button" className="w-button u-btn-regular" onClick={this.handleCloseClick}>
 									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHANCEL"})}
