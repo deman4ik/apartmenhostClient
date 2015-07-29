@@ -222,10 +222,9 @@ var Posts = React.createClass({
 				//карта
 				var map;
 				if(
-					//(this.state.advertsReady)
-					//&&(this.state.advertsCnt > 0)
-					//&&
-					(this.state.filter.swLat)
+					(this.state.advertsReady)
+					&&(this.state.advertsCnt > 0)
+					&&(this.state.filter.swLat)
 					&&(this.state.filter.swLong)
 					&&(this.state.filter.neLat)
 					&&(this.state.filter.neLong)
