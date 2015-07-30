@@ -19,7 +19,8 @@ var Map = React.createClass({
 			searchRadar: {}, //радар (режим группового отображения объектов)
 			markers: [], //маркеры (режим группового отображения объектов)
 			radius: 0, //радиус поиска
-			centerIsChanged: false //признак изменения центра карты
+			centerIsChanged: false, //признак изменения центра карты
+			showRadar: false //признак отображения радара (режим группового отображения объектов)
 		};
 	},
 	//установка маркера и центра карты
@@ -51,7 +52,7 @@ var Map = React.createClass({
 					}
 				}, this);
 			}
-			if((this.state.radius)&&(this.state.radius > 0)) {
+			if((this.state.radius)&&(this.state.radius > 0)&&(this.state.showRadar)) {
 				google.maps.event.clearListeners(this.state.searchRadar, "radius_changed");
 				this.state.searchRadar.setCenter(point);
 				this.state.searchRadar.setRadius(this.state.radius);
@@ -109,8 +110,7 @@ var Map = React.createClass({
 	//обработка смены радиуса радара
 	handleSearchRadarRadiusChange: function () {
 		var newRadius = this.state.searchRadar.getRadius();
-		var correctRadius = false;
-		console.log(newRadius);
+		var correctRadius = false;		
 		if(newRadius > config.searchRadiusMax) {
 			newRadius = config.searchRadiusMax;
 			correctRadius = true;
@@ -144,6 +144,7 @@ var Map = React.createClass({
 			searchRadar: searchRadarTmp,
 			markers: props.markers,
 			radius: props.radius,
+			showRadar: props.showRadar,
 		}, this.initMapCenterAndMarkers);
 	},
 	//инициализация
