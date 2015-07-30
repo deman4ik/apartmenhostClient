@@ -59,7 +59,7 @@ var PostsFilter = React.createClass({
 		var filterParams = Utils.loadObjectState("filterParams");
 		if(filterParams) {
 			this.setState({
-				radius: filterParams.radius,
+				radius: (config.useSearchRadar)?filterParams.radius:config.searchRadius,
 				latitude: filterParams.latitude,
 				longitude: filterParams.longitude,
 				adress: filterParams.adress,
@@ -255,10 +255,19 @@ var PostsFilter = React.createClass({
 	},
 	//обновление параметров фильра
 	componentWillReceiveProps: function (newProps) {
-		if((newProps.radius)&&(newProps.radius != this.state.radius)) {
+		if(
+			(newProps.radius)
+			&&(newProps.radius != this.state.radius)
+			&&(config.useSearchRadar)
+		) {
 			this.handleRadiusChanged(newProps.radius);
 		}
-		if((newProps.latitude)&&(newProps.longitude)&&((newProps.latitude != this.state.latitude)||(newProps.longitude != this.state.longitude))) {
+		if(
+			(newProps.latitude)
+			&&(newProps.longitude)
+			&&((newProps.latitude != this.state.latitude)||(newProps.longitude != this.state.longitude))
+			&&(config.useSearchRadar)
+		) {
 			var geocoder = new google.maps.Geocoder();
 			var latlng = new google.maps.LatLng(newProps.latitude, newProps.longitude);
 			geocoder.geocode({"location": latlng}, Utils.bind(function(results, status) {
@@ -311,7 +320,26 @@ var PostsFilter = React.createClass({
 			"u-form-field": true,
 			"rel": true,
 			"has-error": this.state.noDateToFilterSpecified
-		});		
+		});
+		//контроллер радиуса поиска
+		var searchRadius;
+		if(config.useSearchRadar) {
+			searchRadius =	<div className="w-row">
+								<div className="w-col w-col-4">
+									<label className="u-form-label n1">
+										{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_SEARCH_RADIUS"})}:
+									</label>
+								</div>
+								<div className="w-col w-col-8">
+									<Slider step={config.searchRadiusStep}
+										curVal={this.state.radius}
+										minVal={config.searchRadiusMin}
+										maxVal={config.searchRadiusMax}
+										meas={Utils.getStrResource({lang: this.props.language, code: "METER"})}
+										onStep={this.handleRadiusChanged}/>
+								</div>
+							</div>
+		}
 		//представление фильтра
 		return (
 			<div>
@@ -451,21 +479,7 @@ var PostsFilter = React.createClass({
 											emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}/>
 									</div>
 								</div>
-								<div className="w-row">
-									<div className="w-col w-col-4">
-										<label className="u-form-label n1">
-											{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_SEARCH_RADIUS"})}:
-										</label>
-									</div>
-									<div className="w-col w-col-8">
-										<Slider step={config.searchRadiusStep}
-											curVal={this.state.radius}
-											minVal={config.searchRadiusMin}
-											maxVal={config.searchRadiusMax}
-											meas={Utils.getStrResource({lang: this.props.language, code: "METER"})}
-											onStep={this.handleRadiusChanged}/>
-									</div>
-								</div>
+								{searchRadius}
 							</form>
 						</div>
 					</div>

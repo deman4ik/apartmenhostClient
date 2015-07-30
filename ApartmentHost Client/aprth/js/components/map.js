@@ -19,13 +19,14 @@ var Map = React.createClass({
 			searchRadar: {}, //радар (режим группового отображения объектов)
 			markers: [], //маркеры (режим группового отображения объектов)
 			radius: 0, //радиус поиска
-			centerIsChanged: false, //признак изменения центра карты
+			centerIsSet: false, //признак указания центра карты
 			showRadar: false //признак отображения радара (режим группового отображения объектов)
 		};
 	},
 	//установка маркера и центра карты
 	setMapCenterAndMarkers: function () {
 		var point = new google.maps.LatLng(this.state.latitude, this.state.longitude);
+		this.state.map.setCenter(point);		
 		if(this.props.mode == mapModes.modeSignle) {
 			var marker = new google.maps.Marker({
 				position: point,
@@ -52,14 +53,21 @@ var Map = React.createClass({
 					}
 				}, this);
 			}
-			if((this.state.radius)&&(this.state.radius > 0)&&(this.state.showRadar)) {
+			if(
+				(this.state.radius)
+				&&(this.state.radius > 0)
+				&&(this.state.showRadar)
+				&&(config.useSearchRadar)
+				&&(!$.isEmptyObject(this.state.searchRadar))
+			) {
 				google.maps.event.clearListeners(this.state.searchRadar, "radius_changed");
+				google.maps.event.clearListeners(this.state.searchRadar, "center_changed");
 				this.state.searchRadar.setCenter(point);
 				this.state.searchRadar.setRadius(this.state.radius);
 				google.maps.event.addListener(this.state.searchRadar, "radius_changed", Utils.bind(function () {this.handleSearchRadarRadiusChange();}, this));
+				google.maps.event.addListener(this.state.searchRadar, "center_changed", Utils.bind(function () {this.handleSearchRadarPlaceChange();}, this));
 			}
 		}
-		this.setState({centerIsChanged: true}, this.state.map.setCenter(point));
 	},
 	//инициализация маркера и центра карты
 	initMapCenterAndMarkers: function () {
@@ -83,58 +91,57 @@ var Map = React.createClass({
 			this.setState({latitude: config.latitude, longitude: config.longitude}, this.setMapCenterAndMarkers);
 		}
 	},
-	//оповещение родителя о смене центра карты
-	notifyParentCenterCange: function () {
-		if((this.props.onCenterCange)&&(Utils.isFunction(this.props.onCenterCange))) {
-			this.props.onCenterCange(this.state.map.getBounds());
-		}
-	},
 	//оповещение родителя о смене радиуса радара
 	notifyParentSearchRadarRadiusChange: function () {
-		if((this.props.onSearchRadarRadiusChange)&&(Utils.isFunction(this.props.onSearchRadarRadiusChange))) {
-			this.props.onSearchRadarRadiusChange(Math.round(this.state.radius));
+		if((!$.isEmptyObject(this.state.searchRadar))&&(config.useSearchRadar)) {
+			if((this.props.onSearchRadarRadiusChange)&&(Utils.isFunction(this.props.onSearchRadarRadiusChange))) {
+				this.props.onSearchRadarRadiusChange(Math.round(this.state.radius));
+			}
 		}
 	},
 	//оповещение родителя о смене места радара
 	notifyParentSearchRadarPlaceChange: function () {
-		if((this.props.onSearchRadarPlaceChange)&&(Utils.isFunction(this.props.onSearchRadarPlaceChange))) {
-			this.props.onSearchRadarPlaceChange(this.state.searchRadar.getCenter());
-		}
-	},
-	//обработка завершения перерисовки карты
-	handleMapIdle: function () {
-		if(this.state.centerIsChanged) {
-			this.setState({centerIsChanged: false}, this.notifyParentCenterCange);
+		if((!$.isEmptyObject(this.state.searchRadar))&&(config.useSearchRadar)) {
+			if((this.props.onSearchRadarPlaceChange)&&(Utils.isFunction(this.props.onSearchRadarPlaceChange))) {
+				this.props.onSearchRadarPlaceChange(this.state.searchRadar.getCenter());
+			}
 		}
 	},
 	//обработка смены радиуса радара
 	handleSearchRadarRadiusChange: function () {
-		var newRadius = this.state.searchRadar.getRadius();
-		var correctRadius = false;		
-		if(newRadius > config.searchRadiusMax) {
-			newRadius = config.searchRadiusMax;
-			correctRadius = true;
+		if((!$.isEmptyObject(this.state.searchRadar))&&(config.useSearchRadar)) {
+			var newRadius = this.state.searchRadar.getRadius();
+			var correctRadius = false;		
+			if(newRadius > config.searchRadiusMax) {
+				newRadius = config.searchRadiusMax;
+				correctRadius = true;
+			}
+			if(newRadius < config.searchRadiusMin) {
+				newRadius = config.searchRadiusMin;
+				correctRadius = true;
+			}
+			if(correctRadius) this.state.searchRadar.setRadius(newRadius);
+			this.setState({radius: newRadius}, function () {			
+				this.notifyParentSearchRadarRadiusChange();
+			});
 		}
-		if(newRadius < config.searchRadiusMin) {
-			newRadius = config.searchRadiusMin;
-			correctRadius = true;
-		}
-		if(correctRadius) this.state.searchRadar.setRadius(newRadius);
-		this.setState({radius: newRadius}, function () {			
-			this.notifyParentSearchRadarRadiusChange();
-		});		
 	},
 	//обработка перетаскивания радара
 	handleSearchRadarPlaceChange: function () {
-		this.notifyParentSearchRadarPlaceChange();
+		if((!$.isEmptyObject(this.state.searchRadar))&&(config.useSearchRadar)) {
+			this.notifyParentSearchRadarPlaceChange();
+		}
 	},
 	//установка значений состояния
 	initState: function (props) {
-		var mapTmp = new google.maps.Map(React.findDOMNode(this.refs.mapCanvas), {zoom: (props.zoom)?props.zoom:15});
-		google.maps.event.addListener(mapTmp, "idle", Utils.bind(function () {this.handleMapIdle();}, this));
-		var searchRadarTmp = new google.maps.Circle({fillColor: "#00FF00", fillOpacity: 0.35, strokeWeight: 0, map: mapTmp, editable: true, draggable: true});
-		google.maps.event.addListener(searchRadarTmp, "radius_changed", Utils.bind(function () {this.handleSearchRadarRadiusChange();}, this));
-		google.maps.event.addListener(searchRadarTmp, "dragend", Utils.bind(function () {this.handleSearchRadarPlaceChange();}, this));
+		var mapTmp = new google.maps.Map(React.findDOMNode(this.refs.mapCanvas), {zoom: (props.zoom)?props.zoom:15});		
+		var searchRadarTmp = {};
+		if(config.useSearchRadar) {
+			searchRadarTmp = new google.maps.Circle({fillColor: "#00ccc5", fillOpacity: 0.25, strokeWeight: 0, map: mapTmp, editable: true, draggable: false});
+			google.maps.event.addListener(searchRadarTmp, "radius_changed", Utils.bind(function () {this.handleSearchRadarRadiusChange();}, this));
+			google.maps.event.addListener(searchRadarTmp, "dragend", Utils.bind(function () {this.handleSearchRadarPlaceChange();}, this));
+			google.maps.event.addListener(searchRadarTmp, "center_changed", Utils.bind(function () {this.handleSearchRadarPlaceChange();}, this));
+		}
 		this.setState({
 			latitude: props.latitude,
 			longitude: props.longitude,

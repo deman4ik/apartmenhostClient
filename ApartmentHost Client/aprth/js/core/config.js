@@ -33,5 +33,7 @@ var config = {
 	//максимальный радиус поиска на карте (метры)
 	searchRadiusMax: 15000,
 	//шаг увеличения/уменьшения радиуса поиска (метры)
-	searchRadiusStep: 1000
+	searchRadiusStep: 1000,
+	//признак использования радара для поиска
+	useSearchRadar: true
 }
