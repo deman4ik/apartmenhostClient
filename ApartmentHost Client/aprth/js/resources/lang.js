@@ -226,6 +226,7 @@ var langs = [
 		CLNT_RESERVATION_DECLINED: "Ваш запрос отклонен",
 		CLNT_RESERVATION_ACCEPTED: "Ваш запрос подтвержден",
 		CLNT_REVIEW_ADDED: "Ваш отзыв отправлен!",
+		CLNT_UNKNOWN_ADDRESS: "Неизвестный адрес",
 		//загрузчик картинок
 		IUPLDR_SOURCES_LOCAL_TITLE: "Файлы",
 		IUPLDR_SOURCES_LOCAL_DROP_FILE: "Перетащите файл с картинкой сюда",
@@ -458,6 +459,7 @@ var langs = [
 		CLNT_RESERVATION_DECLINED: "Your reservation declined",
 		CLNT_RESERVATION_ACCEPTED: "Your reservation accepted",
 		CLNT_REVIEW_ADDED: "Your review sent!",
+		CLNT_UNKNOWN_ADDRESS: "Unknown address",
 		//загрузчик картинок
 		IUPLDR_SOURCES_LOCAL_TITLE: "Files",
 		IUPLDR_SOURCES_LOCAL_DROP_FILE: "Move image here",

@@ -20,7 +20,10 @@ var Posts = React.createClass({
 			advertsCnt: 0, //количество объявлений
 			advertsReady: false, //флаг доступности списка объявлений для отображения
 			filterIsSet: false, //флаг установленности фильтра
-			filter: {} //текущее состояние фильтра
+			filter: {}, //текущее состояние фильтра	(для сервера)
+			radius: config.searchRadius, //радиус поиска		
+			searchCenterLat: "", //широта центральной точки поиска
+			searchCenterLon: "" //долгота центральной точки поиска
 		}
 	},
 	//расчет "цены за период" объявлений по датам
@@ -130,18 +133,32 @@ var Posts = React.createClass({
 		clnt.toggleAdvertFavor(togglePrms, function (resp) {self.handleFavorChange(resp, itemId)});
 	},	
 	//смена фильтра
-	onFilterChange: function (filter) {		
-		if(!$.isEmptyObject(filter)) {			
-			this.setState({filter: filter});
+	onFilterChange: function (prms) {		
+		if(!$.isEmptyObject(prms.filter)) {			
+			this.setState({
+				filter: prms.filter,
+				radius: prms.radius,
+				searchCenterLat: prms.latitude,
+				searchCenterLon: prms.longitude
+			});
 			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 			var getPrms = {
 				language: this.props.language, 
-				filter: filter, 
+				filter: prms.filter, 
 				session: this.props.session.sessionInfo
 			}			
 			clnt.getAdverts(getPrms, this.handleSearchResult);
 		} else {
-			this.setState({adverts: [], advertsCnt: 0, advertsReady: false, filterIsSet: false, filter: {}});
+			this.setState({
+				adverts: [],
+				advertsCnt: 0,
+				advertsReady: false,
+				filterIsSet: false,
+				filter: {},
+				radius: config.searchRadius,
+				searchCenterLat: "",
+				searchCenterLon: ""
+			});
 		}
 	},
 	//нажатие на кнопку избранного
@@ -173,6 +190,16 @@ var Posts = React.createClass({
 			default: {}
 		}
 		this.context.router.transitionTo("post", {postId: itemId}, query);
+	},
+	//смена радиуса поиска на карте
+	handleMapRadarRadiusChanged: function (radius) {
+		this.setState({radius: radius});
+	},
+	handleMapRadarPlaceChanged: function (center) {
+		this.setState({
+			searchCenterLat: center.lat(),
+			searchCenterLon: center.lng()
+		});
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
@@ -218,26 +245,27 @@ var Posts = React.createClass({
 				var postsFilter = <PostsFilter language={this.props.language}
 									cntFound={this.state.advertsCnt}
 									filterIsSet={this.state.filterIsSet}
+									radius={this.state.radius}
+									latitude={this.state.searchCenterLat}
+									longitude={this.state.searchCenterLon}
 									onFilterChange={this.onFilterChange}/>
 				//карта
 				var map;
 				if(
 					(this.state.advertsReady)
 					&&(this.state.advertsCnt > 0)
-					&&(this.state.filter.swLat)
-					&&(this.state.filter.swLong)
-					&&(this.state.filter.neLat)
-					&&(this.state.filter.neLong)
+					&&(this.state.searchCenterLat)
+					&&(this.state.searchCenterLon)
 				) {
-					map = 	<Map swLat={this.state.filter.swLat}
-								swLong={this.state.filter.swLong}
-								neLat={this.state.filter.neLat}
-								neLong={this.state.filter.neLong}
-								address={this.state.filter.adress}
+					map = 	<Map latitude={this.state.searchCenterLat}
+								longitude={this.state.searchCenterLon}
+								radius={this.state.radius}
 								markers={this.state.markers}
 								mode={mapModes.modeGroup}
 								zoom={10}
-								height={"400px"}/>
+								height={"400px"}
+								onSearchRadarRadiusChange={this.handleMapRadarRadiusChanged}
+								onSearchRadarPlaceChange={this.handleMapRadarPlaceChanged}/>
 				}
 				//список объявлений
 				var postsList;

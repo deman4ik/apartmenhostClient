@@ -11,16 +11,13 @@ var Map = React.createClass({
 	//состояние
 	getInitialState: function () {
 		return {
-			latitude: "", //широта маркера
-			longitude: "", //долгота маркера
-			swLat: "", //широта ЮВ угла области поиска
-			swLong: "", //долгота ЮВ угла области поиска
-			neLat: "", //широта СЗ угла области поиска
-			neLong: "", //долгота СЗ угла области поиска
-			address: "", //адрес маркера
-			title: "", //заголовок маркера
+			latitude: "", //широта центра карты (и маркера если режим отображения одного объекта, для группового режима - центр радара)
+			longitude: "", //долгота центра карты (и маркера если режим отображения одного объекта, для группового режима - центр радара)
+			address: "", //адрес маркера (если режим отображения одного объекта)
+			title: "", //заголовок маркера (если режим отображения одного объекта)
 			map: {}, //карта
-			markers: [], //маркеры
+			searchRadar: {}, //радар (режим группового отображения объектов)
+			markers: [], //маркеры (режим группового отображения объектов)
 			radius: 0, //радиус поиска
 			centerIsChanged: false //признак изменения центра карты
 		};
@@ -55,15 +52,10 @@ var Map = React.createClass({
 				}, this);
 			}
 			if((this.state.radius)&&(this.state.radius > 0)) {
-				var cO = {
-					fillColor: "#FF0000",
-					fillOpacity: 0.35,
-					strokeWeight: 0,
-					map: this.state.map,
-					center: point,
-					radius: this.state.radius
-				};
-    			var c = new google.maps.Circle(cO);
+				google.maps.event.clearListeners(this.state.searchRadar, "radius_changed");
+				this.state.searchRadar.setCenter(point);
+				this.state.searchRadar.setRadius(this.state.radius);
+				google.maps.event.addListener(this.state.searchRadar, "radius_changed", Utils.bind(function () {this.handleSearchRadarRadiusChange();}, this));
 			}
 		}
 		this.setState({centerIsChanged: true}, this.state.map.setCenter(point));
@@ -72,29 +64,19 @@ var Map = React.createClass({
 	initMapCenterAndMarkers: function () {
 		if(
 			((this.state.latitude)&&(this.state.longitude))
-			||(this.state.address)
-			||((this.state.swLat)&&(this.state.swLong)&&(this.state.neLat)&&(this.state.neLong))
+			||(this.state.address)		
 		) {
 			if((this.state.latitude)&&(this.state.longitude)) {
 				this.setMapCenterAndMarkers();
 			} else {
-				if((this.state.swLat)&&(this.state.swLong)&&(this.state.neLat)&&(this.state.neLong)) {
-					var sw = new google.maps.LatLng(this.state.swLat, this.state.swLong);
-					var ne = new google.maps.LatLng(this.state.neLat, this.state.neLong);
-					var b = new google.maps.LatLngBounds(sw, ne);
-					var r = google.maps.geometry.spherical.computeDistanceBetween(sw, ne, 0) / 2;
-					console.log(r);
-					this.setState({latitude: b.getCenter().lat(), longitude: b.getCenter().lng(), radius: r}, this.setMapCenterAndMarkers);
-				} else {
-					var geocoder = new google.maps.Geocoder();
-					geocoder.geocode({"address": this.state.address}, Utils.bind(function(results, status) {
-						if (status == google.maps.GeocoderStatus.OK) {
-							this.setState({latitude: results[0].geometry.location.lat(), longitude: results[0].geometry.location.lng()}, this.setMapCenterAndMarkers);
-						} else {
-							this.setState({latitude: config.latitude, longitude: config.longitude}, this.setMapCenterAndMarkers);
-						}
-					}, this));
-				}
+				var geocoder = new google.maps.Geocoder();
+				geocoder.geocode({"address": this.state.address}, Utils.bind(function(results, status) {
+					if (status == google.maps.GeocoderStatus.OK) {
+						this.setState({latitude: results[0].geometry.location.lat(), longitude: results[0].geometry.location.lng()}, this.setMapCenterAndMarkers);
+					} else {
+						this.setState({latitude: config.latitude, longitude: config.longitude}, this.setMapCenterAndMarkers);
+					}
+				}, this));				
 			}
 		} else {
 			this.setState({latitude: config.latitude, longitude: config.longitude}, this.setMapCenterAndMarkers);
@@ -106,27 +88,62 @@ var Map = React.createClass({
 			this.props.onCenterCange(this.state.map.getBounds());
 		}
 	},
+	//оповещение родителя о смене радиуса радара
+	notifyParentSearchRadarRadiusChange: function () {
+		if((this.props.onSearchRadarRadiusChange)&&(Utils.isFunction(this.props.onSearchRadarRadiusChange))) {
+			this.props.onSearchRadarRadiusChange(Math.round(this.state.radius));
+		}
+	},
+	//оповещение родителя о смене места радара
+	notifyParentSearchRadarPlaceChange: function () {
+		if((this.props.onSearchRadarPlaceChange)&&(Utils.isFunction(this.props.onSearchRadarPlaceChange))) {
+			this.props.onSearchRadarPlaceChange(this.state.searchRadar.getCenter());
+		}
+	},
 	//обработка завершения перерисовки карты
 	handleMapIdle: function () {
 		if(this.state.centerIsChanged) {
 			this.setState({centerIsChanged: false}, this.notifyParentCenterCange);
 		}
-	},	
+	},
+	//обработка смены радиуса радара
+	handleSearchRadarRadiusChange: function () {
+		var newRadius = this.state.searchRadar.getRadius();
+		var correctRadius = false;
+		console.log(newRadius);
+		if(newRadius > config.searchRadiusMax) {
+			newRadius = config.searchRadiusMax;
+			correctRadius = true;
+		}
+		if(newRadius < config.searchRadiusMin) {
+			newRadius = config.searchRadiusMin;
+			correctRadius = true;
+		}
+		if(correctRadius) this.state.searchRadar.setRadius(newRadius);
+		this.setState({radius: newRadius}, function () {			
+			this.notifyParentSearchRadarRadiusChange();
+		});		
+	},
+	//обработка перетаскивания радара
+	handleSearchRadarPlaceChange: function () {
+		this.notifyParentSearchRadarPlaceChange();
+	},
 	//установка значений состояния
 	initState: function (props) {
 		var mapTmp = new google.maps.Map(React.findDOMNode(this.refs.mapCanvas), {zoom: (props.zoom)?props.zoom:15});
 		google.maps.event.addListener(mapTmp, "idle", Utils.bind(function () {this.handleMapIdle();}, this));
+		var searchRadarTmp = new google.maps.Circle({fillColor: "#00FF00", fillOpacity: 0.35, strokeWeight: 0, map: mapTmp, editable: true, draggable: true});
+		google.maps.event.addListener(searchRadarTmp, "radius_changed", Utils.bind(function () {this.handleSearchRadarRadiusChange();}, this));
+		google.maps.event.addListener(searchRadarTmp, "dragend", Utils.bind(function () {this.handleSearchRadarPlaceChange();}, this));
 		this.setState({
 			latitude: props.latitude,
 			longitude: props.longitude,
-			swLat: props.swLat,
-			swLong: props.swLong,
-			neLat: props.neLat,
-			neLong: props.neLong,
 			address: props.address,
 			title: props.title,
 			map: mapTmp,
-			markers: props.markers
+			searchRadar: searchRadarTmp,
+			markers: props.markers,
+			radius: props.radius,
 		}, this.initMapCenterAndMarkers);
 	},
 	//инициализация

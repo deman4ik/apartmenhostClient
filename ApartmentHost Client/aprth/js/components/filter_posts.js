@@ -97,7 +97,12 @@ var PostsFilter = React.createClass({
 	//вывполнение фильтрации
 	doFilter: function () {
 		this.saveFilterState();			
-		this.props.onFilterChange(this.buildSrvAdvertsFilter());
+		this.props.onFilterChange({
+			radius: this.state.radius,
+			latitude: this.state.latitude,
+			longitude: this.state.longitude,
+			filter: this.buildSrvAdvertsFilter()
+		});
 	},
 	//проверка корректности установки фильтра и выполнение фильтрации в случае успеха
 	checkAndDoFilter: function () {
@@ -250,6 +255,31 @@ var PostsFilter = React.createClass({
 	},
 	//обновление параметров фильра
 	componentWillReceiveProps: function (newProps) {
+		if((newProps.radius)&&(newProps.radius != this.state.radius)) {
+			this.handleRadiusChanged(newProps.radius);
+		}
+		if((newProps.latitude)&&(newProps.longitude)&&((newProps.latitude != this.state.latitude)||(newProps.longitude != this.state.longitude))) {
+			var geocoder = new google.maps.Geocoder();
+			var latlng = new google.maps.LatLng(newProps.latitude, newProps.longitude);
+			geocoder.geocode({"location": latlng}, Utils.bind(function(results, status) {
+				var address;
+				if (status == google.maps.GeocoderStatus.OK) {
+					if (results[1]) {
+						address = results[1].formatted_address;
+					} else {
+						address = Utils.getStrResource({lang: this.props.language, code: "CLNT_UNKNOWN_ADDRESS"});
+					}				
+				} else {
+					address = Utils.getStrResource({lang: this.props.language, code: "CLNT_UNKNOWN_ADDRESS"});
+				}
+				this.handleAddrChange({
+					address: address,
+					latitude: newProps.latitude,
+					longitude: newProps.longitude,
+					notifyParent: true
+				});
+			}, this));
+		}
 	},
 	//генерация представления фильтра
 	render: function () {
