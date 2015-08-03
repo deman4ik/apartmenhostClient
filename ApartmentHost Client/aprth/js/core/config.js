@@ -15,9 +15,11 @@ var config = {
 	//имя облака Cloudinary для хранения картинок
 	cloudinaryCloudName: "apartmenthost",
 	//имя демонстрационного пользователя
-	demoUser: "parus@parus.ru",
+	//demoUser: "parus@parus.ru",
+	demoUser: "mim_@mail.ru",
 	//пароль демонстрационного пользователя
-	demoPassword: "parusina",
+	//demoPassword: "parusina",
+	demoPassword: "parusparus",
 	//доступность смены языка интерфейса
 	languagesEnabled: true,
 	//язык интерфейса по умолчанию

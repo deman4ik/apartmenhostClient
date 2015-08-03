@@ -25,8 +25,9 @@ var Client = function (clientConfig) {
 		uploadApartmentPicture: "Picture/Upload/Apartment", //работа с картинками - загрузка картинки недвижимости
 		removeApartmentPicture: "Picture/Delete/Apartment", //работа с картинками - удаление картинки недвижимости
 		uploadProfilePicture: "Picture/Upload/Profile", //работа с картинками - загрузка картинки профиля
-		removeProfilePicture: "Picture/Delete/Profile" //работа с картинками - удаление картинки профиля
-
+		removeProfilePicture: "Picture/Delete/Profile", //работа с картинками - удаление картинки профиля
+		register: "StandartRegistration", //запрос на регистрацию
+		registerConfirm: "EmailConfirm" //подтверждение регистрации
 	}
 	//коды стандартных ответов сервера
 	var serverStdErrCodes = {
@@ -377,6 +378,52 @@ var Client = function (clientConfig) {
 							throw new Error("Метод '" + prms.method + "' для действия '" + prms.action + "' не поддерживается сервером!");
 						}
 					}					
+					break;
+				}
+				//регистрация
+				case(serverActions.register): {
+					if(!prms.data)
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));
+					if(!prms.data.email) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "email"]
+						}));
+					if(!prms.data.password) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "password"]
+						}));
+					return fillSrvStdReqData(serverActions.register, serverMethods.ins, prms.data);
+					break;
+				}
+				//подтверждение регистрации
+				case(serverActions.registerConfirm): {
+					if(!prms.data)
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));
+					if(!prms.data.userId) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "userId"]
+						}));
+					if(!prms.data.code) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "code"]
+						}));
+					return fillSrvStdReqData(serverActions.registerConfirm, serverMethods.ins, prms.data);
 					break;
 				}
 				//неизвестное действие
@@ -910,9 +957,7 @@ var Client = function (clientConfig) {
 						language: prms.language,
 						action: serverActions.removeProfilePicture,
 						method: serverMethods.del,
-						data: {
-							profileId: prms.profileId
-						}
+						data: {profileId: prms.profileId}
 					}),
 					callBack: function (resp) {
 						if(resp.STATE == respStates.ERR)
@@ -1014,13 +1059,64 @@ var Client = function (clientConfig) {
 								}
 								if(item.user) Utils.setProfileDefaultPicture(item.user);
 							}, this);
-							console.log(resp.MESSAGE);
 							callBack(resp);
 						}
 					}
 				});
 			} catch (error) {
 				log(["GETING RESERVATIONS ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//регистрация
+		register: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.register,
+						method: serverMethods.ins,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["REGISTER ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//подтверждение регистрации
+		registerConfirm: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.registerConfirm,
+						method: serverMethods.ins,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["REGISTER CONFIRM ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}

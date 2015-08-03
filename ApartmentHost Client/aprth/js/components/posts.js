@@ -255,6 +255,7 @@ var Posts = React.createClass({
 				map = 	<div>							
 							<Map latitude={this.state.searchCenterLat}
 								longitude={this.state.searchCenterLon}
+								address={this.state.filter.adress}
 								radius={this.state.radius}
 								markers={this.state.markers}
 								mode={mapModes.modeGroup}

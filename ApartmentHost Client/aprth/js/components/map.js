@@ -20,14 +20,15 @@ var Map = React.createClass({
 			markers: [], //маркеры (режим группового отображения объектов)
 			radius: 0, //радиус поиска
 			centerIsSet: false, //признак указания центра карты
-			showRadar: false //признак отображения радара (режим группового отображения объектов)
+			showRadar: false, //признак отображения радара (режим группового отображения объектов)
+			showMarkers: true //признак отображения маркеров
 		};
 	},
 	//установка маркера и центра карты
 	setMapCenterAndMarkers: function () {
 		var point = new google.maps.LatLng(this.state.latitude, this.state.longitude);
 		this.state.map.setCenter(point);		
-		if(this.props.mode == mapModes.modeSignle) {
+		if((this.props.mode == mapModes.modeSignle)&&(this.state.showMarkers)) {
 			var marker = new google.maps.Marker({
 				position: point,
 				map: this.state.map,
@@ -35,7 +36,7 @@ var Map = React.createClass({
 			});
 		}
 		if(this.props.mode == mapModes.modeGroup) {
-			if((this.state.markers)&&(Array.isArray(this.state.markers))) {
+			if((this.state.markers)&&(Array.isArray(this.state.markers))&&(this.state.showMarkers)) {
 				this.state.markers.map(function (mrk, i) {					
 					if((mrk.latitude)&&(mrk.longitude)&&(mrk.title)&&(mrk.content)) {
 						var p = new google.maps.LatLng(mrk.latitude, mrk.longitude);
@@ -47,7 +48,7 @@ var Map = React.createClass({
 						var infowindow = new google.maps.InfoWindow({
 							content: mrk.content
 						});
-						google.maps.event.addListener(m, "click", Utils.bind(function() {
+						google.maps.event.addListener(m, "click", Utils.bind(function () {
 							infowindow.open(this.state.map, m);
 						}, this));
 					}
@@ -69,6 +70,52 @@ var Map = React.createClass({
 			}
 		}
 	},
+	//установка центра карты в точку по-умолчанию
+	setMapToDefaultPoint: function () {
+		this.setState(
+			{
+				latitude: config.latitude, 
+				longitude: config.longitude, 
+				showRadar: false,
+				showMarkers: false
+			}, 
+			this.setMapCenterAndMarkers
+		);
+	},
+	//установка центра карты в локацию пользователя
+	setMapToUserLocation: function () {
+		if(navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				Utils.bind(function (position) {
+					var geocoder = new google.maps.Geocoder();
+					var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+					geocoder.geocode({"location": latlng}, Utils.bind(function (results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+							if (results[1]) {
+								this.setState(
+									{
+										latitude: position.coords.latitude,
+										longitude: position.coords.longitude,
+										address: results[1].formatted_address,
+										showRadar: false,
+										showMarkers: false
+									}, 
+									this.setMapCenterAndMarkers
+								);
+							} else {
+								this.setMapToDefaultPoint();
+							}
+						} else {
+							this.setMapToDefaultPoint();
+						}
+					}, this));
+				}, this),
+				this.setMapToDefaultPoint()
+			);
+		} else {
+			this.setMapToDefaultPoint();
+		}
+	},
 	//инициализация маркера и центра карты
 	initMapCenterAndMarkers: function () {
 		if(
@@ -76,19 +123,33 @@ var Map = React.createClass({
 			||(this.state.address)		
 		) {
 			if((this.state.latitude)&&(this.state.longitude)) {
-				this.setMapCenterAndMarkers();
+				this.setState(
+					{
+						showRadar: true,
+						showMarkers: true
+					},
+					this.setMapCenterAndMarkers
+				);				
 			} else {
 				var geocoder = new google.maps.Geocoder();
-				geocoder.geocode({"address": this.state.address}, Utils.bind(function(results, status) {
+				geocoder.geocode({"address": this.state.address}, Utils.bind(function (results, status) {
 					if (status == google.maps.GeocoderStatus.OK) {
-						this.setState({latitude: results[0].geometry.location.lat(), longitude: results[0].geometry.location.lng()}, this.setMapCenterAndMarkers);
+						this.setState(
+							{
+								latitude: results[0].geometry.location.lat(),
+								longitude: results[0].geometry.location.lng(),
+								showRadar: true,
+								showMarkers: true
+							},
+							this.setMapCenterAndMarkers
+						);
 					} else {
-						this.setState({latitude: config.latitude, longitude: config.longitude}, this.setMapCenterAndMarkers);
+						this.setMapToUserLocation();
 					}
 				}, this));				
 			}
 		} else {
-			this.setState({latitude: config.latitude, longitude: config.longitude}, this.setMapCenterAndMarkers);
+			this.setMapToUserLocation();
 		}
 	},
 	//оповещение родителя о смене радиуса радара
@@ -132,22 +193,31 @@ var Map = React.createClass({
 			this.notifyParentSearchRadarPlaceChange();
 		}
 	},
+	//зачистка маркеров на карте
+	removeMarkers: function () {
+		this.state.map.clearMarkers();
+	},
 	//установка значений состояния
 	initState: function (props) {
-		var mapTmp = new google.maps.Map(React.findDOMNode(this.refs.mapCanvas), {zoom: (props.zoom)?props.zoom:15});		
-		var searchRadarTmp = {};
+		this.removeMarkers();
 		if(config.useSearchRadar) {
-			searchRadarTmp = new google.maps.Circle({fillColor: "#00ccc5", fillOpacity: 0.25, strokeWeight: 0, map: mapTmp, editable: true, draggable: false});
+			if($.isEmptyObject(this.state.searchRadar)) {
+			var searchRadarTmp = new google.maps.Circle({fillColor: "#00ccc5", fillOpacity: 0.25, strokeWeight: 0, map: this.state.map, editable: true, draggable: false});
 			google.maps.event.addListener(searchRadarTmp, "radius_changed", Utils.bind(function () {this.handleSearchRadarRadiusChange();}, this));
 			google.maps.event.addListener(searchRadarTmp, "dragend", Utils.bind(function () {this.handleSearchRadarPlaceChange();}, this));
 			google.maps.event.addListener(searchRadarTmp, "center_changed", Utils.bind(function () {this.handleSearchRadarPlaceChange();}, this));
+			} else {
+				searchRadarTmp = this.state.searchRadar;
+				google.maps.event.clearListeners(this.state.searchRadar, "center_changed");
+				searchRadarTmp.setCenter(null);
+				google.maps.event.addListener(searchRadarTmp, "center_changed", Utils.bind(function () {this.handleSearchRadarPlaceChange();}, this));
+			}
 		}
 		this.setState({
 			latitude: props.latitude,
 			longitude: props.longitude,
 			address: props.address,
 			title: props.title,
-			map: mapTmp,
 			searchRadar: searchRadarTmp,
 			markers: props.markers,
 			radius: props.radius,
@@ -156,7 +226,11 @@ var Map = React.createClass({
 	},
 	//инициализация
 	componentDidMount: function () {
-		this.initState(this.props);
+		var mapTmp = new google.maps.Map(
+			React.findDOMNode(this.refs.mapCanvas), 
+			{zoom: (this.props.zoom)?this.props.zoom:15}
+		);
+		this.setState({map: mapTmp}, function () {this.initState(this.props);});
 	},
 	//завершение генерации/обновления представления
 	componentDidUpdate: function (prevProps, prevState) {		

@@ -16,7 +16,7 @@ var MapPicker = React.createClass({
 	setMapToDefaultPoint: function () {
 		var geocoder = new google.maps.Geocoder();
 		var latlng = new google.maps.LatLng(config.latitude, config.longitude);
-		geocoder.geocode({"location": latlng}, Utils.bind(function(results, status) {
+		geocoder.geocode({"location": latlng}, Utils.bind(function (results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
 				if (results[1]) {
 					this.setState(
@@ -56,7 +56,7 @@ var MapPicker = React.createClass({
 					//будем делать обратное геокодирование (поиск адреса по координатам)
 					var geocoder = new google.maps.Geocoder();
 					var latlng = new google.maps.LatLng(this.state.latitude, this.state.longitude);
-					geocoder.geocode({"location": latlng}, Utils.bind(function(results, status) {
+					geocoder.geocode({"location": latlng}, Utils.bind(function (results, status) {
 						//адрес нашелся - пишем его в состояние и двигаем туда карту, а так же ставим маркер
 						if (status == google.maps.GeocoderStatus.OK) {
 							if (results[1]) {
@@ -75,7 +75,7 @@ var MapPicker = React.createClass({
 			} else {
 				//геокодируем его (найдем координаты)
 				var geocoder = new google.maps.Geocoder();
-				geocoder.geocode({"address": this.state.address}, Utils.bind(function(results, status) {
+				geocoder.geocode({"address": this.state.address}, Utils.bind(function (results, status) {
 					//координаты нашлись - пишем их в состояние и двигаем туда карту, а так же ставим маркер
 					if (status == google.maps.GeocoderStatus.OK) {
 						this.setState({latitude: results[0].geometry.location.lat(), longitude: results[0].geometry.location.lng()}, this.setMapCenterAndMarker);
@@ -96,7 +96,7 @@ var MapPicker = React.createClass({
 						//найдем адрес для найденного местоположения
 						var geocoder = new google.maps.Geocoder();
 						var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-						geocoder.geocode({"location": latlng}, Utils.bind(function(results, status) {
+						geocoder.geocode({"location": latlng}, Utils.bind(function (results, status) {
 							//адрес нашелся - пишем его и местоположение в состояние и двигаем туда карту, а так же ставим маркер
 							if (status == google.maps.GeocoderStatus.OK) {
 								if (results[1]) {

@@ -43,7 +43,7 @@ var MessageBox = React.createClass({
 		});
 		//генерация диалога
 		return (
-			  <div className="modal show messagebox-wraper" onClick={this.handleClose}>
+			  <div style={{zIndex:3000}} className="modal show messagebox-wraper" onClick={this.handleClose}>
 					<div className="modal-dialog">
 						<div className={classesContent}>
 							<div className="modal-header">

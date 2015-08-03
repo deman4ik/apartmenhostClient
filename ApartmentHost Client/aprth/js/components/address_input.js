@@ -33,13 +33,11 @@ var AddressInput = React.createClass({
 	handlePlacePick: function (place) {
 		var tmp = {address: "", latitude: "", longitude: ""}
 		if((place)&&(place.geometry)) {
-			tmp.address = (place.formatted_address)?place.formatted_address:place.name;
+			tmp.address = $("#" + this.props.name).val();
 			tmp.latitude = place.geometry.location.lat();
 			tmp.longitude = place.geometry.location.lng();
-		} else {
-			tmp.address = $("#" + this.props.name).val();
+			this.setState({address: tmp.address, latitude: tmp.latitude, longitude: tmp.longitude}, this.notifyParent);
 		}
-		this.setState({address: tmp.address, latitude: tmp.latitude, longitude: tmp.longitude}, this.notifyParent);
 	},
 	//отработка ручного изменения адреса
 	handleChange: function (e) {

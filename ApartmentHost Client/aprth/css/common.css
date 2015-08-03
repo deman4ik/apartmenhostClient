@@ -40,7 +40,7 @@ textarea.u-form-area-v {
   z-index: 2000;
 }
 .modal-dialog {
-	z-index:2000;
+	z-index: 2000;
 }
 .modal-backdrop.in {
     opacity: 0.1;
@@ -207,5 +207,10 @@ textarea.u-form-area-v {
 }
 
 a > .rater, a.u-block-card-desc:hover, a.u-block-card-desc .rater .rater-item, a.u-block-card-desc .rater .rater-count {
-	text-decoration: none; cursor:pointer;
+	text-decoration: none; 
+	cursor:pointer;
+}
+
+.image-button {
+	cursor:pointer;	
 }

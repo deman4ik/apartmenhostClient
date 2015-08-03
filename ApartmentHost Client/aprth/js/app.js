@@ -175,6 +175,7 @@ var App = React.createClass({
 			}, 
 			function () {
 				Utils.deleteObjectState("sessionState");
+				Utils.deleteObjectState("filterParams");
 				this.processAfterAuth();
 			}
 		);
@@ -294,6 +295,7 @@ var routes = (
 		<Route name="profile" handler={Profile}/>
 		<Route name="modifypost" handler={ModifyPost} path="modifypost/:mode"/>
 		<Route name="post" handler={Post}  path="posts/:postId"/>
+		<Route name="confirm" handler={RegConfirm}/>
 		<DefaultRoute handler={DefaultPage}/>
 		<NotFoundRoute handler={Unit404}/>		
 		<Redirect from="/" to="/main"/>

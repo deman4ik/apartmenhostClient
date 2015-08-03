@@ -680,6 +680,10 @@ p {
   display: inline-block;
   float: right;
 }
+.u-t-left {
+  display: inline-block;
+  float: left;
+}
 .u-t-center {
   text-align: center;
 }

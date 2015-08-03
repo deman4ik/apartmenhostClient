@@ -526,7 +526,7 @@ var Profile = React.createClass({
 											onOptionChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "gender", value: value}})}, this)}/>
 									</div>
 				} else {
-					userGender = <div><strong>{Utils.getStrResource({lang: this.props.language, code: this.state.profile.gender})}</strong></div>
+					userGender = <div><strong>{Utils.getStrResource({lang: this.props.language, code: this.state.profile.gender, searchUndefined: false})}</strong></div>
 				}
 				//почта
 				var userMail;
