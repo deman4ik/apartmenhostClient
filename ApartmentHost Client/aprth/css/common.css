@@ -1,7 +1,7 @@
 .empty-unit {
 	width: 100%;
 	min-height: 498px;
-	background: url('/aprth/aprth/img/tmp/house.jpg') no-repeat center;
+	background: url('../img/tmp/house.jpg') no-repeat center;
 }
 
 /*w-container есть же!*/
