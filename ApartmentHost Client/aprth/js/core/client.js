@@ -580,8 +580,13 @@ var Client = function (clientConfig) {
 									if(stdResp.STATE == respStates.ERR) {
 										callBack(stdResp);
 									} else {
-										connectionData.user.profile = Utils.deSerialize(stdResp.MESSAGE)[0];
-										callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, connectionData));
+										var profTmp =  Utils.deSerialize(stdResp.MESSAGE)[0];
+										if(!profTmp.emailConfirmed) {
+											callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOT_CONFIRMED"})));
+										} else {											
+											connectionData.user.profile = profTmp;
+											callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, connectionData));
+										}
 									}
 								}
 							});

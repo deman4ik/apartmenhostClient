@@ -17,7 +17,7 @@ var RegConfirm = React.createClass({
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
 		if(this.context.router.getCurrentQuery().userId) this.setState({userId: this.context.router.getCurrentQuery().userId});
-		if(this.context.router.getCurrentQuery().code) this.setState({code: this.context.router.getCurrentQuery().code});
+		if(this.context.router.getCurrentQuery().code) this.setState({code: this.context.router.getCurrentQuery().code}, this.checkPrmsAndConfirm);
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
@@ -58,16 +58,20 @@ var RegConfirm = React.createClass({
 		_.extend(tmp, this.state);
 		tmp[e.target.id] = e.target.value;
 		this.setState(tmp);		
-	},	
-	//отработка подтверждения кода
-	handleConfirmClick: function () {
+	},
+	//выполнение подтверждения
+	checkPrmsAndConfirm: function () {
 		if(this.state.code) {
 			this.setState({noCodeSpecified: false}, this.confirm());			
 		} else {
 			this.setState({noCodeSpecified: true});
-		}		
+		}
 	},
-	//отработка отмены подтверждения
+	//отработка нажатия на подтверждение кода
+	handleConfirmClick: function () {
+		this.checkPrmsAndConfirm();
+	},
+	//отработка нажатия на отмену формы подтверждения
 	handleCancelClick: function () {
 		if(!this.context.router.goBack()) {
 			this.context.router.transitionTo("main");
