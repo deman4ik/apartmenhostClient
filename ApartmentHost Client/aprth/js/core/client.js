@@ -26,8 +26,11 @@ var Client = function (clientConfig) {
 		removeApartmentPicture: "Picture/Delete/Apartment", //работа с картинками - удаление картинки недвижимости
 		uploadProfilePicture: "Picture/Upload/Profile", //работа с картинками - загрузка картинки профиля
 		removeProfilePicture: "Picture/Delete/Profile", //работа с картинками - удаление картинки профиля
+		setDefaultPicture: "Picture/Default", //работа с картинками - установка картинки по умолчанию
 		register: "StandartRegistration", //запрос на регистрацию
-		registerConfirm: "EmailConfirm" //подтверждение регистрации
+		registerConfirm: "EmailConfirm", //подтверждение регистрации
+		resetPassword: "PasswordReset", //запрос на сброс пароля
+		changePassword: "PasswordChange" //смена пароля
 	}
 	//коды стандартных ответов сервера
 	var serverStdErrCodes = {
@@ -267,6 +270,17 @@ var Client = function (clientConfig) {
 					return fillSrvStdReqData(serverActions.removeProfilePicture + "/" + prms.data.profileId, serverMethods.del, "");
 					break;
 				}
+				//работа с картинками - установка картинки по умолчанию
+				case (serverActions.setDefaultPicture): {
+					if(!prms.data.pictId) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "pictId"]
+						}));
+					return fillSrvStdReqData(serverActions.setDefaultPicture + "/" + prms.data.pictId, serverMethods.ins, "");
+					break;
+				}
 				//изменение статуса объявления в избранном
 				case (serverActions.toggleAdvertFavor): {
 					if(!prms.data) 
@@ -424,6 +438,52 @@ var Client = function (clientConfig) {
 							values: ["ServerRequest", "code"]
 						}));
 					return fillSrvStdReqData(serverActions.registerConfirm, serverMethods.ins, prms.data);
+					break;
+				}				
+				//запрос на сброс пароля
+				case(serverActions.resetPassword): {
+					if(!prms.data)
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));
+					if(!prms.data.email) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "email"]
+						}));
+					return fillSrvStdReqData(serverActions.resetPassword, serverMethods.ins, prms.data);
+					break;
+				}
+				//смена пароля
+				case(serverActions.changePassword): {
+					if(!prms.data)
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));
+					if(!prms.data.userId) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "userId"]
+						}));
+					if(!prms.data.code) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "code"]
+						}));
+					if(!prms.data.password) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "password"]
+						}));
+					return fillSrvStdReqData(serverActions.changePassword, serverMethods.ins, prms.data);
 					break;
 				}
 				//неизвестное действие
@@ -979,6 +1039,35 @@ var Client = function (clientConfig) {
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
 		},
+		//установка картинки по умолчанию
+		setDefaultPicture: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.setDefaultPicture,
+						method: serverMethods.ins,
+						data: {
+							pictId: prms.pictId
+						}
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["SET DEFAULT PICTURE ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
 		//загрузка отзывов
 		getReviews: function (prms, callBack) {
 			try {
@@ -1125,7 +1214,59 @@ var Client = function (clientConfig) {
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
-		}
+		},
+		//запрос на сброс пароля
+		resetPassword: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.resetPassword,
+						method: serverMethods.ins,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["RESET PASSWORD ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//смена пароля
+		changePassword: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.changePassword,
+						method: serverMethods.ins,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["CHANGE PASSWORD ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},	
 	}
 }
 

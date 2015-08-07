@@ -296,6 +296,7 @@ var routes = (
 		<Route name="modifypost" handler={ModifyPost} path="modifypost/:mode"/>
 		<Route name="post" handler={Post}  path="posts/:postId"/>
 		<Route name="confirm" handler={RegConfirm}/>
+		<Route name="reset" handler={ResetPassConfirm}/>
 		<DefaultRoute handler={DefaultPage}/>
 		<NotFoundRoute handler={Unit404}/>		
 		<Redirect from="/" to="/main"/>

@@ -33,6 +33,20 @@ var LogInForm = React.createClass({
 			this.context.router.transitionTo("confirm", null, {userId: result.MESSAGE.data[0]});
 		}
 	},
+	//обработка результата сброса пароля
+	handleResetPassword: function (result) {
+		this.props.onHideProgress();
+		if(result.TYPE == clnt.respTypes.STD) {
+			this.props.onShowError(Utils.getStrResource({
+					lang: this.props.language, 
+					code: "CLNT_COMMON_ERROR"}), 
+				result.MESSAGE
+			);
+		} else {
+			this.props.onLogInCancel();
+			this.context.router.transitionTo("reset", null, {userId: result.MESSAGE.data[0]});
+		}
+	},
 	//вход в систему
 	logIn: function (auth) {
 		this.props.onDisplayProgress(Utils.getStrResource({
@@ -50,6 +64,20 @@ var LogInForm = React.createClass({
 		auth.language = this.props.language;
 		var regData = authFactory.buildRegister(auth);
 		clnt.register({language: this.props.language, data: regData}, this.handleRegister);		
+	},
+	//сброс пароля
+	resetPassword: function (email) {
+		this.props.onDisplayProgress(Utils.getStrResource({
+			lang: this.props.language, 
+			code: "CLNT_COMMON_PROGRESS"
+		}));		
+		var resData = {
+			language: this.props.language, 
+			data: {
+				email: email
+			}
+		}		
+		clnt.resetPassword(resData, this.handleResetPassword);
 	},
 	//обработка кнопки "Войти"
 	handleLogInClick: function () {
@@ -84,6 +112,17 @@ var LogInForm = React.createClass({
 				e.message
 			);
 		}		
+	},
+	//обработка кнопки "Забыл пароль"
+	handlePasswordResetClick: function () {
+		if(React.findDOMNode(this.refs.login).value) {
+			this.resetPassword(React.findDOMNode(this.refs.login).value);
+		} else {
+			this.props.onShowError(
+				Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
+				Utils.getStrResource({lang: this.props.language, code: "CLNT_AUTH_NO_USER_NAME"})
+			);
+		}
 	},
 	//обработка кнопки "Войти через FB"
 	handleLogInFbClick: function () {
@@ -137,7 +176,12 @@ var LogInForm = React.createClass({
 														placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_PASS"})}
 														ref="password"
 														defaultValue={this.props.defaultPassword}/>
-												</div>
+														<a className="u-t-right u-lnk-small"
+															href="javascript:void(0);"
+															onClick={this.handlePasswordResetClick}>
+															{Utils.getStrResource({lang: this.props.language, code: "CLNT_RESTORE_PASS_FORGET"})}
+														</a>
+												</div>												
 											</div>
 										</div>
 									</div>

@@ -18,6 +18,7 @@ var ModifyPost = React.createClass({
 			mode: ModifyPostModes.ADD, //режим работы
 			formReady: true, //флаг готовности формы
 			postId: "", //идентификатор объявления для правки
+			loadPicturesOnly: false, //флаг загрузки только данных о картинках при считывании объявления
 			post: { //объявление
 				phone: "", //телефон
 				sex: "", //пол постояльца
@@ -52,36 +53,8 @@ var ModifyPost = React.createClass({
 		this.props.onHideProgress();
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
-		} else {			
-			switch(this.state.mode) {
-				case(ModifyPostModes.ADD): {
-					this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
-					var getPrms = {
-						language: this.props.language, 
-						profileId: this.props.session.sessionInfo.user.profile.id,
-						session: this.props.session.sessionInfo
-					}
-					clnt.getProfile(getPrms, Utils.bind(function (resp) {
-						this.props.onHideProgress();
-						if(resp.STATE == clnt.respStates.ERR) {
-							this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
-						} else {
-							var tmp = {};
-							_.extend(tmp, this.state.post);
-							tmp.apartId = resp.MESSAGE.adverts[resp.MESSAGE.adverts.length-1].apartment.id;
-							this.setState({post: tmp}, Utils.bind(function () {
-								this.uploadPicture(this.state.post.pictures);
-							}, this));
-						}
-					}, this));					
-					break;
-				}
-				case(ModifyPostModes.EDIT): {					
-					this.afterSuccessModify();
-					break;
-				}
-				default: {}
-			}
+		} else {
+			this.afterSuccessModify();		
 		}
 	},
 	//добавление/исправление объявления
@@ -114,6 +87,7 @@ var ModifyPost = React.createClass({
 		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 		switch(this.state.mode) {
 			case(ModifyPostModes.ADD): {
+				modifyRentPrms.data.apartment.pictures = this.state.post.pictures;
 				clnt.addAdvert(modifyRentPrms, this.handleModifyPostResult);
 				break;
 			}
@@ -130,39 +104,50 @@ var ModifyPost = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 			this.setState({formReady: false});
-		} else {
-			this.setState({
-				post: {
-					phone: this.props.session.sessionInfo.user.profile.phone,
-					sex: resp.MESSAGE[0].residentGender,
-					apartType: resp.MESSAGE[0].apartment.type,
-					address: resp.MESSAGE[0].apartment.adress,
-					formattedAdress: resp.MESSAGE[0].apartment.formattedAdress,
-					latitude: resp.MESSAGE[0].apartment.latitude,
-					longitude: resp.MESSAGE[0].apartment.longitude,
-					dFrom: "",
-					dTo: "",
-					dates: resp.MESSAGE[0].dates,
-					description: resp.MESSAGE[0].description,
-					options: resp.MESSAGE[0].apartment.options,
-					price: resp.MESSAGE[0].priceDay,
-					apartId: resp.MESSAGE[0].apartment.id,
-					pictures: _.without(resp.MESSAGE[0].apartment.pictures, _.findWhere(resp.MESSAGE[0].apartment.pictures, {id: "default"}))
-				},
-				formReady: true
-			});
+		} else {			
+			if(this.state.loadPicturesOnly) {
+				var postTmp = {};
+				_.extend(postTmp, this.state.post);
+				postTmp.pictures = _.without(resp.MESSAGE[0].apartment.pictures, _.findWhere(resp.MESSAGE[0].apartment.pictures, {id: "default"}))
+				this.setState({post: postTmp});
+			} else {
+				this.setState({
+					post: {
+						phone: this.props.session.sessionInfo.user.profile.phone,
+						sex: resp.MESSAGE[0].residentGender,
+						apartType: resp.MESSAGE[0].apartment.type,
+						address: resp.MESSAGE[0].apartment.adress,
+						formattedAdress: resp.MESSAGE[0].apartment.formattedAdress,
+						latitude: resp.MESSAGE[0].apartment.latitude,
+						longitude: resp.MESSAGE[0].apartment.longitude,
+						dFrom: "",
+						dTo: "",
+						dates: resp.MESSAGE[0].dates,
+						description: resp.MESSAGE[0].description,
+						options: resp.MESSAGE[0].apartment.options,
+						price: resp.MESSAGE[0].priceDay,
+						apartId: resp.MESSAGE[0].apartment.id,
+						pictures: _.without(resp.MESSAGE[0].apartment.pictures, _.findWhere(resp.MESSAGE[0].apartment.pictures, {id: "default"}))
+					},
+					formReady: true
+				});
+			}
 		}
 	},
 	//загрузка карточки объявления
-	loadPost: function () {
+	loadPost: function (loadPicturesOnly) {		
 		if(this.props.session.loggedIn) {
+			var pictsOnly = false;
+			if(loadPicturesOnly) pictsOnly = true;
 			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 			var getPrms = {
 				language: this.props.language, 
 				filter: {id: this.state.postId},
 				session: this.props.session.sessionInfo
 			}
-			clnt.getAdverts(getPrms, this.handleLoadPostResult);
+			this.setState({loadPicturesOnly: pictsOnly}, function() {
+				clnt.getAdverts(getPrms, this.handleLoadPostResult)
+			});
 		}
 	},
 	//обработка результата загрузки картинки
@@ -171,16 +156,7 @@ var ModifyPost = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			switch(this.state.mode) {
-				case(ModifyPostModes.ADD): {
-					this.afterSuccessModify();
-					break;
-				}
-				case(ModifyPostModes.EDIT): {					
-					break;
-				}
-				default: {}
-			}		
+			this.loadPost(true);
 		}
 	},
 	//загрузка картинки карточки объявления
@@ -215,6 +191,40 @@ var ModifyPost = React.createClass({
 			}
 			clnt.removeApartmentPicture(delPrms, this.handleDeletePictureResult);
 		}
+	},
+	//обработка результата установки картинки по умолчанию для карточки объявления
+	handleSetPostDefaultPicture: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		}
+	},
+	//установка картинки по умолчанию для карточки объявления
+	setPostDefaultPicture: function (pictId) {
+		if(this.props.session.loggedIn) {
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var setDefPictPrms = {
+				language: this.props.language, 
+				session: this.props.session.sessionInfo,
+				pictId: pictId
+			}
+			clnt.setDefaultPicture(setDefPictPrms, this.handleSetPostDefaultPicture);
+		}
+	},	
+	//корректировка картинки по-умолчанию
+	correctPostDefaultPicture: function (index) {		
+		var postTmp = {};
+		_.extend(postTmp, this.state.post);
+		if(index == -1) {			
+			if(!_.findWhere(this.state.post.pictures, {default: true})) {
+				if(postTmp.pictures.length > 0) postTmp.pictures[0].default = true;
+			}
+		} else {			
+			postTmp.pictures.map(function (item, i) {
+				if(i == index) item.default = true; else item.default = false;
+			});
+		};
+		this.setState({post: postTmp});		
 	},
 	//проверка обязательных параметров
 	checkRequredValues: function () {
@@ -311,21 +321,27 @@ var ModifyPost = React.createClass({
 				var picturesForUpload = [];
 				_.extend(tmp, this.state.post);
 				result.map(function (pict, i) {
-					var tmpPict = {name: pict.path, cloudinaryPublicId: pict.public_id, xsmall: pict.url};
+					var tmpPict = {name: pict.path, cloudinaryPublicId: pict.public_id, xsmall: pict.url, default: false};
 					tmp.pictures.push(tmpPict);
 					picturesForUpload.push(tmpPict);
 				}, this);
-				this.setState({post: tmp});
-				switch(this.state.mode) {
-					case(ModifyPostModes.ADD): {						
-						break;
-					}
-					case(ModifyPostModes.EDIT): {
-						this.uploadPicture(picturesForUpload);
-						break;
-					}
-					default: {}
-				}
+				this.setState({post: tmp}, function () {
+					switch(this.state.mode) {
+						case(ModifyPostModes.ADD): {
+							this.correctPostDefaultPicture(-1);
+							break;
+						}
+						case(ModifyPostModes.EDIT): {
+							if(!_.findWhere(this.state.post.pictures, {default: true})) {
+								this.correctPostDefaultPicture(-1);
+								picturesForUpload[0].default = true;
+							}
+							this.uploadPicture(picturesForUpload);
+							break;
+						}
+						default: {}
+					}					
+				});
 			}
 		}
 	},
@@ -333,12 +349,25 @@ var ModifyPost = React.createClass({
 	handleDeletePictureClick: function (index) {
 		var tmp = {};
 		_.extend(tmp, this.state.post);
-		if("id" in tmp.pictures[index]) {
-			this.deletePicture([tmp.pictures[index].id]);
+		if((tmp.pictures.length > 1)&&(tmp.pictures[index].default)) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
+				Utils.getStrResource({lang: this.props.language, code: "CLNT_CAN_NOT_DELETE_DEFAULT_PICTURE"})
+			);
+		} else {
+			if("id" in tmp.pictures[index]) {
+				this.deletePicture([tmp.pictures[index].id]);
+			}
+			tmp.pictures.splice(index, 1);
+			this.setState({post: tmp});
 		}
-		tmp.pictures.splice(index, 1);
-		this.setState({post: tmp});
 	},
+	//обработка нажатия на картинку из списка
+	handlePictureClick: function (index) {
+		this.correctPostDefaultPicture(index);
+		if("id" in this.state.post.pictures[index]) {
+			this.setPostDefaultPicture(this.state.post.pictures[index].id);
+		}		
+	},	
 	//нажатие на кнопку удаления периода недоступности
 	handleDeletePeriodClick: function (index) {
 		var tmp = {};
@@ -449,12 +478,13 @@ var ModifyPost = React.createClass({
 			picts = this.state.post.pictures.map(function (item, i) {
 				pictItemDivStyle = {display: "inline"};
 				pictItemDivContStyle = {display: "inline-block"};
-				pictItemImgStyle = {height: "100px"};
+				pictItemImgStyle = {height: "100px", cursor: "pointer"};
+				if(item.default) _.extend(pictItemImgStyle, {border: "solid 2px #bbd645"});
 				pictItemDivContDelStyle = {textAlign: "center"};
 				return (
 					<div key={i} style={pictItemDivStyle}>
 						<div style={pictItemDivContStyle}>
-							<div><img src={item.xsmall} style={pictItemImgStyle}/></div>
+							<div><img src={item.xsmall} style={pictItemImgStyle} onClick={this.handlePictureClick.bind(this, i)}/></div>
 							<div style={pictItemDivContDelStyle}>	
 								<a className="u-lnk-norm" 
 									href="javascript:void(0);" 

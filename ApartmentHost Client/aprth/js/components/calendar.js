@@ -7,11 +7,18 @@ var Calendar = React.createClass({
 		return {			
 		}
 	},
+	//оповещение родителя о смене даты
+	notifyParentDatePicked: function (props, date) {
+		if((props.onDatePicked)&&(Utils.isFunction(props.onDatePicked))) {
+			console.log("PARENT NOTIFY: " + props.name + " " + date);
+			props.onDatePicked(props.name, date);
+		}
+	},
 	//подключение к слушателю смены значения
 	applyDatePickedListener: function (props) {
-		$("#" + props.name).on("changeDate", function (e) {
-			props.onDatePicked(props.name, e.date);
-		});
+		$("#" + props.name).on("changeDate", Utils.bind(function (e) {
+			this.notifyParentDatePicked(props, e.date);
+		}, this));
 	},
 	//отключение от слушателя смены значения
 	chancelDatePickedListener: function (props) {
@@ -75,6 +82,12 @@ var Calendar = React.createClass({
 			}
 		}
 	},
+	//при ручном изменении значения поля ввода
+	handleDateChange: function (event) {
+		if(!event.target.value) {
+			this.notifyParentDatePicked(this.props, undefined);
+		}
+	},
 	//сборка представления компонента
 	render: function () {
 		//дополнительные стили
@@ -84,7 +97,8 @@ var Calendar = React.createClass({
 			<div style={dStyle}>
 				<input id={this.props.name}
 					className={this.props.inputClasses} 
-					placeholder={this.props.placeholder}/>				
+					placeholder={this.props.placeholder}
+					onChange={this.handleDateChange}/>				
 			</div>
 		);
 	}

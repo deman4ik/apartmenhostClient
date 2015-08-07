@@ -79,7 +79,7 @@ var RegConfirm = React.createClass({
 	},
 	//генерация представления формы подтверждения регистрации
 	render: function () {
-		//сожержимое формы
+		//содержимое формы
 		var content;
 		if(this.state.userId) {
 			var cCodeInput = React.addons.classSet;
@@ -91,7 +91,7 @@ var RegConfirm = React.createClass({
 			content =	<div>
 							<div className="w-row">
 								<div className="w-col w-col-3">
-									<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_REG_CODE"})}:</label>									
+									<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_CONF_CODE"})}:</label>									
 									<div className="u-t-small">
 										{Utils.getStrResource({
 											lang: this.props.language,
@@ -103,7 +103,7 @@ var RegConfirm = React.createClass({
 								</div>
 								<div className="w-col w-col-9">
 									<input className={classesCodeInput}
-										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_REG_CODE"})}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_CONF_CODE"})}
 										type="text" 
 										ref="code" 
 										id="code"

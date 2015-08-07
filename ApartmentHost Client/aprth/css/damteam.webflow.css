@@ -344,6 +344,29 @@ p {
   font-weight: 500;
   text-decoration: underline;
 }
+
+.u-lnk-small,
+.u-lnk-small:visited,
+.u-lnk-small:focus,
+.u-lnk-small:active {
+  display: inline-block;
+  margin-right: auto;
+  margin-left: auto;
+  padding-top: 0px;
+  color: #00ccc5;
+  line-height: 18px;
+  text-decoration: none;
+  font-size: 12px;
+}
+.u-lnk-small:hover {
+  color: #0be3dc;
+  text-decoration: underline;
+}
+.u-lnk-small.press {
+  font-weight: 500;
+  text-decoration: underline;
+}
+
 .u-lnk-norm.h1 {
   padding-right: 13px;
   padding-left: 14px;

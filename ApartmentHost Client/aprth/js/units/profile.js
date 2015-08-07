@@ -523,6 +523,8 @@ var Profile = React.createClass({
 														options: ["DVAL_MALE", "DVAL_FEMALE"]})}
 											language={this.props.language}
 											defaultOptionsState={this.state.profileTmp.gender}
+											appendEmptyOption={true}
+											emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "UI_FLD_GENDER"})}
 											onOptionChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "gender", value: value}})}, this)}/>
 									</div>
 				} else {
@@ -709,11 +711,19 @@ var Profile = React.createClass({
 														</div>
 													</div>
 									} else {
-										myReview =	<div className="w-col w-col-5">
-														<a className="u-btn btn-sm" href="javascript:void(0);" onClick={this.handleAddReviewClick.bind(this, item)}>
-															{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD_REVIEW"})}
-														</a>
-													</div>
+										if(item.canResponse) {
+											myReview =	<div className="w-col w-col-5">
+															<a className="u-btn btn-sm" href="javascript:void(0);" onClick={this.handleAddReviewClick.bind(this, item)}>
+																{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD_REVIEW"})}
+															</a>
+														</div>
+										} else {
+											myReview =	<div className="w-col w-col-5">
+															<p className="u-t-light">
+																{Utils.getStrResource({lang: this.props.language, code: "CLNT_CAN_NOT_ADD_REVIEW"})}
+															</p>
+														</div>											
+										}
 									}
 									return (
 										<div className="w-row u-row-underline">
