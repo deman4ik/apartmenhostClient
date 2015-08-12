@@ -241,14 +241,9 @@ var Map = React.createClass({
 	},
 	//генерация представления
 	render: function () {
-		//дополнительные стили карты
-		mapStyle = {
-			witdh: (this.props.witdh)?this.props.witdh:"100%",
-			height: (this.props.height)?this.props.height:"300px"
-		}
 		//представление
 		return (
-			<div ref="mapCanvas" style={mapStyle}></div>	
+			<div className="w-widget w-widget-map u-block-cardlst-map" ref="mapCanvas"></div>	
 		);
 	}
 });

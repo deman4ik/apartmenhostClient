@@ -366,7 +366,7 @@ var Post = React.createClass({
 									<div className="w-row">							    
 										<div className="w-col w-col-5 u-col-card">
 											<div className="u-block-owner">
-												<img className="u-img-author-m" src={this.state.post.user.picture.url} width="96"/>
+												<img className="u-img-author-m" src={this.state.post.user.picture.xlarge}/>
 												<div>{this.state.post.user.lastName} {this.state.post.user.firstName}</div>
 												<Rater total={5} rating={this.state.post.user.rating}/>
 											</div>

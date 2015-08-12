@@ -17,7 +17,6 @@ var PostsSearch = React.createClass({
 	render: function () {
 		//генератор		
 		return (
-			<div className="content-center">
 				<Posts mode={PostsModes.SEARCH}
 					session={this.props.session}
 					onLogIn={this.props.onLogIn}
@@ -25,7 +24,6 @@ var PostsSearch = React.createClass({
 					onHideProgress={this.props.onHideProgress}
 					onShowError={this.props.onShowError}
 					language={this.props.language}/>
-			</div>
 		);
 	}
 });

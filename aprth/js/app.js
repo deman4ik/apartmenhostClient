@@ -264,21 +264,19 @@ var App = React.createClass({
 							{message}
 							{logInForm}
 							{navBar}
-							<div className="content_wrapper">
-								<RouteHandler session={this.state.session}
-									onLogIn={this.handleLogIn}
-									onDisplayProgress={this.showLoader}
-									onHideProgress={this.hideLoader}
-									onShowError={this.showDialogError}
-									onShowMessage={this.showDialogMessage}
-									onProfileChange={this.handleProfileChange}
-									language={this.state.language}/>
-							</div>							
+							<RouteHandler session={this.state.session}
+								onLogIn={this.handleLogIn}
+								onDisplayProgress={this.showLoader}
+								onHideProgress={this.hideLoader}
+								onShowError={this.showDialogError}
+								onShowMessage={this.showDialogMessage}
+								onProfileChange={this.handleProfileChange}
+								language={this.state.language}/>			
 						</section>
 		}
 		//генератор
 		return (
-			<div>
+			<div name="app">
 				{content}
 				{footer}
 			</div>

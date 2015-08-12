@@ -11,7 +11,7 @@ var PostsFilter = React.createClass({
 	//состояние фильтра
 	getInitialState: function () {
 		return {
-			filterToggle: false, //флаг отображения/сокрытия тела фильтра
+			filterToggle: true, //флаг отображения/сокрытия тела фильтра
 			noAdressFilterSpecified: false, //флаг отсуствия фильтра по адресу
 			noDateFromFilterSpecified: false, //флаг отсуствия фильтра по дате начала периода бронирования
 			noDateToFilterSpecified: false, //флаг отсуствия фильтра по дате окончания периода бронирования
@@ -218,13 +218,15 @@ var PostsFilter = React.createClass({
 	},
 	//обработка нажатия на кнопку "Фильтр" (сокрытие/отображение)
 	handleFilterToggleClick: function () {
-		this.setState({filterToggle: !this.state.filterToggle}, this.saveFilterState);		
+		this.setState({filterToggle: !this.state.filterToggle}, this.saveFilterState);	
+		if (this.state.filterToggle) $(".u-block-cardlst-map").addClass( "rollup" );
+		else $(".u-block-cardlst-map").removeClass( "rollup" );
 	},
 	//обработка нажатия на кнопку "Очистить"
 	handleClearClick: function () {
 		this.setState(
 			{
-				filterToggle: false, 
+				//filterToggle: false, A.K. пусть остается как есть
 				noAdressFilterSpecified: false,
 				noDateFromFilterSpecified: false,
 				noDateToFilterSpecified: false,

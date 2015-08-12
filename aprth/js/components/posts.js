@@ -252,19 +252,16 @@ var Posts = React.createClass({
 									onFilterChange={this.onFilterChange}/>
 				//карта
 				var map;				
-				map = 	<div>							
-							<Map latitude={this.state.searchCenterLat}
+				map = <Map latitude={this.state.searchCenterLat}
 								longitude={this.state.searchCenterLon}
 								address={this.state.filter.adress}
 								radius={this.state.radius}
 								markers={this.state.markers}
 								mode={mapModes.modeGroup}
 								zoom={10}
-								height={"400px"}
 								onSearchRadarRadiusChange={this.handleMapRadarRadiusChanged}
 								onSearchRadarPlaceChange={this.handleMapRadarPlaceChanged}
 								showRadar={this.state.filterIsSet}/>
-						</div>
 				//список объявлений
 				var postsList;
 				if((this.state.advertsReady)&&(this.state.advertsCnt > 0)) {
@@ -276,22 +273,22 @@ var Posts = React.createClass({
 				}
 				//соберем финальный вид компонента
 				content =	<div className="w-section u-sect-page-cardlst">
-								<div className="w-row">
-									<div className="w-col w-col-12 w-col-stack u-col-cardlst1">
-										{postsFilter}										
+										<div className="w-row">
+											<div className="w-col w-col-6 w-col-stack u-col-cardlst1">
+												{postsFilter}					
+											</div>
+											<div className="w-col w-col-6 w-col-stack u-col-cardlst2">
+												{map}
+											</div>									
+										</div>	
+										<div className="w-container">
+											<div className="w-row">
+												<div className="w-col w-col-12 w-col-stack u-col-cardlst1">
+													{postsList}								
+												</div>
+											</div>
+										</div>
 									</div>
-								</div>
-								<div className="w-row">
-									<div className="w-col w-col-12 w-col-stack u-col-cardlst1">
-										{map}
-									</div>
-								</div>
-								<div className="w-row">
-									<div className="w-col w-col-12 w-col-stack u-col-cardlst1">
-										{postsList}
-									</div>
-								</div>										
-							</div>
 				break;
 			}
 			//режим избранного
@@ -334,7 +331,7 @@ var Posts = React.createClass({
 		}
 		//генератор		
 		return (
-			<div className="content-center">
+			<div name="posts" className="content-center">
 				{content}
 			</div>
 		);
