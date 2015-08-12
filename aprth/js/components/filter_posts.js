@@ -417,7 +417,26 @@ var PostsFilter = React.createClass({
 				<div style={filterDisplay}>
 					<div className="u-block-filter-add u-block-underline" style={filterToggle}>
 						<div className="w-form">
-							<form className="u-form-body">								
+							<form className="u-form-body">		
+								<div className="w-row">
+									<div className="w-col w-col-4">
+										<label className="u-form-label n1">
+											{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}:
+										</label>
+									</div>
+									<div className="w-col w-col-8">
+										<OptionsSelector view={OptionsSelectorView.SELECT}
+											language={this.props.language}
+											options={optionsFactory.buildOptions({
+														language: this.props.language,
+														id: "apartType",
+														options: ["DVAL_HOUSE", "DVAL_ROOM", "DVAL_OFFICE", "DVAL_FLAT", "DVAL_HOTEL_ROOM"]})}
+											onOptionChanged={this.handleSelectedApartType}
+											defaultOptionsState={this.state.apartType}
+											appendEmptyOption={true}
+											emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}/>
+									</div>
+								</div>													
 								<div className="w-row">
 									<div className="w-col w-col-4">
 										<label className="u-form-label n1">
@@ -460,25 +479,6 @@ var PostsFilter = React.createClass({
 																})]})}
 											onOptionChanged={this.handleSelectedPrice}
 											defaultOptionsState={[this.state.price]}/>				
-									</div>
-								</div>
-								<div className="w-row">
-									<div className="w-col w-col-4">
-										<label className="u-form-label n1">
-											{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}:
-										</label>
-									</div>
-									<div className="w-col w-col-8">
-										<OptionsSelector view={OptionsSelectorView.SELECT}
-											language={this.props.language}
-											options={optionsFactory.buildOptions({
-														language: this.props.language,
-														id: "apartType",
-														options: ["DVAL_HOUSE", "DVAL_ROOM", "DVAL_OFFICE", "DVAL_FLAT", "DVAL_HOTEL_ROOM"]})}
-											onOptionChanged={this.handleSelectedApartType}
-											defaultOptionsState={this.state.apartType}
-											appendEmptyOption={true}
-											emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}/>
 									</div>
 								</div>
 								{searchRadius}
