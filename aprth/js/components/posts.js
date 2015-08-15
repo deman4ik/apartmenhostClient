@@ -243,25 +243,25 @@ var Posts = React.createClass({
 			//режим поиска
 			case(PostsModes.SEARCH): {
 				//форма фильтра
-				var postsFilter = <PostsFilter language={this.props.language}
-									cntFound={this.state.advertsCnt}
-									filterIsSet={this.state.filterIsSet}
-									radius={this.state.radius}
-									latitude={this.state.searchCenterLat}
-									longitude={this.state.searchCenterLon}
-									onFilterChange={this.onFilterChange}/>
+				var postsFilter =	<PostsFilter language={this.props.language}
+										cntFound={this.state.advertsCnt}
+										filterIsSet={this.state.filterIsSet}
+										radius={this.state.radius}
+										latitude={this.state.searchCenterLat}
+										longitude={this.state.searchCenterLon}
+										onFilterChange={this.onFilterChange}/>
 				//карта
 				var map;				
-				map = <Map latitude={this.state.searchCenterLat}
-								longitude={this.state.searchCenterLon}
-								address={this.state.filter.adress}
-								radius={this.state.radius}
-								markers={this.state.markers}
-								mode={mapModes.modeGroup}
-								zoom={10}
-								onSearchRadarRadiusChange={this.handleMapRadarRadiusChanged}
-								onSearchRadarPlaceChange={this.handleMapRadarPlaceChanged}
-								showRadar={this.state.filterIsSet}/>
+				map =	<Map latitude={this.state.searchCenterLat}
+							longitude={this.state.searchCenterLon}
+							address={this.state.filter.adress}
+							radius={this.state.radius}
+							markers={this.state.markers}
+							mode={mapModes.modeGroup}
+							zoom={10}
+							onSearchRadarRadiusChange={this.handleMapRadarRadiusChanged}
+							onSearchRadarPlaceChange={this.handleMapRadarPlaceChanged}
+							showRadar={this.state.filterIsSet}/>
 				//список объявлений
 				var postsList;
 				if((this.state.advertsReady)&&(this.state.advertsCnt > 0)) {
@@ -273,22 +273,22 @@ var Posts = React.createClass({
 				}
 				//соберем финальный вид компонента
 				content =	<div className="w-section u-sect-page-cardlst">
-										<div className="w-row">
-											<div className="w-col w-col-6 w-col-stack u-col-cardlst1">
-												{postsFilter}					
-											</div>
-											<div className="w-col w-col-6 w-col-stack u-col-cardlst2">
-												{map}
-											</div>									
-										</div>	
-										<div className="w-container">
-											<div className="w-row">
-												<div className="w-col w-col-12 w-col-stack u-col-cardlst1">
-													{postsList}								
-												</div>
-											</div>
+								<div className="w-row">
+									<div className="w-col w-col-6 w-col-stack u-col-cardlst1">
+										{postsFilter}					
+									</div>
+									<div className="w-col w-col-6 w-col-stack u-col-cardlst2">
+										{map}
+									</div>									
+								</div>	
+								<div className="w-container">
+									<div className="w-row">
+										<div className="w-col w-col-12 w-col-stack u-col-cardlst1">
+											{postsList}								
 										</div>
 									</div>
+								</div>
+							</div>
 				break;
 			}
 			//режим избранного

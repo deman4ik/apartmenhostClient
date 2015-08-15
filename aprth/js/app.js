@@ -293,6 +293,7 @@ var routes = (
 		<Route name="profile" handler={Profile}/>
 		<Route name="modifypost" handler={ModifyPost} path="modifypost/:mode"/>
 		<Route name="post" handler={Post}  path="posts/:postId"/>
+		<Route name="register" handler={Register}/>
 		<Route name="confirm" handler={RegConfirm}/>
 		<Route name="reset" handler={ResetPassConfirm}/>
 		<DefaultRoute handler={DefaultPage}/>

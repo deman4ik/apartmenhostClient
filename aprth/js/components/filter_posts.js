@@ -219,8 +219,10 @@ var PostsFilter = React.createClass({
 	//обработка нажатия на кнопку "Фильтр" (сокрытие/отображение)
 	handleFilterToggleClick: function () {
 		this.setState({filterToggle: !this.state.filterToggle}, this.saveFilterState);	
-		if (this.state.filterToggle) $(".u-block-cardlst-map").addClass( "rollup" );
-		else $(".u-block-cardlst-map").removeClass( "rollup" );
+		if (this.state.filterToggle) 
+			$(".u-block-cardlst-map").addClass( "rollup" );
+		else 
+			$(".u-block-cardlst-map").removeClass( "rollup" );
 	},
 	//обработка нажатия на кнопку "Очистить"
 	handleClearClick: function () {

@@ -85,7 +85,6 @@ var ResetPassConfirm = React.createClass({
 			if(!this.state.password) tmpState.noPassSpecified = true;
 			if(!this.state.passwordConf) tmpState.noPassConfSpecified = true;
 			if(this.state.password != this.state.passwordConf) tmpState.badPassConfSpecified = true;
-			console.log(tmpState);
 			this.setState(tmpState);
 		}
 	},

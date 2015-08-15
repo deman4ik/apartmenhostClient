@@ -18,21 +18,7 @@ var LogInForm = React.createClass({
 		} else {
 			this.props.onLogInOk(result.MESSAGE);
 		}		
-	},
-	//обработка результата регистрации
-	handleRegister: function (result) {
-		this.props.onHideProgress();
-		if(result.TYPE == clnt.respTypes.STD) {
-			this.props.onShowError(Utils.getStrResource({
-					lang: this.props.language, 
-					code: "CLNT_COMMON_ERROR"}), 
-				result.MESSAGE
-			);
-		} else {
-			this.props.onLogInCancel();
-			this.context.router.transitionTo("confirm", null, {userId: result.MESSAGE.data[0]});
-		}
-	},
+	},	
 	//обработка результата сброса пароля
 	handleResetPassword: function (result) {
 		this.props.onHideProgress();
@@ -54,17 +40,7 @@ var LogInForm = React.createClass({
 			code: "CLNT_LOGIN_PROCESS"
 		}));
 		clnt.login({language: this.props.language, data: auth}, this.handleLogIn);
-	},
-	//регистрация в системе
-	register: function (auth) {
-		this.props.onDisplayProgress(Utils.getStrResource({
-			lang: this.props.language, 
-			code: "CLNT_COMMON_PROGRESS"
-		}));
-		auth.language = this.props.language;
-		var regData = authFactory.buildRegister(auth);
-		clnt.register({language: this.props.language, data: regData}, this.handleRegister);		
-	},
+	},	
 	//сброс пароля
 	resetPassword: function (email) {
 		this.props.onDisplayProgress(Utils.getStrResource({
@@ -98,20 +74,8 @@ var LogInForm = React.createClass({
 	},
 	//обработка кнопки "Регистрация"
 	handleRegisterClick: function () {
-		try {
-			var auth = authFactory.build({
-				language: this.props.language,
-				userName: React.findDOMNode(this.refs.login).value,
-				userPass: React.findDOMNode(this.refs.password).value
-			});
-			this.register(auth);			
-		} catch (e) {
-			this.props.onShowError(Utils.getStrResource({
-					lang: this.props.language, 
-					code: "CLNT_COMMON_ERROR"}),
-				e.message
-			);
-		}		
+		this.props.onLogInCancel();
+		this.context.router.transitionTo("register");
 	},
 	//обработка кнопки "Забыл пароль"
 	handlePasswordResetClick: function () {

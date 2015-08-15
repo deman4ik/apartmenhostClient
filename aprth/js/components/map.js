@@ -228,7 +228,10 @@ var Map = React.createClass({
 	componentDidMount: function () {
 		var mapTmp = new google.maps.Map(
 			React.findDOMNode(this.refs.mapCanvas), 
-			{zoom: (this.props.zoom)?this.props.zoom:15}
+			{
+				zoom: (this.props.zoom)?this.props.zoom:15,
+				scrollwheel: ("scrollWheel" in this.props)?this.props.scrollWheel:true
+			}
 		);
 		this.setState({map: mapTmp}, function () {this.initState(this.props);});
 	},
