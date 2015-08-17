@@ -465,24 +465,6 @@ var Client = function (clientConfig) {
 							code: "CLNT_NO_ELEM",
 							values: ["ServerRequest", "data"]
 						}));
-					/*if(!prms.data.userId) 
-						throw new Error(Utils.getStrResource({
-							lang: prms.language,
-							code: "CLNT_NO_ELEM",
-							values: ["ServerRequest", "userId"]
-						}));
-					if(!prms.data.code) 
-						throw new Error(Utils.getStrResource({
-							lang: prms.language,
-							code: "CLNT_NO_ELEM",
-							values: ["ServerRequest", "code"]
-						}));
-					if(!prms.data.password) 
-						throw new Error(Utils.getStrResource({
-							lang: prms.language,
-							code: "CLNT_NO_ELEM",
-							values: ["ServerRequest", "password"]
-						}));*/
 					return fillSrvStdReqData(serverActions.changePassword, serverMethods.ins, prms.data);
 					break;
 				}
