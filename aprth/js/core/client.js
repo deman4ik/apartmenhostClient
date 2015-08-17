@@ -457,7 +457,7 @@ var Client = function (clientConfig) {
 					return fillSrvStdReqData(serverActions.resetPassword, serverMethods.ins, prms.data);
 					break;
 				}
-				//смена пароля
+				//смена/восстановление пароля
 				case(serverActions.changePassword): {
 					if(!prms.data)
 						throw new Error(Utils.getStrResource({
@@ -465,7 +465,7 @@ var Client = function (clientConfig) {
 							code: "CLNT_NO_ELEM",
 							values: ["ServerRequest", "data"]
 						}));
-					if(!prms.data.userId) 
+					/*if(!prms.data.userId) 
 						throw new Error(Utils.getStrResource({
 							lang: prms.language,
 							code: "CLNT_NO_ELEM",
@@ -482,7 +482,7 @@ var Client = function (clientConfig) {
 							lang: prms.language,
 							code: "CLNT_NO_ELEM",
 							values: ["ServerRequest", "password"]
-						}));
+						}));*/
 					return fillSrvStdReqData(serverActions.changePassword, serverMethods.ins, prms.data);
 					break;
 				}
@@ -1241,11 +1241,38 @@ var Client = function (clientConfig) {
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
 		},
+		//восстановление пароля (подтверждение)
+		resetPasswordConf: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.changePassword,
+						method: serverMethods.ins,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["RESET PASSWORD ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
 		//смена пароля
 		changePassword: function (prms, callBack) {
 			try {
 				execServerApi({
 					language: prms.language,
+					session: prms.session,
 					req: buildServerRequest({
 						language: prms.language,
 						action: serverActions.changePassword,
@@ -1266,7 +1293,7 @@ var Client = function (clientConfig) {
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
-		},	
+		},		
 	}
 }
 

@@ -56,7 +56,7 @@ var ResetPassConfirm = React.createClass({
 				password: this.state.password
 			}
 		};
-		clnt.changePassword(confPrms, this.handleConfirmResult);		
+		clnt.resetPasswordConf(confPrms, this.handleConfirmResult);		
 	},
 	//обработка изменения поля формы подтверждения
 	handleFormItemChange: function (e) {

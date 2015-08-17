@@ -35,5 +35,7 @@ var config = {
 	//шаг увеличения/уменьшения радиуса поиска (метры)
 	searchRadiusStep: 1000,
 	//признак использования радара для поиска
-	useSearchRadar: true
+	useSearchRadar: true,
+	//максимальное количество картинок на объявление
+	postMaxPictures: 20
 }

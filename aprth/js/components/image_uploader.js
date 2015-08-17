@@ -57,6 +57,7 @@ var ImageUpLoader = React.createClass({
 				theme: "white",
 				sources: ["local", "url"],
 				multiple: (this.props.single?false:true),
+				max_files: (this.props.maxFiles?this.props.maxFiles:null),
 				text: translation
 			},
 			Utils.bind(function (error, result) { 

@@ -6,7 +6,7 @@ var FormFactory = function () {
 	var itemDataType = {
 		STR: "str", //строка
 		NUMB: "number", //число
-		DATE: "date" //дата
+		DATE: "date" //дата		
 	}
 	//способы ввода данных в поля форм
 	var itemInputType = {
@@ -14,6 +14,7 @@ var FormFactory = function () {
 		TEXT: "text", //ручной ввод в текстовое многострочное поле
 		DICT: "dict", //выбор из словаря
 		RATE: "rate", //ввод через указание рейтинга
+		PWD: "password" //пароль
 	}
 	//конвертация серверного типа данных в клиентский
 	var convertDataTypeToClient = function (serverDataType) {

@@ -72,6 +72,14 @@ var FormItem = React.createClass({
 											language={this.props.language}/>
 							break;
 						}
+						case(formFactory.itemInputType.PWD): {
+							content = 	<FormItemInput item={this.state.item} 
+											onItemValueChange={this.onItemValueChange} 
+											onInvalidItem={this.onInvalidItem}
+											language={this.props.language}
+											isPassword={true}/>
+							break;
+						}
 						default: {
 						}
 					}

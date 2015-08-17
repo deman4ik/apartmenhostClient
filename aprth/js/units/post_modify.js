@@ -34,7 +34,8 @@ var ModifyPost = React.createClass({
 				options: "", //дополнительные параметры с разделителем
 				price: 0, //цена
 				apartId: "", //идентификатор объекта недвижимости
-				pictures: [] //картинки
+				pictures: [], //картинки
+				picturesLeft: config.postMaxPictures //количество картинок, которых ещё можно загрузить
 			}
 		}
 	},	
@@ -111,6 +112,7 @@ var ModifyPost = React.createClass({
 				postTmp.pictures = _.without(resp.MESSAGE[0].apartment.pictures, _.findWhere(resp.MESSAGE[0].apartment.pictures, {id: "default"}))
 				this.setState({post: postTmp});
 			} else {
+				var tmpPicts = _.without(resp.MESSAGE[0].apartment.pictures, _.findWhere(resp.MESSAGE[0].apartment.pictures, {id: "default"}));
 				this.setState({
 					post: {
 						phone: this.props.session.sessionInfo.user.profile.phone,
@@ -127,7 +129,8 @@ var ModifyPost = React.createClass({
 						options: resp.MESSAGE[0].apartment.options,
 						price: resp.MESSAGE[0].priceDay,
 						apartId: resp.MESSAGE[0].apartment.id,
-						pictures: _.without(resp.MESSAGE[0].apartment.pictures, _.findWhere(resp.MESSAGE[0].apartment.pictures, {id: "default"}))
+						pictures: tmpPicts,
+						picturesLeft: ((config.postMaxPictures - tmpPicts.length > 0)?(config.postMaxPictures - tmpPicts.length):0)
 					},
 					formReady: true
 				});
@@ -325,6 +328,7 @@ var ModifyPost = React.createClass({
 					tmp.pictures.push(tmpPict);
 					picturesForUpload.push(tmpPict);
 				}, this);
+				tmp.picturesLeft = ((tmp.picturesLeft - picturesForUpload.length > 0)?(tmp.picturesLeft - picturesForUpload.length):0);
 				this.setState({post: tmp}, function () {
 					switch(this.state.mode) {
 						case(ModifyPostModes.ADD): {
@@ -358,6 +362,7 @@ var ModifyPost = React.createClass({
 				this.deletePicture([tmp.pictures[index].id]);
 			}
 			tmp.pictures.splice(index, 1);
+			tmp.picturesLeft = ((tmp.picturesLeft + 1 <= config.postMaxPictures)?(tmp.picturesLeft + 1):config.postMaxPictures);
 			this.setState({post: tmp});
 		}
 	},
@@ -497,14 +502,20 @@ var ModifyPost = React.createClass({
 				);
 			}, this);
 		}
-		//управление картинками
-		var pictsManager;
+		//виджет для загрузки картинок
+		var pictsUploader;
+		if(this.state.post.picturesLeft > 0) {
+			pictsUploader =	<ImageUpLoader language={this.props.language}
+								onUpLoaded={this.handlePictureUploaded}
+								maxFiles={this.state.post.picturesLeft}/>
+		}
+		//управление картинками (миниатюры + виджет)
+		var pictsManager;		
 		pictsManager =	<div>
 							<div className="u-block-img-holder">
 								{picts}
 							</div>
-							<ImageUpLoader language={this.props.language}
-								onUpLoaded={this.handlePictureUploaded}/>
+								{pictsUploader}
 						</div>
 		//указание адреса на карте
 		var mapPicker;

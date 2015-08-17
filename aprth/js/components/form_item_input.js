@@ -42,22 +42,26 @@ var FormItemInput = React.createClass({
 		if(this.state.itemMetaIsValid) {
 			//тип данных
 			var inputDataType = "text";
-			if(this.state.item.dataType) {
-				switch(this.state.item.dataType) {
-					case(formFactory.itemDataType.STR): {
-						inputDataType = "text";
-						break;
-					}
-					case(formFactory.itemDataType.NUMB): {
-						inputDataType = "number";
-						break;
-					}
-					case(formFactory.itemDataType.DATE): {
-						inputDataType = "date";
-						break;
-					}
-					default: {
-						inputDataType = "text";
+			if(this.props.isPassword) {
+				inputDataType = "password";
+			} else {
+				if(this.state.item.dataType) {
+					switch(this.state.item.dataType) {
+						case(formFactory.itemDataType.STR): {
+							inputDataType = "text";
+							break;
+						}
+						case(formFactory.itemDataType.NUMB): {
+							inputDataType = "number";
+							break;
+						}
+						case(formFactory.itemDataType.DATE): {
+							inputDataType = "date";
+							break;
+						}
+						default: {
+							inputDataType = "text";
+						}
 					}
 				}
 			}

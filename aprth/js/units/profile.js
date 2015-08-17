@@ -34,7 +34,9 @@ var Profile = React.createClass({
 			notifyApp: false, //флаг необходимости оповещения приложения о смене профиля пользователя
 			confirmDeletePost: false, //флаг отображения подтверждения удаления объявления
 			displayAddReview: false, //флаг отображения формы добавления отзыва
+			displayChPwd: false, //флаг отображения формы смены пароля
 			addReviewForm: {}, //форма добавления отзыва
+			chPwdForm: {}, //форма смены пароля
 			currentReviewItem: {}, //элемент, на который оставляем отзыв
 			reviewsIn: { //меня бронировали
 				loaded: false, //список загружен
@@ -83,6 +85,44 @@ var Profile = React.createClass({
 		formFactory.appedFormItem(formTmp, textItemTmp);
 		this.setState({addReviewForm: formTmp});
 	},
+	//сборка формы смены пароля
+	buildChPwdForm: function (props) {
+		var formTmp = formFactory.buildForm({
+			language: props.language,
+			title: Utils.getStrResource({lang: props.language, code: "UI_TITLE_CHPWD"})
+		});
+		var currPwdItemTmp = formFactory.buildFormItem({
+			language: props.language,
+			label: Utils.getStrResource({lang: props.language, code: "UI_FLD_PASS"}),
+			name: "currenPass",
+			dataType: formFactory.itemDataType.STR,
+			inputType: formFactory.itemInputType.PWD,
+			required: true,
+			value: ""
+		});
+		var newPwdItemTmp = formFactory.buildFormItem({
+			language: props.language,
+			label: Utils.getStrResource({lang: props.language, code: "UI_FLD_NEW_PASS"}),
+			name: "newPass",
+			dataType: formFactory.itemDataType.STR,
+			inputType: formFactory.itemInputType.PWD,
+			required: true,
+			value: ""
+		});
+		var newPwdConfItemTmp = formFactory.buildFormItem({
+			language: props.language,
+			label: Utils.getStrResource({lang: props.language, code: "UI_FLD_NEW_PASS_CONF"}),
+			name: "newPassConf",
+			dataType: formFactory.itemDataType.STR,
+			inputType: formFactory.itemInputType.PWD,
+			required: true,
+			value: ""
+		});
+		formFactory.appedFormItem(formTmp, currPwdItemTmp);
+		formFactory.appedFormItem(formTmp, newPwdItemTmp);
+		formFactory.appedFormItem(formTmp, newPwdConfItemTmp);
+		this.setState({chPwdForm: formTmp});
+	},
 	//отправка отзыва
 	onAddReviewFormOK: function (values) {		
 		this.addReview(
@@ -94,7 +134,20 @@ var Profile = React.createClass({
 	//отмена отправки отзыва
 	onAddReviewFormChancel: function () {
 		this.setState({displayAddReview: false}, function() {this.buildReviewForm(this.props);});
-	}, 
+	},
+	//смена пароля
+	onChPwdFormOK: function (values) {		
+		console.log(values);
+		this.changePassword(
+			_.find(values, {name: "currenPass"}).value, 
+			_.find(values, {name: "newPass"}).value,
+			_.find(values, {name: "newPassConf"}).value
+		);
+	},
+	//отмена отправки отзыва
+	onChPwdFormChancel: function () {
+		this.setState({displayChPwd: false}, function() {this.buildChPwdForm(this.props);});
+	},
 	//обработка загруженных данных объявления
 	handleLoadProfileResult: function (resp) {
 		this.props.onHideProgress();
@@ -188,7 +241,18 @@ var Profile = React.createClass({
 				this.loadActiveTab(true);
 			});
 		}
-	},	
+	},
+	//обработка результата смены пароля
+	handleChangePassword: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
+				Utils.getStrResource({lang: this.props.language, code: "CLNT_PASS_CHANGE_DONE"}));
+			this.setState({displayChPwd: false}, function() {this.buildChPwdForm(this.props);});
+		}
+	},
 	//загрузка данных профиля
 	loadProfile: function () {
 		if(this.props.session.loggedIn) {
@@ -286,6 +350,48 @@ var Profile = React.createClass({
 			clnt.addReview(addPrms, this.handleAddReview);
 		}
 	},
+	//смена пароля
+	changePassword: function (currentPassword, password, passwordConfirm) {
+		if(this.props.session.loggedIn) {
+			if(
+				(currentPassword)&&
+				(password)&&
+				(passwordConfirm)&&
+				(password == passwordConfirm)
+			) {
+				this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+				var addPrms = {
+					language: this.props.language, 
+					session: this.props.session.sessionInfo,
+					data: {
+						currentPassword: currentPassword,
+						password: password
+					}				
+				}
+				clnt.changePassword(addPrms, this.handleChangePassword);
+			} else {
+				var message;
+				if(!currentPassword) {
+					message = Utils.getStrResource({lang: this.props.language, code: "SRV_USER_REQUIRED", values: ["UI_FLD_PASS"], searchVals: true});
+				} else {
+					if(!password) {
+						message = Utils.getStrResource({lang: this.props.language, code: "SRV_USER_REQUIRED", values: ["UI_FLD_NEW_PASS"], searchVals: true});
+					} else {
+						if(!passwordConfirm) {
+							message = Utils.getStrResource({lang: this.props.language, code: "SRV_USER_REQUIRED", values: ["UI_FLD_NEW_PASS_CONF"], searchVals: true});
+						} else {
+							if(password != passwordConfirm) {
+								message = Utils.getStrResource({lang: this.props.language, code: "CLNT_PASS_NOT_CONF"});
+							}
+						}						
+					}
+				}				
+				if(message) {
+					this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), message);
+				}
+			}
+		}
+	},
 	//обработка изменения поля формы редактирования профиля
 	handleFormItemChange: function (e) {
 		var tmp = {};
@@ -302,6 +408,10 @@ var Profile = React.createClass({
 		var tmp = {};
 		_.extend(tmp, this.state.profile);
 		this.setState({profileTmp: tmp, modeEdit: true});
+	},
+	//нажатие на кнопку смены пароля
+	handleChPwdClick: function () {
+		this.setState({displayChPwd: true});
 	},
 	//обработка нажатия на кнопку отмены редактирования
 	handleCancelEditClick: function () {
@@ -433,12 +543,14 @@ var Profile = React.createClass({
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
 		this.buildReviewForm(this.props);
+		this.buildChPwdForm(this.props);
 		this.loadProfile();
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
 		if(newProps.language != this.props.language) {
 			this.buildReviewForm(newProps);
+			this.buildChPwdForm(newProps);
 		}
 	},
 	//генерация представления страницы профиля
@@ -453,6 +565,15 @@ var Profile = React.createClass({
 					addReviewForm =	<FormBuilder form={this.state.addReviewForm} 
 						onOK={this.onAddReviewFormOK} 
 						onChancel={this.onAddReviewFormChancel} 
+						onShowError={this.props.onShowError}
+						language={this.props.language}/>
+				}
+				//форма смены пароля
+				var chPwdForm;
+				if(this.state.displayChPwd) {
+					chPwdForm =	<FormBuilder form={this.state.chPwdForm} 
+						onOK={this.onChPwdFormOK} 
+						onChancel={this.onChPwdFormChancel} 
 						onShowError={this.props.onShowError}
 						language={this.props.language}/>
 				}
@@ -624,6 +745,9 @@ var Profile = React.createClass({
 										</button>
 										<button type="button" className="w-button u-btn-regular" onClick={this.handleCancelEditClick}>
 											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CLOSE"})}
+										</button>
+										<button type="button" className="w-button u-btn-regular" onClick={this.handleChPwdClick}>
+											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHPWD"})}
 										</button>
 									</div>
 				} else {
@@ -978,6 +1102,7 @@ var Profile = React.createClass({
 				//непосредственно профиль с объявлениями отзывами и запросами
 				content =	<section className="w-container">
 								{addReviewForm}
+								{chPwdForm}
 								{confDeleteDlg}
 								<div className="w-section u-sect-card">
 									<div className="w-row">
