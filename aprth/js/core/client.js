@@ -318,7 +318,13 @@ var Client = function (clientConfig) {
 							code: "CLNT_NO_ELEM",
 							values: ["ServerRequest", "dateTo"]
 						}));
-					return fillSrvStdReqData(serverActions.makeReservation + "/" + prms.data.postId + "/" + prms.data.dateFrom + "/" + prms.data.dateTo, serverMethods.ins, "");
+					if(!prms.data.gender) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "gender"]
+						}));
+					return fillSrvStdReqData(serverActions.makeReservation + "/" + prms.data.postId + "/" + prms.data.dateFrom + "/" + prms.data.dateTo + "?gender=" + prms.data.gender, serverMethods.ins, "");
 					break;
 				}
 				//работа с заявками на бронирование - получение списка
@@ -696,7 +702,12 @@ var Client = function (clientConfig) {
 						language: prms.language,
 						action: serverActions.makeReservation,
 						method: serverMethods.ins,
-						data: {postId: prms.postId, dateFrom: prms.dateFrom, dateTo: prms.dateTo}
+						data: {
+								postId: prms.postId, 
+								dateFrom: prms.dateFrom, 
+								dateTo: prms.dateTo, 
+								gender: prms.gender
+						}
 					}),
 					callBack: function (resp) {
 						if(resp.STATE == respStates.ERR)

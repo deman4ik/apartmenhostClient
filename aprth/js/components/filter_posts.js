@@ -86,7 +86,7 @@ var PostsFilter = React.createClass({
 		if(this.state.swLong) serverFilter.swLong = this.state.swLong;
 		if(this.state.neLat) serverFilter.neLat = this.state.neLat;
 		if(this.state.neLong) serverFilter.neLong = this.state.neLong;
-		if(this.state.sex) serverFilter.residentGender = [this.state.sex];
+		if(this.state.sex) serverFilter.genders = [this.state.sex];
 		if(this.state.dFrom) serverFilter.availableDateFrom = this.state.dFrom;
 		if(this.state.dFrom) serverFilter.availableDateTo = this.state.dTo;
 		if(this.state.priceFrom) serverFilter.priceDayFrom = this.state.priceFrom;
@@ -367,7 +367,7 @@ var PostsFilter = React.createClass({
 									options={optionsFactory.buildOptions({
 												language: this.props.language, 
 												id: "sex",
-												options: ["DVAL_ANY", "DVAL_MALE", "DVAL_FEMALE", "DVAL_THING", "DVAL_ALIEN"]})}
+												options: priceCats})}
 									onOptionChanged={this.handleSelectedSex}
 									defaultOptionsState={this.state.sex}
 									appendEmptyOption={true}
@@ -432,7 +432,7 @@ var PostsFilter = React.createClass({
 											options={optionsFactory.buildOptions({
 														language: this.props.language,
 														id: "apartType",
-														options: ["DVAL_HOUSE", "DVAL_ROOM", "DVAL_OFFICE", "DVAL_FLAT", "DVAL_HOTEL_ROOM"]})}
+														options: postObjType})}
 											onOptionChanged={this.handleSelectedApartType}
 											defaultOptionsState={this.state.apartType}
 											appendEmptyOption={true}

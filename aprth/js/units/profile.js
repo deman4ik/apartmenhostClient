@@ -137,7 +137,6 @@ var Profile = React.createClass({
 	},
 	//смена пароля
 	onChPwdFormOK: function (values) {		
-		console.log(values);
 		this.changePassword(
 			_.find(values, {name: "currenPass"}).value, 
 			_.find(values, {name: "newPass"}).value,
@@ -641,7 +640,7 @@ var Profile = React.createClass({
 											options={optionsFactory.buildOptions({
 														language: this.props.language, 
 														id: "gender",
-														options: ["DVAL_MALE", "DVAL_FEMALE"]})}
+														options: profileGender})}
 											language={this.props.language}
 											defaultOptionsState={this.state.profileTmp.gender}
 											appendEmptyOption={true}

@@ -53,6 +53,11 @@ var OptionsSelector = React.createClass({
 		} else {
 			view = OptionsSelectorView.CHECK;
 		}
+		//опциональные стили
+		var selectorStyles;
+		if(this.props.selectorStyles) {
+			selectorStyles = this.props.selectorStyles;
+		}
 		//верстка селектора
 		var optionsList;
 		if((this.props.options)&&(Array.isArray(this.props.options))) {
@@ -74,7 +79,8 @@ var OptionsSelector = React.createClass({
 											{this.props.emptyOptionLabel}
 										</option>
 					}
-					optionsList =	<select className="w-select u-form-field" 
+					optionsList =	<select className="w-select u-form-field"
+										style={selectorStyles}
 										onChange={this.handleOptionSelected}>
 										{emptyOption}
 										{optionsItems}
@@ -86,6 +92,7 @@ var OptionsSelector = React.createClass({
 						return (
 							<div key={i} className="w-checkbox">
 								<input className="w-checkbox-input"
+									style={selectorStyles}
 									type="checkbox"
 									ref={item.ref}
 									onChange={this.handleOptionCheck}
@@ -104,6 +111,7 @@ var OptionsSelector = React.createClass({
 							return (
 								<div key={i} className="w-radio">
 									<input className="w-radio-input"
+										style={selectorStyles}
 										type="radio" 
 										name={this.props.name}
 										value={item.value}

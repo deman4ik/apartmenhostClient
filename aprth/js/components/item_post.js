@@ -84,6 +84,10 @@ var PostItem = React.createClass({
 							{favorText}
 						</a>			
 		}
+		var hlPc;
+		if(this.props.item.higlightPriceCat) {
+			hlPc = this.props.item.higlightPriceCat;
+		}
 		//представление элемента
 		return (
 			<div>
@@ -94,7 +98,7 @@ var PostItem = React.createClass({
 							onClick={this.handlePostClick}>
 							<img src={_.find(this.props.item.apartment.pictures, {default: true}).mid}/>
 							<img className="u-img-author-sm" src={this.props.item.user.picture.mid}/>				
-						  <Rater total={5} rating={this.props.item.user.rating} ratingCount={this.props.item.user.ratingCount}/>
+							<Rater total={5} rating={this.props.item.user.rating} ratingCount={this.props.item.user.ratingCount}/>
 						</a>
 					</div>
 					<div className="w-col w-col-4 w-col-small-4">
@@ -124,8 +128,9 @@ var PostItem = React.createClass({
 							{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}:&nbsp;
 							<strong>
 								<OptionsParser language={this.props.language}								
-									options={optionsFactory.parse(this.props.item.residentGender)}
-									view={OptionsParserView.ROW}/>									
+									options={_.pluck(this.props.item.genders, "name")}
+									view={OptionsParserView.ROW}
+									highlightOption={hlPc}/>									
 							</strong>
 						</div>
 						<div className="u-block-lnk" onClick={this.handlePostClick}>

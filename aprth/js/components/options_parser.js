@@ -51,6 +51,11 @@ var OptionsParser = React.createClass({
 		} else {
 			rowSeparator = ","
 		}
+		//подсвечиваемый элемент
+		var hlOption;
+		if(this.props.highlightOption) {
+			hlOption = this.props.highlightOption;
+		}
 		//формирование представления списка опций
 		var options;
 		var convertOptions;
@@ -62,22 +67,32 @@ var OptionsParser = React.createClass({
 		if((this.props.options)&&(Array.isArray(this.props.options))) {
 			var optionsLength = this.props.options.length;
 			var optionsItems = this.props.options.map(function (option, i) {
+				var cOptionItem = React.addons.classSet;
+				var classesOptionItem = cOptionItem({
+					"hightLight": (hlOption == option)
+				});
 				var optionsItem;
 				switch(view) {
 					case(OptionsParserView.LIST): {
 						optionsItem = 	<li>
-											{(convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option}
+											<span className={classesOptionItem}>
+												{(convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option}
+											</span>
 										</li>
 						break;
 					}
 					case(OptionsParserView.ROW): {
-						optionsItem = (convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option;
-						if(i < (optionsLength - 1)) optionsItem += rowSeparator + " ";
+						optionsItem =	<span className={classesOptionItem}>
+											{(convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option}
+											{(i < (optionsLength - 1))?(rowSeparator + " "):""}
+										</span>
 						break;
 					}				
 					default: {
-						optionsItem = ((convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option) + this.props.rowSeparator + " ";
-						if(i < (optionsLength - 1)) optionsItem += rowSeparator + " ";
+						optionsItem =	<span className={classesOptionItem}>
+											{(convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option}
+											{(i < (optionsLength - 1))?(rowSeparator + " "):""}
+										</span>
 					}
 				}
 				return (

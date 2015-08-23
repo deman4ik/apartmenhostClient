@@ -10,7 +10,6 @@ var Calendar = React.createClass({
 	//оповещение родителя о смене даты
 	notifyParentDatePicked: function (props, date) {
 		if((props.onDatePicked)&&(Utils.isFunction(props.onDatePicked))) {
-			console.log("PARENT NOTIFY: " + props.name + " " + date);
 			props.onDatePicked(props.name, date);
 		}
 	},

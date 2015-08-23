@@ -27,14 +27,26 @@ var Posts = React.createClass({
 		}
 	},
 	//расчет "цены за период" объявлений по датам
-	calcAdvertsPricePeriod: function (adverts, from, to) {
+	calcAdvertsPricePeriod: function (adverts, from, to, priceCat) {
 		if((adverts)&&(Array.isArray(adverts))) {
-			if((from)&&(to)) {
+			if((from)&&(to)&&(priceCat)) {
 				var dFrom = new Date(from);
 				var dTo = new Date(to);
-				adverts.map(function (item, i) {item.pricePeriod = item.priceDay * 1 * Utils.daysBetween(dFrom, dTo);});
+				adverts.map(function (item, i) {
+					var pr = _.findWhere(item.genders, {name: priceCat});
+					if(pr) {
+						item.pricePeriod = pr.price * 1 * Utils.daysBetween(dFrom, dTo);
+						item.higlightPriceCat = priceCat;
+					} else {
+						item.pricePeriod = 0;
+						item.higlightPriceCat = "";
+					}
+				});
 			} else {
-				adverts.map(function (item, i) {item.pricePeriod = 0;});
+				adverts.map(function (item, i) {
+					item.pricePeriod = 0;
+					item.higlightPriceCat = "";
+				});
 			}
 		}
 	},
@@ -73,11 +85,16 @@ var Posts = React.createClass({
 						}
 					}, this);
 					//если это поиск, то необходимо расчитать цену за период для каждого объявления
-					if(("availableDateFrom" in this.state.filter)&&("availableDateTo" in this.state.filter))
+					if(
+						("availableDateFrom" in this.state.filter)&&
+						("availableDateTo" in this.state.filter)&&
+						("genders" in this.state.filter)
+					)
 						this.calcAdvertsPricePeriod(
 							resp.MESSAGE, 
 							this.state.filter.availableDateFrom, 
-							this.state.filter.availableDateTo
+							this.state.filter.availableDateTo,
+							this.state.filter.genders[0]
 						);
 					else
 						this.calcAdvertsPricePeriod(resp.MESSAGE);
@@ -134,7 +151,7 @@ var Posts = React.createClass({
 	},	
 	//смена фильтра
 	onFilterChange: function (prms) {		
-		if(!$.isEmptyObject(prms.filter)) {			
+		if(!$.isEmptyObject(prms.filter)) {
 			this.setState({
 				filter: prms.filter,
 				radius: prms.radius,
@@ -181,6 +198,7 @@ var Posts = React.createClass({
 			case(PostsModes.SEARCH): {
 				if("availableDateFrom" in this.state.filter) query.dFrom = this.state.filter.availableDateFrom;
 				if("availableDateTo" in this.state.filter) query.dTo = this.state.filter.availableDateTo;
+				if("genders" in this.state.filter) query.priceCat = this.state.filter.genders[0];
 				break;
 			}
 			//избранное

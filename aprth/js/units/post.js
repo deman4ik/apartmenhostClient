@@ -14,6 +14,7 @@ var Post = React.createClass({
 			postReady: false, //объявление готово к отображению
 			postBooked: false, //состояние отправки запроса на бронирование
 			showPhone: false, //признак отображения телефона владельца
+			priceCat: "", //категория цены для бронирования
 			dFrom: "", //дата начала периода бронирования
 			dTo: "", //дата коночания периода бронирования
 			displaySendComplaint: false, //признак отображения формы жалобы
@@ -42,11 +43,14 @@ var Post = React.createClass({
 	calcAdvertPricePeriod: function (advert) {
 		var tmp = {};
 		_.extend(tmp, advert);
-		if((this.state.dFrom)&&(this.state.dTo)) {
+		if((this.state.dFrom)&&(this.state.dTo)&&(this.state.priceCat)) {
 			var dFrom = new Date(this.state.dFrom);
 			var dTo = new Date(this.state.dTo);
-			tmp.pricePeriod = tmp.priceDay * 1 * Utils.daysBetween(dFrom, dTo);
+			var pr = _.findWhere(tmp.genders, {name: this.state.priceCat});
+			tmp.priceDay = pr.price;
+			tmp.pricePeriod = pr.price * 1 * Utils.daysBetween(dFrom, dTo);
 		} else {
+			tmp.priceDay = _.min(_.pluck(tmp.genders, "price"));
 			tmp.pricePeriod = 0;
 		}
 		return tmp;	
@@ -93,13 +97,14 @@ var Post = React.createClass({
 	},
 	//выполнение бронирования
 	makeBooking: function () {
-		if((this.state.dFrom)&&(this.state.dTo)) {
+		if((this.state.dFrom)&&(this.state.dTo)&&(this.state.priceCat)) {
 			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 			var resPrms = {
 				language: this.props.language, 
 				postId: this.state.postId,
 				dateFrom: new Date(this.state.dFrom).to_yyyy_mm_dd(),
-				dateTo: new Date(this.state.dTo).to_yyyy_mm_dd()
+				dateTo: new Date(this.state.dTo).to_yyyy_mm_dd(),
+				gender: this.state.priceCat
 			}
 			if(this.props.session.loggedIn) _.extend(resPrms, {session: this.props.session.sessionInfo});
 			clnt.makeReservation(resPrms, this.handleBookingResult);
@@ -111,6 +116,13 @@ var Post = React.createClass({
 	//выполнение добавления жалобы
 	makeComplaint: function () {
 		this.setState({displaySendComplaint: true});
+	},
+	//обработка смены категории цены
+	handlePriceCatChange: function (value) {
+		this.setState({priceCat: value}, function () {
+			var postTmp = this.calcAdvertPricePeriod(this.state.post);
+			this.setState({post: postTmp});
+		});
 	},
 	//обработка смены дат
 	handleDateChange: function (datePickerName, date) {
@@ -179,6 +191,7 @@ var Post = React.createClass({
 		this.buildComplaintForm(this.props);
 		if(this.context.router.getCurrentQuery().dFrom) this.setState({dFrom: this.context.router.getCurrentQuery().dFrom});
 		if(this.context.router.getCurrentQuery().dTo) this.setState({dTo: this.context.router.getCurrentQuery().dTo});
+		if(this.context.router.getCurrentQuery().priceCat) this.setState({priceCat: this.context.router.getCurrentQuery().priceCat});
 		this.setState({postId: this.context.router.getCurrentParams().postId}, this.loadPost);
 	},
 	//завершение генерации/обновления представления компонента
@@ -212,8 +225,6 @@ var Post = React.createClass({
 			"dtcard": true,
 			"right": true
 		});
-		var pricePeriodStyle;
-		if(this.state.post.pricePeriod > this.state.post.priceDay) pricePeriodStyle = {display: "inline"}; else pricePeriodStyle = {display: "none"};
 		//содержимое объявления
 		var content;
 		if(this.state.postReady) {
@@ -231,6 +242,17 @@ var Post = React.createClass({
 			if(!this.state.postBooked) {
 				bookFrm =	<div className="w-form u-form-wrapper-simple">
 								<form className="w-clearfix">
+									<OptionsSelector view={OptionsSelectorView.SELECT}
+										appendEmptyOption={true}
+										emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}													
+										options={optionsFactory.buildOptions({
+													language: this.props.language, 
+													id: "priceCat",
+													options: _.pluck(this.state.post.genders, "name")})}
+										language={this.props.language}
+										defaultOptionsState={this.state.priceCat}
+										onOptionChanged={this.handlePriceCatChange}
+										selectorStyles={{borderRadius: "0px", marginBottom: "0px"}}/>
 									<Calendar name="dFrom" 
 										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}
 										defaultValue={(this.state.dFrom)?(new Date(this.state.dFrom)):""}
@@ -260,6 +282,17 @@ var Post = React.createClass({
 								{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_BOOKED"})}
 							</a>
 			}
+			//цена
+			var pricePeriod;
+			if(this.state.post.pricePeriod * 1 > 0) {
+				pricePeriod =	<span>
+									{this.state.post.pricePeriod}&nbsp;
+									{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
+									{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD"})}
+								</span>
+			} else {
+				pricePeriod = <span>{Utils.getStrResource({lang: this.props.language, code: "CLNT_PRICE_CATEGORY_CALC_ERR"})}</span>
+			}			
 			//телефон владельца
 			var phone;
 			if(!this.state.showPhone) {
@@ -371,11 +404,6 @@ var Post = React.createClass({
 												<Rater total={5} rating={this.state.post.user.rating}/>
 											</div>
 											<div className="u-block-cardprice">
-												<div className="u-t-label-cardprice">
-													<OptionsParser language={this.props.language}								
-														options={optionsFactory.parse(this.state.post.residentGender)}
-														view={OptionsParserView.ROW}/>
-												</div>
 												<div className="u-block-ownertext">
 													<div className="u-t-price">
 														<strong>
@@ -384,10 +412,8 @@ var Post = React.createClass({
 															{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"})}
 														</strong>
 													</div>
-													<div className="u-t-price2" style={pricePeriodStyle}>
-														{this.state.post.pricePeriod}&nbsp;
-														{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
-														{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD"})}
+													<div className="u-t-price2">
+														{pricePeriod}														
 													</div>
 												</div>
 												{bookFrm}

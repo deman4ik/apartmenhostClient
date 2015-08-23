@@ -19,9 +19,12 @@ var ModifyPost = React.createClass({
 			formReady: true, //флаг готовности формы
 			postId: "", //идентификатор объявления для правки
 			loadPicturesOnly: false, //флаг загрузки только данных о картинках при считывании объявления
+			priceCatsList: [], //список доступных категорий цен
 			post: { //объявление
 				phone: "", //телефон
-				sex: "", //пол постояльца
+				priceCat: "", //категория цены
+				priceCatVal: 0, //цена за выбранную категорию
+				priceCats: [], //цены по категориям
 				apartType: "", //тип жилья
 				address: "", //адрес
 				formattedAdress: "", //геокодированный адрес
@@ -32,7 +35,6 @@ var ModifyPost = React.createClass({
 				dates: [], //набор периодов недоступности
 				description: "", //описание жилья
 				options: "", //дополнительные параметры с разделителем
-				price: 0, //цена
 				apartId: "", //идентификатор объекта недвижимости
 				pictures: [], //картинки
 				picturesLeft: config.postMaxPictures //количество картинок, которых ещё можно загрузить
@@ -41,7 +43,7 @@ var ModifyPost = React.createClass({
 	},	
 	//зачистка формы
 	clearPostForm: function () {		
-		this.setState({post: {phone: "", sex: "", apartType: "", address: "", formattedAdress: "", latitude: "", longitude: "", dFrom: "", dTo: "", dates: [], description: "", options: "", price: 0, apartId: "", pictures: []}});		
+		this.setState({post: {phone: "", priceCat: "", priceCatVal: 0, priceCats: [], apartType: "", address: "", formattedAdress: "", latitude: "", longitude: "", dFrom: "", dTo: "", dates: [], description: "", options: "", apartId: "", pictures: []}});		
 	},
 	//отработка успешного добавления/исправления объявления
 	afterSuccessModify: function () {
@@ -60,8 +62,6 @@ var ModifyPost = React.createClass({
 	},
 	//добавление/исправление объявления
 	modifyRent: function () {
-		var price = this.state.post.price * 1;
-		if(price.toString().indexOf(".") == -1) price += ".0";
 		var modifyRentPrms = {
 			language: this.props.language,
 			session: this.props.session.sessionInfo,
@@ -80,9 +80,7 @@ var ModifyPost = React.createClass({
 				Name: this.state.post.description,
 				dates: this.state.post.dates,
 				description: this.state.post.description,
-				residentGender: this.state.post.sex,
-				priceDay: price,
-				pricePeriod: price * 10				
+				genders: this.state.post.priceCats
 			}
 		}
 		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
@@ -116,7 +114,9 @@ var ModifyPost = React.createClass({
 				this.setState({
 					post: {
 						phone: this.props.session.sessionInfo.user.profile.phone,
-						sex: resp.MESSAGE[0].residentGender,
+						priceCat: "",
+						priceCatVal: 0,
+						priceCats: resp.MESSAGE[0].genders,
 						apartType: resp.MESSAGE[0].apartment.type,
 						address: resp.MESSAGE[0].apartment.adress,
 						formattedAdress: resp.MESSAGE[0].apartment.formattedAdress,
@@ -127,7 +127,6 @@ var ModifyPost = React.createClass({
 						dates: resp.MESSAGE[0].dates,
 						description: resp.MESSAGE[0].description,
 						options: resp.MESSAGE[0].apartment.options,
-						price: resp.MESSAGE[0].priceDay,
 						apartId: resp.MESSAGE[0].apartment.id,
 						pictures: tmpPicts,
 						picturesLeft: ((config.postMaxPictures - tmpPicts.length > 0)?(config.postMaxPictures - tmpPicts.length):0)
@@ -236,8 +235,8 @@ var ModifyPost = React.createClass({
 			res = Utils.getStrResource({lang: this.props.language, code: "CLNT_ADVER_NO_PHONE"});
 			return res;
 		}		
-		if(!this.state.post.sex) {
-			res = Utils.getStrResource({lang: this.props.language, code: "SRV_APARTMENT_REQUIRED", values: [Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})]});
+		if(this.state.post.priceCats.length == 0) {
+			res = Utils.getStrResource({lang: this.props.language, code: "SRV_APARTMENT_REQUIRED", values: [Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PRICE"})]});
 			return res;
 		}
 		if(!this.state.post.apartType) {
@@ -252,10 +251,6 @@ var ModifyPost = React.createClass({
 			res = Utils.getStrResource({lang: this.props.language, code: "SRV_APARTMENT_REQUIRED", values: [Utils.getStrResource({lang: this.props.language, code: "UI_FLD_APARTMENT_DESC"})]});
 			return res;
 		}
-		if((!this.state.post.price)||(isNaN(this.state.post.price))||(this.state.post.price <= 0)) {
-			res = Utils.getStrResource({lang: this.props.language, code: "SRV_APARTMENT_REQUIRED", values: [Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PRICE"})]});
-			return res;
-		}
 		return res;
 	},
 	//обработка изменения поля формы объявления
@@ -266,6 +261,29 @@ var ModifyPost = React.createClass({
 		if((e.target.id == "dFrom")&&(!tmp.dTo)) tmp.dTo = e.target.value;
 		if((e.target.id == "dTo")&&(!tmp.dFrom)) tmp.dFrom = e.target.value;		
 		this.setState({post: tmp});		
+	},
+	//нажатие на кнопку добавления цены за категорию
+	handleAppendPriceCatClick: function () {
+		if(
+			(this.state.post.priceCat)&&
+			(this.state.post.priceCatVal)&&
+			(!isNaN(this.state.post.priceCatVal))&&
+			(this.state.post.priceCatVal * 1 > 0)
+		) {
+			var tmpPriceCatsList = [];
+			var tmp = {};
+			tmpPriceCatsList = this.state.priceCatsList;
+			tmpPriceCatsList = _.without(tmpPriceCatsList, this.state.post.priceCat);
+			_.extend(tmp, this.state.post);
+			tmp.priceCats.push({name: this.state.post.priceCat, price: this.state.post.priceCatVal * 1});
+			tmp.priceCat = "";
+			tmp.priceCatVal = 0;
+			this.setState({post: tmp, priceCatsList: tmpPriceCatsList});
+		} else {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
+					Utils.getStrResource({lang: this.props.language, code: "CLNT_PRICE_CATEGORY_APPEND_ERR"})
+				);
+		}		
 	},
 	//нажатие на кнопку добавления нового периода недоступности
 	handleAppendPeriodClick: function () {
@@ -372,7 +390,17 @@ var ModifyPost = React.createClass({
 		if("id" in this.state.post.pictures[index]) {
 			this.setPostDefaultPicture(this.state.post.pictures[index].id);
 		}		
-	},	
+	},
+	//нажатие на кнопку удаления категории цены
+	handleDeletePriceCatClick: function (index) {
+		var tmpPriceCatsList = [];
+		var tmp = {};
+		tmpPriceCatsList = this.state.priceCatsList;
+		_.extend(tmp, this.state.post);
+		tmpPriceCatsList.push(tmp.priceCats[index].name);
+		tmp.priceCats.splice(index, 1);
+		this.setState({post: tmp, priceCatsList: tmpPriceCatsList});
+	},
 	//нажатие на кнопку удаления периода недоступности
 	handleDeletePeriodClick: function (index) {
 		var tmp = {};
@@ -439,7 +467,7 @@ var ModifyPost = React.createClass({
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {		
-		this.setState({mode: this.context.router.getCurrentParams().mode}, this.initForm);		
+		this.setState({mode: this.context.router.getCurrentParams().mode, priceCatsList: priceCats}, this.initForm);		
 	},
 	//генерация представления страницы размещения объявления
 	render: function () {
@@ -454,6 +482,53 @@ var ModifyPost = React.createClass({
 			"u-form-field": true,
 			"rel": true
 		});
+		//категории цен жилья
+		var genders;
+		if(Array.isArray(this.state.post.priceCats)) {
+			genders = this.state.post.priceCats.map(function (item, i) {
+				var pcStyle = {marginRight: "20px"}
+				return (
+					<div key={i}>
+						<span style={pcStyle}>{Utils.getStrResource({lang: this.props.language, code: item.name})} - {item.price} {Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}</span>
+						<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleDeletePriceCatClick.bind(this, i)}>
+							{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_DEL"})}										
+						</a>
+					</div>
+				);
+			}, this);
+		}
+		//управление списком категорий цен
+		var priceCatsControl;
+		if((Array.isArray(this.state.priceCatsList))&&(this.state.priceCatsList.length > 0)) {
+			priceCatsControl =	<div>
+									<div style={{display: "inline-block"}}>
+										<OptionsSelector view={OptionsSelectorView.SELECT}
+											appendEmptyOption={true}
+											emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}
+											options={optionsFactory.buildOptions({
+														language: this.props.language, 
+														id: "priceCat",
+														options: this.state.priceCatsList})}
+											language={this.props.language}
+											defaultOptionsState={this.state.post.priceCat}
+											onOptionChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "priceCat", value: value}})}, this)}/>
+									</div>
+									&nbsp;&nbsp;
+									<input className="w-input u-form-field rel" 
+										style={{marginTop: "10px"}}
+										type="number"													
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}
+										ref="priceCatVal"
+										id="priceCatVal"
+										value={this.state.post.priceCatVal}
+										onChange={this.handleFormItemChange}/>
+									<label className="u-form-label n1 rel">{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}</label>
+									&nbsp;&nbsp;
+									<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleAppendPriceCatClick}>
+										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD"})}
+									</a>
+								</div>
+		}
 		//периоды недоступности жилья
 		var dates;
 		if(Array.isArray(this.state.post.dates)) {
@@ -554,21 +629,17 @@ var ModifyPost = React.createClass({
 														onChange={this.handleFormItemChange}/>
 												</div>
 											</div>
+											<div className="u-block-spacer2"></div>
 											<div className="w-row">
 												<div className="w-col w-col-3">
-													<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}:</label>
+													<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PRICE"})}:</label>
 												</div>
 												<div className="w-col w-col-9">
-													<OptionsSelector view={OptionsSelectorView.CHECK}
-														options={optionsFactory.buildOptions({
-																	language: this.props.language, 
-																	id: "sex",
-																	options: ["DVAL_ANY", "DVAL_MALE", "DVAL_FEMALE", "DVAL_THING", "DVAL_ALIEN"]})}
-														language={this.props.language}													
-														defaultOptionsState={this.state.post.sex}
-														onOptionChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "sex", value: value}})}, this)}/>
+													{genders}
+													{priceCatsControl}
 												</div>
 											</div>
+											<div className="u-block-spacer2"></div>
 											<div className="w-row">
 												<div className="w-col w-col-3">
 													<label className="u-form-label n1">
@@ -580,7 +651,7 @@ var ModifyPost = React.createClass({
 														options={optionsFactory.buildOptions({
 																	language: this.props.language, 
 																	id: "apartType",
-																	options: ["DVAL_HOUSE", "DVAL_ROOM", "DVAL_OFFICE", "DVAL_FLAT", "DVAL_HOTEL_ROOM"]})}
+																	options: postObjType})}
 														language={this.props.language}
 														defaultOptionsState={this.state.post.apartType}
 														onOptionChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "apartType", value: value}})}, this)}
@@ -667,21 +738,7 @@ var ModifyPost = React.createClass({
 													</textarea>
 												</div>
 											</div>
-											<div className="w-row">
-												<div className="w-col w-col-3">
-													<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PRICE"})}:</label>
-												</div>
-												<div className="w-col w-col-9">
-													<input className="w-input u-form-field rel" 
-														type="number"													
-														placeholder={Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}
-														ref="price"
-														id="price"
-														value={this.state.post.price}
-														onChange={this.handleFormItemChange}/>
-													<label className="u-form-label n1 rel">{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}</label>
-												</div>
-											</div>
+											<div className="u-block-spacer2"></div>
 											<div className="w-row">
 												<div className="w-col w-col-3">
 													<label className="u-form-label n1" for="name">
