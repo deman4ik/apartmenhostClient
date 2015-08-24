@@ -853,7 +853,7 @@ var Profile = React.createClass({
 											<div className="w-col w-col-2">
 												<div className="u-block-author-reviewlst">
 													<img className="u-img-author-review" 
-														src={item.reservation.user.picture.url} 
+														src={item.reservation.user.picture.large} 
 														width="76"/>
 													<div>{item.reservation.user.firstName + " " + item.reservation.user.lastName}</div>
 													<div className="u-t-small date1">
@@ -960,7 +960,7 @@ var Profile = React.createClass({
 														<div>
 															<img src={item.reservation.card.apartment.defaultPicture.url}/>
 															<img className="u-img-author-sm sm"
-																src={item.reservation.card.user.picture.url}/>
+																src={item.reservation.card.user.picture.small}/>
 														</div>
 													</div>
 													<div className="w-col w-col-6 w-col-stack">
@@ -1064,9 +1064,8 @@ var Profile = React.createClass({
 											</div>
 											<div className="w-col w-col-1 u-col-query">
 												<div className="u-block-author-reviewlst">
-													<img className="u-img-author-m sm" 
-														src={item.user.picture.url}
-														width="76"/>
+													<img className="u-img-author-m"
+														src={item.user.picture.large}/>
 												</div>
 											</div>
 											<div className="w-col w-col-2 u-col-query u-t-center">
@@ -1110,7 +1109,7 @@ var Profile = React.createClass({
 												<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PROFILE"})}</h3>
 											</div>
 											<div className="u-block-owner addition2">
-												<img className="u-img-author-m" src={this.state.profile.picture.url} width="96"/>
+												<img className="u-img-author-m large" src={this.state.profile.picture.url}/>
 												{userName}												
 											</div>
 											{userPictureEditor}

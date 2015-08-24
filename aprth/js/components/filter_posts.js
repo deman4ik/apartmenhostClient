@@ -297,7 +297,6 @@ var PostsFilter = React.createClass({
 	//генерация представления фильтра
 	render: function () {
 		//дополнительные стили
-		var formWrapperStyle = {maxWidth: "none"};
 		var lblStale = {paddingLeft: "5px"};
 		var aStyle = {textDecoration: "none"};		
 		var counterDisplay = {};
@@ -347,7 +346,7 @@ var PostsFilter = React.createClass({
 		//представление фильтра
 		return (
 			<div>
-				<div className="w-form u-form-wrapper" style={formWrapperStyle}>
+				<div className="w-form u-form-wrapper">
 					<form className="w-clearfix u-form-body">
 						<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_ADVERTS_FILER"})}</h3>
 						<AddressInput classes={classesAdrInput}
@@ -371,7 +370,7 @@ var PostsFilter = React.createClass({
 									onOptionChanged={this.handleSelectedSex}
 									defaultOptionsState={this.state.sex}
 									appendEmptyOption={true}
-									emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}/>
+									emptyOptionLabel=" "/>
 							</div>
 						</div>
 						<div className="w-row">
