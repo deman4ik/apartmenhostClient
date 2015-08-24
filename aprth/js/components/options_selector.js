@@ -58,6 +58,12 @@ var OptionsSelector = React.createClass({
 		if(this.props.selectorStyles) {
 			selectorStyles = this.props.selectorStyles;
 		}
+		var clName;
+		if(this.props.classes) {
+			clName = this.props.classes;
+		} else {
+			clName = "w-select u-form-field";
+		}
 		//верстка селектора
 		var optionsList;
 		if((this.props.options)&&(Array.isArray(this.props.options))) {
@@ -79,7 +85,7 @@ var OptionsSelector = React.createClass({
 											{this.props.emptyOptionLabel}
 										</option>
 					}
-					optionsList =	<select className="w-select u-form-field"
+					optionsList =	<select className={clName} 
 										style={selectorStyles}
 										onChange={this.handleOptionSelected}>
 										{emptyOption}
@@ -135,9 +141,9 @@ var OptionsSelector = React.createClass({
 		}
 		//финальная сборка содержимого
 		return (
-			<div>
+			<span>
 				{optionsList}
-			</div>
+			</span>
 		);
 	}
 });

@@ -248,6 +248,8 @@ var Posts = React.createClass({
 	//завершение генерации/обновления представления компонента
 	componentDidUpdate: function (prevProps, prevState) {
 		fixFooter();
+		$("#uFilter1").appendTo("#uFilterCont"); // A.K. 24.08.2015 временно, пока не сделаем раздельный рендеринг
+		$(".nano").nanoScroller();
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
@@ -292,20 +294,22 @@ var Posts = React.createClass({
 				//соберем финальный вид компонента
 				content =	<div className="w-section u-sect-page-cardlst">
 								<div className="w-row">
-									<div className="w-col w-col-6 w-col-stack u-col-cardlst1">
-										{postsFilter}					
+									<div id="uFilterCont" className="w-col w-col-12 w-col-stack u-col-cardlst1">					
 									</div>
-									<div className="w-col w-col-6 w-col-stack u-col-cardlst2">
+								</div>
+								<div className="w-row">
+									<div className="w-col w-col-7 w-col-stack u-col-cardlst1">
+									  <div className="nano has-scrollbar">
+										  <div className="nano-content">
+												{postsFilter}		
+												{postsList}	
+											</div>		
+										</div>	
+									</div>
+									<div className="w-col w-col-5 w-col-stack u-col-cardlst2">
 										{map}
 									</div>									
 								</div>	
-								<div className="w-container">
-									<div className="w-row">
-										<div className="w-col w-col-12 w-col-stack u-col-cardlst1">
-											{postsList}								
-										</div>
-									</div>
-								</div>
 							</div>
 				break;
 			}

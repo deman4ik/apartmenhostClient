@@ -219,10 +219,6 @@ var PostsFilter = React.createClass({
 	//обработка нажатия на кнопку "Фильтр" (сокрытие/отображение)
 	handleFilterToggleClick: function () {
 		this.setState({filterToggle: !this.state.filterToggle}, this.saveFilterState);	
-		if (this.state.filterToggle) 
-			$(".u-block-cardlst-map").addClass( "rollup" );
-		else 
-			$(".u-block-cardlst-map").removeClass( "rollup" );
 	},
 	//обработка нажатия на кнопку "Очистить"
 	handleClearClick: function () {
@@ -309,6 +305,8 @@ var PostsFilter = React.createClass({
 		var classesAdrInput = cAdrInput({
 			"w-input": true,
 			"u-form-field": true,
+			"rel2": true,
+			"address": true,
 			"has-error": this.state.noAdressFilterSpecified	
 		});
 		var cDateInput = React.addons.classSet;
@@ -346,7 +344,7 @@ var PostsFilter = React.createClass({
 		//представление фильтра
 		return (
 			<div>
-				<div className="w-form u-form-wrapper">
+				<div id="uFilter1" className="w-form u-form-wrapper">
 					<form className="w-clearfix u-form-body">
 						<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_ADVERTS_FILER"})}</h3>
 						<AddressInput classes={classesAdrInput}
@@ -354,32 +352,6 @@ var PostsFilter = React.createClass({
 							value={this.state.adress}
 							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FILTER_ADRESS"})}
 							onAddressChanged={this.handleAddrChange}/>
-						<div className="w-row">
-							<div className="w-col w-col-3">
-								<label className="u-form-label">
-									{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}:
-								</label>
-							</div>
-							<div className="w-col w-col-9">
-								<OptionsSelector view={OptionsSelectorView.SELECT}
-									language={this.props.language}
-									options={optionsFactory.buildOptions({
-												language: this.props.language, 
-												id: "sex",
-												options: priceCats})}
-									onOptionChanged={this.handleSelectedSex}
-									defaultOptionsState={this.state.sex}
-									appendEmptyOption={true}
-									emptyOptionLabel=" "/>
-							</div>
-						</div>
-						<div className="w-row">
-							<div className="w-col w-col-3">
-								<label className="u-form-label">
-									{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_DATE"})}:
-								</label>
-							</div>
-							<div className="w-col w-col-9">
 								<Calendar name="dFrom" 
 									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}
 									defaultValue={(this.state.dFrom)?(new Date(this.state.dFrom)):""}
@@ -391,9 +363,18 @@ var PostsFilter = React.createClass({
 									defaultValue={(this.state.dTo)?(new Date(this.state.dTo)):""}
 									onDatePicked={this.handleDatePicked}
 									language={this.props.language}
-									inputClasses={classesDateInputTo}/>									
-							</div>
-						</div>
+									inputClasses={classesDateInputTo}/>		
+								<OptionsSelector view={OptionsSelectorView.SELECT}
+								  classes="w-select u-form-field rel2"
+									language={this.props.language}
+									options={optionsFactory.buildOptions({
+												language: this.props.language, 
+												id: "sex",
+												options: priceCats})}
+									onOptionChanged={this.handleSelectedSex}
+									defaultOptionsState={this.state.sex}
+									appendEmptyOption={true}
+									emptyOptionLabel="-Пол постояльца-"/>					
 						<div className="u-block-spacer2"></div>
 						<input className="w-button u-btn-primary"
 							type="button"

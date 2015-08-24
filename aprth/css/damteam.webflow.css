@@ -568,6 +568,13 @@ p {
   margin-right: 20px;
   margin-bottom: 10px;
 }
+.u-form-field.rel2 {
+  position: relative;
+  display: inline-block;
+  width:auto;
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
 .u-form-field.rel.dtcard {
   width: 110px;
   margin-right: 0px;
@@ -581,7 +588,9 @@ p {
   border-left-style: none;
   border-left-width: 0px;
 }
-
+.u-form-field.address {
+  width:700px;
+}
 .has-error {
   border-color: #ed5466;
 }
@@ -1022,6 +1031,9 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   .u-block-cardlst-map.rollup {
     height:420px;
   }    
+  .u-form-field.address {
+    width:100%;
+  }  
 }
 @media (max-width: 767px) {
   p {
@@ -1041,6 +1053,9 @@ html.w-mod-js *[data-ix="hide-on-load"] {
     padding-right: 10px;
     padding-left: 10px;
   }
+  .u-form-field.address {
+    width:100%;
+  }    
 }
 @media (max-width: 479px) {
   p {
@@ -1096,7 +1111,13 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   }  
   .u-block-cardlst-map.rollup {
     height:340px;
-  }    
+  }   
+  .u-form-field.address {
+    width:100%;
+  }  
+  .u-form-field.rel2 {
+    width:100%;
+  }  
 }
 
 /* --------- added ----------*/
@@ -1195,3 +1216,4 @@ textarea.w-input {
 .hightLight {
     color: #e65e5e;
 }
+
