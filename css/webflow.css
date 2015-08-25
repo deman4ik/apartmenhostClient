@@ -157,7 +157,7 @@ label {
   width: 100%;
   height: 38px;
   padding: 8px 12px;
-  Zmargin-bottom: 10px;
+  margin-bottom: 10px;
   font-size: 14px;
   line-height: 1.428571429;
   color: #555555;
@@ -575,10 +575,6 @@ textarea.w-select {
     left: auto;
     right: auto;
   }
-  .w-input,
-  .w-select {
-    margin-bottom:10px;
-  }  
 }
 @media screen and (max-width: 767px) {
   .w-hidden-main {
@@ -735,10 +731,6 @@ textarea.w-select {
   .w-col-small-offset-11 {
     margin-left: 91.66666667%;
   }
-  .w-input,
-  .w-select {
-    margin-bottom:10px;
-  }  
 }
 @media screen and (max-width: 479px) {
   .w-container {
@@ -893,10 +885,6 @@ textarea.w-select {
   }
   .w-col-tiny-offset-11 {
     margin-left: 91.66666667%;
-  }
-  .w-input,
-  .w-select {
-    margin-bottom:10px;
   }
 }
 .w-widget {
