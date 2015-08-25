@@ -500,6 +500,12 @@ p {
 .u-btn-primary:hover {
   background-color: #00c7c0;
 }
+.u-btn-primary.left {
+  float:left;
+}
+.u-btn-primary.nofloat {
+  float:inherit;
+}
 .u-btn-regular,
 .u-btn-regular:visited,
 .u-btn-regular:focus,
@@ -517,8 +523,14 @@ p {
 .u-btn-regular:hover {
   color: #0be3dc;
 }
+.u-btn-regular.left {
+  float:left;
+}
+.u-btn-regular.nofloat {
+  float:inherit;
+}
 .u-form-body {
-  padding: 10px;
+  padding: 10px 10px 16px 10px;
   background-color: white;
   font-size: 14px;
   font-weight: 400;
@@ -564,16 +576,14 @@ p {
 .u-form-field.rel {
   position: relative;
   display: inline-block;
-  width: 150px;
+  width: 120px;
   margin-right: 20px;
-  margin-bottom: 10px;
 }
 .u-form-field.rel2 {
   position: relative;
   display: inline-block;
   width:auto;
   margin-right: 20px;
-  margin-bottom: 10px;
 }
 .u-form-field.rel.dtcard {
   width: 110px;
@@ -589,7 +599,7 @@ p {
   border-left-width: 0px;
 }
 .u-form-field.address {
-  width:700px;
+  width:670px;
 }
 .has-error {
   border-color: #ed5466;
@@ -1217,3 +1227,6 @@ textarea.w-input {
     color: #e65e5e;
 }
 
+.u-datepicker-holder {
+  display: inline-block;
+}

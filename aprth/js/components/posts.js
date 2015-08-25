@@ -226,6 +226,8 @@ var Posts = React.createClass({
 		switch(this.props.mode) {
 			//режим поиска
 			case(PostsModes.SEARCH): {
+				$("#uFilter1").appendTo("#uFilterCont"); // A.K. 24.08.2015 временно, пока не сделаем раздельный рендеринг
+				$(".nano").nanoScroller();				
 				break;
 			}
 			//режим избранного
@@ -244,6 +246,7 @@ var Posts = React.createClass({
 			//прочие режимы
 			default: {}
 		};
+		fixFooter();
 	},
 	//завершение генерации/обновления представления компонента
 	componentDidUpdate: function (prevProps, prevState) {

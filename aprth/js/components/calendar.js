@@ -89,15 +89,13 @@ var Calendar = React.createClass({
 	},
 	//сборка представления компонента
 	render: function () {
-		//дополнительные стили
-		dStyle = {display: "inline"};
 		//финальная сборка
 		return (
-			<div style={dStyle}>
+			<div className="u-datepicker-holder has-icon">
 				<input id={this.props.name}
 					className={this.props.inputClasses} 
 					placeholder={this.props.placeholder}
-					onChange={this.handleDateChange}/>				
+					onChange={this.handleDateChange}/><i className="u-form-field-icon glyphicon glyphicon-remove"></i>		
 			</div>
 		);
 	}
