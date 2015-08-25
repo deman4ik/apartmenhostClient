@@ -122,7 +122,7 @@ var Register = React.createClass({
 			"has-error": ((this.state.noPassConfSpecified)||(this.state.badPassConfSpecified))
 		});
 		var content =	<div>
-						<div className="w-row">
+						<div className="w-row u-row-bottom">
 							<div className="w-col w-col-3">
 								<label className="u-form-label n1">
 									{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_USER"})}:
@@ -141,7 +141,7 @@ var Register = React.createClass({
 									onChange={this.handleFormItemChange}/>
 							</div>
 						</div>
-						<div className="w-row">
+						<div className="w-row u-row-bottom">
 							<div className="w-col w-col-3">
 								<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_NEW_PASS"})}:</label>									
 							</div>
@@ -155,7 +155,7 @@ var Register = React.createClass({
 									onChange={this.handleFormItemChange}/>
 							</div>
 						</div>
-						<div className="w-row">
+						<div className="w-row u-row-bottom">
 							<div className="w-col w-col-3">
 								<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_NEW_PASS_CONF"})}:</label>									
 							</div>

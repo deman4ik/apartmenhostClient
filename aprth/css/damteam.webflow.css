@@ -77,11 +77,6 @@ p {
   background-color: #bbd645;
   text-decoration: none;
 }
-.u-btn-primary:visited,
-.u-btn-primary:focus,
-.u-btn-primary:active {
-  text-decoration: none;
-}
 .u-btn.right {
   float:right;
 }
@@ -100,7 +95,7 @@ p {
 }
 .u-btn.query {
   left: 0px;
-  top: 0px;
+  top: -6px;
   right: 0px;
   bottom: 0px;
   display: block;
@@ -377,7 +372,6 @@ p {
   font-weight: 500;
   text-decoration: underline;
 }
-
 .u-lnk-norm.h1 {
   padding-right: 13px;
   padding-left: 14px;
@@ -387,6 +381,12 @@ p {
 }
 .u-lnk-norm.h1:hover {
   color: #0be3dc;
+}
+.u-row-top {
+  padding-top:10px;
+}
+.u-row-bottom {
+  padding-bottom:10px;
 }
 .u-row-descr {
   padding: 6px 10px 11px;
@@ -504,7 +504,7 @@ p {
   float:left;
 }
 .u-btn-primary.nofloat {
-  float:inherit;
+  float:none;
 }
 .u-btn-regular,
 .u-btn-regular:visited,
@@ -527,7 +527,7 @@ p {
   float:left;
 }
 .u-btn-regular.nofloat {
-  float:inherit;
+  float:none;
 }
 .u-form-body {
   padding: 10px 10px 16px 10px;
@@ -586,7 +586,7 @@ p {
   margin-right: 20px;
 }
 .u-form-field.rel.dtcard {
-  width: 110px;
+  width: 130px;
   margin-right: 0px;
   margin-bottom: 0px;
   float: left;
@@ -774,7 +774,7 @@ p {
 .u-block-cardprice {
   position: relative;
   display: block;
-  width: 220px;
+  width: 260px;
   min-height: 180px;
   margin: 8px auto 10px;
 }
@@ -954,6 +954,7 @@ p {
 html.w-mod-js *[data-ix="hide-on-load"] {
   display: none;
 }
+
 @media (max-width: 991px) {
   p {
     display: inline;
@@ -1225,8 +1226,4 @@ textarea.w-input {
 
 .hightLight {
     color: #e65e5e;
-}
-
-.u-datepicker-holder {
-  display: inline-block;
 }

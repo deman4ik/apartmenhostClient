@@ -224,7 +224,7 @@ var PostsFilter = React.createClass({
 	handleClearClick: function () {
 		this.setState(
 			{
-				//filterToggle: false, A.K. пусть остается как есть
+				filterToggle: false, //A.K. вернул на место а то глюк с исчезновением ссылки
 				noAdressFilterSpecified: false,
 				noDateFromFilterSpecified: false,
 				noDateToFilterSpecified: false,
@@ -305,21 +305,17 @@ var PostsFilter = React.createClass({
 		var classesAdrInput = cAdrInput({
 			"w-input": true,
 			"u-form-field": true,
-			"rel2": true,
-			"address": true,
 			"has-error": this.state.noAdressFilterSpecified	
 		});
 		var cDateInput = React.addons.classSet;
 		var classesDateInputFrom = cDateInput({
 			"w-input": true,
 			"u-form-field": true,
-			"rel": true,
 			"has-error": this.state.noDateFromFilterSpecified
 		});
 		var classesDateInputTo = cDateInput({
 			"w-input": true,
 			"u-form-field": true,
-			"rel": true,
 			"has-error": this.state.noDateToFilterSpecified
 		});
 		//контроллер радиуса поиска
@@ -347,25 +343,33 @@ var PostsFilter = React.createClass({
 				<div id="uFilter1" className="w-form u-form-wrapper">
 					<form className="w-clearfix u-form-body">
 						<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_ADVERTS_FILER"})}</h3>
-						<AddressInput classes={classesAdrInput}
-							name="adress"
-							value={this.state.adress}
-							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FILTER_ADRESS"})}
-							onAddressChanged={this.handleAddrChange}/>
+						<div className="w-row u-row-search">
+						<div className="w-col w-col-5">
+							<AddressInput classes={classesAdrInput}
+								name="adress"
+								value={this.state.adress}
+								placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FILTER_ADRESS"})}
+								onAddressChanged={this.handleAddrChange}/>
+						</div>
+						<div className="w-col w-col-2">
 								<Calendar name="dFrom" 
 									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}
 									defaultValue={(this.state.dFrom)?(new Date(this.state.dFrom)):""}
 									onDatePicked={this.handleDatePicked}
 									language={this.props.language}
 									inputClasses={classesDateInputFrom}/>
+						</div>
+						<div className="w-col w-col-2">									
 								<Calendar name="dTo" 
 									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_TO"})}
 									defaultValue={(this.state.dTo)?(new Date(this.state.dTo)):""}
 									onDatePicked={this.handleDatePicked}
 									language={this.props.language}
 									inputClasses={classesDateInputTo}/>		
+						</div>
+						<div className="w-col w-col-2">									
 								<OptionsSelector view={OptionsSelectorView.SELECT}
-								  classes="w-select u-form-field rel2"
+								  classes="w-select u-form-field"
 									language={this.props.language}
 									options={optionsFactory.buildOptions({
 												language: this.props.language, 
@@ -374,15 +378,15 @@ var PostsFilter = React.createClass({
 									onOptionChanged={this.handleSelectedSex}
 									defaultOptionsState={this.state.sex}
 									appendEmptyOption={true}
-									emptyOptionLabel="-Пол постояльца-"/>					
-						<input className="w-button u-btn-primary nofloat"
+									emptyOptionLabel="-Пол постояльца-"/>			
+						</div>
+						<div className="w-col w-col-1">
+						<input className="w-button u-btn-primary nofloat search"
 							type="button"
 							onClick={this.handleFindClick}
 							value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SEARCH"})}/>
-						<input className="w-button u-btn-regular"
-							type="button"
-							onClick={this.handleClearClick}
-							value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CLEAR"})}/>
+					</div>
+					</div>
 					</form>					
 				</div>				
 				<div style={counterDisplay}>
@@ -399,7 +403,7 @@ var PostsFilter = React.createClass({
 					<div className="u-block-filter-add u-block-underline" style={filterToggle}>
 						<div className="w-form">
 							<form className="u-form-body">		
-								<div className="w-row">
+								<div className="w-row u-row-bottom">
 									<div className="w-col w-col-4">
 										<label className="u-form-label n1">
 											{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}:

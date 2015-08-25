@@ -500,9 +500,9 @@ var ModifyPost = React.createClass({
 		//управление списком категорий цен
 		var priceCatsControl;
 		if((Array.isArray(this.state.priceCatsList))&&(this.state.priceCatsList.length > 0)) {
-			priceCatsControl =	<div>
-									<div style={{display: "inline-block"}}>
+			priceCatsControl =	<div className="u-row-top">
 										<OptionsSelector view={OptionsSelectorView.SELECT}
+										  classes="w-select u-form-field rel2"
 											appendEmptyOption={true}
 											emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}
 											options={optionsFactory.buildOptions({
@@ -512,10 +512,8 @@ var ModifyPost = React.createClass({
 											language={this.props.language}
 											defaultOptionsState={this.state.post.priceCat}
 											onOptionChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "priceCat", value: value}})}, this)}/>
-									</div>
 									&nbsp;&nbsp;
 									<input className="w-input u-form-field rel" 
-										style={{marginTop: "10px"}}
 										type="number"													
 										placeholder={Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}
 										ref="priceCatVal"

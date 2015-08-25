@@ -296,10 +296,7 @@ var Posts = React.createClass({
 				}
 				//соберем финальный вид компонента
 				content =	<div className="w-section u-sect-page-cardlst">
-								<div className="w-row">
-									<div id="uFilterCont" className="w-col w-col-12 w-col-stack u-col-cardlst1">					
-									</div>
-								</div>
+								<div id="uFilterCont"></div>
 								<div className="w-row">
 									<div className="w-col w-col-7 w-col-stack u-col-cardlst1">
 									  <div className="nano has-scrollbar">

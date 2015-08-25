@@ -260,7 +260,7 @@ var langs = [
 		CLNT_PASS_NOT_CONF: "Пароль и его подтверждение не совпадают!",
 		CLNT_PASS_CHANGE_DONE: "Пароль изменен! Теперь Вы можете входить используя свой новый пароль!",
 		CLNT_PRICE_CATEGORY_APPEND_ERR: "Не могу добавить категорию цены: не указаны или указаны не корректно наименование категории и цена!",
-		CLNT_PRICE_CATEGORY_CALC_ERR: "Установите категорию и даты для расчета цены!",
+		CLNT_PRICE_CATEGORY_CALC_ERR: "Укажите пол и даты:",
 		//загрузчик картинок
 		IUPLDR_SOURCES_LOCAL_TITLE: "Файлы",
 		IUPLDR_SOURCES_LOCAL_DROP_FILE: "Перетащите файл с картинкой сюда",

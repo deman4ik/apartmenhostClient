@@ -1108,7 +1108,7 @@ var Profile = React.createClass({
 											<div className="u-block-underline h3">
 												<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PROFILE"})}</h3>
 											</div>
-											<div className="u-block-owner addition2">
+											<div className="u-block-owner addition2 u-row-bottom">
 												<img className="u-img-author-m large" src={this.state.profile.picture.url}/>
 												{userName}												
 											</div>

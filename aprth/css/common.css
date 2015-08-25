@@ -176,7 +176,15 @@ textarea.u-form-area-v {
 .datepicker table tr td.today:hover:hover, .datepicker table tr td.today:hover {
 	background:#eee;
 }
-
+.u-datepicker-holder {
+  display: inline-block;
+}
+.u-row-search .w-col .u-datepicker-holder {
+  padding-right:20px;
+}
+.u-datepicker-holder > input {
+  min-width: 110px;
+}
 .has-icon {
     position: relative;
     float: none !important;
@@ -194,8 +202,9 @@ textarea.u-form-area-v {
     color: #A2A2A2;
     font-weight: lighter;
 }
-.has-icon > .dtcard {
-    width: 24px;
+.has-icon > .u-form-field.dtcard+.u-form-field-icon {
+    right:2px;
+    width:24px;
 }
 .u-form-field-icon:hover {
 	color:#0be3dc;
