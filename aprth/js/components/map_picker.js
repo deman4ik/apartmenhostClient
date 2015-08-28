@@ -130,7 +130,7 @@ var MapPicker = React.createClass({
 	},
 	//установка значений состояния
 	initState: function (props) {
-		var mapTmp = new google.maps.Map(React.findDOMNode(this.refs.mapCanvas), {zoom: 15});
+		var mapTmp = new google.maps.Map(React.findDOMNode(this.refs.mapCanvas), {zoom: 15, draggableCursor: "crosshair"});
 		google.maps.event.addListener(mapTmp, "click", Utils.bind(function (event) {this.handleMapClick(event.latLng);}, this));
 		this.setState({
 			latitude: props.latitude,

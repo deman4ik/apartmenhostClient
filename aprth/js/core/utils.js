@@ -42,7 +42,7 @@ var Utils = {
 		return fnc && getType.toString.call(fnc) === '[object Function]';
 	},
 	//сериализация объекта
-	serialize: function (obj) {
+	serialize: function (obj) {		
 		return JSON.stringify(obj);	
 	},
 	//десериализация объекта
@@ -221,7 +221,11 @@ var Utils = {
 			user.picture.mid = config.defaultProfilePictureUrl;
 			user.picture.default = true;
 		}
-	}
+	},
+	//формирование текста для пустой (невыбранной) опции в select
+	makeEmptyOptionLabel: function (label) {
+		return "- " + label + " -";
+	}	
 }
 
 //расширение для дат - конвертация в формат ГГГГ-ММ-ДД
@@ -264,7 +268,7 @@ google.maps.Map.prototype.getMarkers = function() {
 	return this.markers;
 };
 google.maps.Map.prototype.clearMarkers = function() {
-	for(var i = 0; i < this.markers.length; i++){
+	for(var i = 0; i < this.markers.length; i++) {
 		this.markers[i].setMap(null);
 	}
 	this.markers = new Array();

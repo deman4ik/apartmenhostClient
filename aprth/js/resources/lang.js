@@ -119,6 +119,7 @@ var langs = [
 		UI_FLD_CONF_CODE: "Код подтверждения",
 		UI_FLD_NEW_PASS_CONF: "Подтверждение",
 		UI_FLD_NEW_PASS: "Новый пароль",
+		UI_FLD_SEARCH_RADIUS_CHECK: "Искать в радиусе",
 		UI_PLH_NEW_PASS: "Введите новый пароль",
 		UI_PLH_NEW_PASS_CONF: "Повторите новый пароль",
 		UI_PLH_CONF_CODE: "Укажите код, полученный по E-mail",
@@ -188,6 +189,7 @@ var langs = [
 		DVAL_DECLINED: "Отклонено",
 		DVAL_PENDING: "Ожидает подтверждения...",
 		//ресурсы для серверных сообщений об ошибках и информации
+		SRV_EXCEPTION: "Ошибка сервера!",
 		SRV_COMMON_ERROR: "Ошибка сервера!",
 		SRV_UNAUTH: "Требуется аутентификация!",
 		SRV_LOGIN_INVALID_EMAIL: "Некорректно указано имя пользователя!",
@@ -218,6 +220,7 @@ var langs = [
 		code: "Код",
 		password: "Пароль",
 		//ресурсы для клиентских сообщений об ошибках и информации
+		CLNT_ON_OFF: "Вкыл/выкл",
 		CLNT_COMMON_ERROR: "Ошибка",
 		CLNT_COMMON_SUCCESS: "Успех",
 		CLNT_COMMON_DONE: "Операция успешно выполнена",
@@ -261,6 +264,8 @@ var langs = [
 		CLNT_PASS_CHANGE_DONE: "Пароль изменен! Теперь Вы можете входить используя свой новый пароль!",
 		CLNT_PRICE_CATEGORY_APPEND_ERR: "Не могу добавить категорию цены: не указаны или указаны не корректно наименование категории и цена!",
 		CLNT_PRICE_CATEGORY_CALC_ERR: "Укажите пол и даты:",
+		CLNT_LOGIN_SOCIAL_ERR: "Ошибка входа через социальную сеть!",
+		CLNT_CONFIRM_RESET_PASSWORD: "На адрес \"%1$s\" будет выслано письмо с подтвеждением восстановления пароля. Продолжить?",
 		//загрузчик картинок
 		IUPLDR_SOURCES_LOCAL_TITLE: "Файлы",
 		IUPLDR_SOURCES_LOCAL_DROP_FILE: "Перетащите файл с картинкой сюда",
@@ -386,6 +391,7 @@ var langs = [
 		UI_FLD_CONF_CODE: "Confirmation code",
 		UI_FLD_NEW_PASS_CONF: "Confirmation",
 		UI_FLD_NEW_PASS: "New password",
+		UI_FLD_SEARCH_RADIUS_CHECK: "Search in radius",
 		UI_PLH_NEW_PASS: "Enter new password",
 		UI_PLH_NEW_PASS_CONF: "Repeat new password",
 		UI_PLH_CONF_CODE: "Enter code from E-mail",
@@ -455,6 +461,7 @@ var langs = [
 		DVAL_DECLINED: "Declined",
 		DVAL_PENDING: "Pending...",
 		//ресурсы для серверных сообщений об ошибках и информации
+		SRV_EXCEPTION: "Server error!",
 		SRV_COMMON_ERROR: "Server error!",
 		SRV_UNAUTH: "Authorization has been denied for this request!",
 		SRV_LOGIN_INVALID_EMAIL: "Invalid user name!",
@@ -485,6 +492,7 @@ var langs = [
 		code: "Code",
 		password: "Password",
 		//ресурсы для клиентских сообщений об ошибках и информации
+		CLNT_ON_OFF: "On/Off",
 		CLNT_COMMON_ERROR: "Error",
 		CLNT_COMMON_SUCCESS: "Success",
 		CLNT_COMMON_DONE: "Operation completed successfully",
@@ -528,6 +536,8 @@ var langs = [
 		CLNT_PASS_CHANGE_DONE: "Password changed successfully! You can log in using your new password!",
 		CLNT_PRICE_CATEGORY_APPEND_ERR: "Can't append price category: bad category name or price!",
 		CLNT_PRICE_CATEGORY_CALC_ERR: "Set category and dates to calc price!",
+		CLNT_LOGIN_SOCIAL_ERR: "Social network login error!",
+		CLNT_CONFIRM_RESET_PASSWORD: "We'll send a letter to \"%1$s\" with password reset confimation. Continue?",		
 		//загрузчик картинок
 		IUPLDR_SOURCES_LOCAL_TITLE: "Files",
 		IUPLDR_SOURCES_LOCAL_DROP_FILE: "Move image here",

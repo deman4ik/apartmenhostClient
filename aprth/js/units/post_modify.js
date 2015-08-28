@@ -111,7 +111,11 @@ var ModifyPost = React.createClass({
 				this.setState({post: postTmp});
 			} else {
 				var tmpPicts = _.without(resp.MESSAGE[0].apartment.pictures, _.findWhere(resp.MESSAGE[0].apartment.pictures, {id: "default"}));
+				var tmpPriceCatsList = [];
+				_.extend(tmpPriceCatsList, priceCats);
+				tmpPriceCatsList = _.difference(tmpPriceCatsList, _.pluck(resp.MESSAGE[0].genders, "name"));				
 				this.setState({
+					priceCatsList: tmpPriceCatsList,
 					post: {
 						phone: this.props.session.sessionInfo.user.profile.phone,
 						priceCat: "",
@@ -489,7 +493,11 @@ var ModifyPost = React.createClass({
 				var pcStyle = {marginRight: "20px"}
 				return (
 					<div key={i}>
-						<span style={pcStyle}>{Utils.getStrResource({lang: this.props.language, code: item.name})} - {item.price} {Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}</span>
+						<span style={pcStyle}>
+							{Utils.getStrResource({lang: this.props.language, code: item.name})}
+							&nbsp;-&nbsp;{item.price} 
+							&nbsp;{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}
+						</span>
 						<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleDeletePriceCatClick.bind(this, i)}>
 							{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_DEL"})}										
 						</a>
@@ -500,11 +508,11 @@ var ModifyPost = React.createClass({
 		//управление списком категорий цен
 		var priceCatsControl;
 		if((Array.isArray(this.state.priceCatsList))&&(this.state.priceCatsList.length > 0)) {
-			priceCatsControl =	<div className="u-row-top">
+			priceCatsControl =	<div>
+									<div style={{display: "inline-block"}}>
 										<OptionsSelector view={OptionsSelectorView.SELECT}
-										  classes="w-select u-form-field rel2"
 											appendEmptyOption={true}
-											emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}
+											emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"}))}
 											options={optionsFactory.buildOptions({
 														language: this.props.language, 
 														id: "priceCat",
@@ -512,8 +520,10 @@ var ModifyPost = React.createClass({
 											language={this.props.language}
 											defaultOptionsState={this.state.post.priceCat}
 											onOptionChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "priceCat", value: value}})}, this)}/>
+									</div>
 									&nbsp;&nbsp;
 									<input className="w-input u-form-field rel" 
+										style={{marginTop: "10px"}}
 										type="number"													
 										placeholder={Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}
 										ref="priceCatVal"
@@ -654,7 +664,7 @@ var ModifyPost = React.createClass({
 														defaultOptionsState={this.state.post.apartType}
 														onOptionChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "apartType", value: value}})}, this)}
 														appendEmptyOption={true}
-														emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}/>
+														emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"}))}/>
 												</div>
 											</div>
 											<div className="w-row">

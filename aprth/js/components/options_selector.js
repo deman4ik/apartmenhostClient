@@ -21,6 +21,22 @@ var OptionsSelector = React.createClass({
 			this.props.onOptionChanged(optionsList.substring(0, optionsList.length - 1));
 		}
 	},
+	//обработка нажатия на метку опции
+	handleOptionLabelClick: function (item) {
+		var view;
+		if(this.props.view) {
+			view = this.props.view;
+		} else {
+			view = OptionsSelectorView.CHECK;
+		}
+		if(view == OptionsSelectorView.RADIO) {
+			React.findDOMNode(this.refs[item.ref]).checked = true;
+		}
+		if(view == OptionsSelectorView.CHECK) {
+			React.findDOMNode(this.refs[item.ref]).checked = !React.findDOMNode(this.refs[item.ref]).checked;
+		}
+		this.handleOptionCheck();
+	},
 	//обработка выбора элемента выпадающего списка
 	handleOptionSelected: function (e) {
 		if(Utils.isFunction(this.props.onOptionChanged)) {
@@ -103,7 +119,9 @@ var OptionsSelector = React.createClass({
 									ref={item.ref}
 									onChange={this.handleOptionCheck}
 									defaultChecked={this.isDefaultChecked(item)}/>
-								<label className="w-form-label" style={lblStale}>
+								<label className="w-form-label" 
+									style={lblStale}
+									onClick={this.handleOptionLabelClick.bind(this, item)}>
 									{item.label}
 								</label>
 							</div>
@@ -124,7 +142,9 @@ var OptionsSelector = React.createClass({
 										ref={item.ref}
 										onChange={this.handleOptionCheck}
 										defaultChecked={this.isDefaultChecked(item)}/>
-									<label className="w-form-label" style={lblStale}>
+									<label className="w-form-label"
+										style={lblStale}
+										onClick={this.handleOptionLabelClick.bind(this, item)}>
 										{item.label}
 									</label>
 								</div>							

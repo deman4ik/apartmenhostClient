@@ -87,6 +87,13 @@ var Calendar = React.createClass({
 			this.notifyParentDatePicked(this.props, undefined);
 		}
 	},
+	//при сбросе даты крестом
+	handleClearClick: function () {
+		this.chancelDatePickedListener(this.props);
+		this.clearValue(this.props);
+		this.applyDatePickedListener(this.props);
+		this.notifyParentDatePicked(this.props, undefined);
+	},
 	//сборка представления компонента
 	render: function () {
 		//финальная сборка
@@ -95,7 +102,9 @@ var Calendar = React.createClass({
 				<input id={this.props.name}
 					className={this.props.inputClasses} 
 					placeholder={this.props.placeholder}
-					onChange={this.handleDateChange}/><i className="u-form-field-icon glyphicon glyphicon-remove"></i>		
+					onChange={this.handleDateChange}/>
+				<i className="u-form-field-icon glyphicon glyphicon-remove"
+					onClick={this.handleClearClick}/>
 			</div>
 		);
 	}

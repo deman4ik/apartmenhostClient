@@ -47,11 +47,29 @@ var Post = React.createClass({
 			var dFrom = new Date(this.state.dFrom);
 			var dTo = new Date(this.state.dTo);
 			var pr = _.findWhere(tmp.genders, {name: this.state.priceCat});
-			tmp.priceDay = pr.price;
-			tmp.pricePeriod = pr.price * 1 * Utils.daysBetween(dFrom, dTo);
+			if(pr) {
+				tmp.priceDay = pr.price;
+				tmp.pricePeriod = pr.price * 1 * Utils.daysBetween(dFrom, dTo);
+			} else {
+				tmp.priceDay = _.min(_.pluck(tmp.genders, "price"));
+				tmp.pricePeriod = 0;
+			}			
 		} else {
-			tmp.priceDay = _.min(_.pluck(tmp.genders, "price"));
-			tmp.pricePeriod = 0;
+			if((this.state.dFrom)&&(this.state.dTo)) {
+				var dFrom = new Date(this.state.dFrom);
+				var dTo = new Date(this.state.dTo);
+				tmp.priceDay = _.min(_.pluck(tmp.genders, "price"));
+				tmp.pricePeriod = tmp.priceDay * 1 * Utils.daysBetween(dFrom, dTo);
+			} else {
+				if(this.state.priceCat) {
+					var pr = _.findWhere(tmp.genders, {name: this.state.priceCat});
+					tmp.priceDay = pr.price;
+					tmp.pricePeriod = 0;
+				} else {
+					tmp.priceDay = _.min(_.pluck(tmp.genders, "price"));
+					tmp.pricePeriod = 0;
+				}
+			}
 		}
 		return tmp;	
 	},
@@ -244,7 +262,7 @@ var Post = React.createClass({
 								<form className="w-clearfix">
 									<OptionsSelector view={OptionsSelectorView.SELECT}
 										appendEmptyOption={true}
-										emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}													
+										emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"}))}
 										options={optionsFactory.buildOptions({
 													language: this.props.language, 
 													id: "priceCat",

@@ -11,6 +11,11 @@ var Client = function (clientConfig) {
 		upd: "PUT",
 		del: "DELETE"
 	}
+	//поддерживаемые социальные сети
+	var socialNetworks = {
+		FB: "FB",
+		VK: "VK"
+	}
 	//поддерживаемые серверные действия
 	var serverActions = {
 		login: "StandartLogin", //аутентификация
@@ -588,7 +593,9 @@ var Client = function (clientConfig) {
 		//типы ответа сервера
 		respTypes: respTypes,
 		//состояния ответа сервера
-		respStates: respStates,		
+		respStates: respStates,
+		//поддерживаемые социальные сети
+		socialNetworks: socialNetworks,	
 		//выдача объекта клиента в консоль
 		printClnt: function () {
 			log([clnt]);
@@ -609,7 +616,7 @@ var Client = function (clientConfig) {
 						if(stdResp.STATE == respStates.ERR) {
 							callBack(stdResp);
 						} else {
-							var connectionData = Utils.deSerialize(stdResp.MESSAGE);
+							var connectionData = Utils.deSerialize(stdResp.MESSAGE);							
 							execServerApi({
 								language: prms.language,
 								session: {
@@ -629,11 +636,15 @@ var Client = function (clientConfig) {
 										callBack(stdResp);
 									} else {
 										var profTmp =  Utils.deSerialize(stdResp.MESSAGE)[0];
-										if(!profTmp.emailConfirmed) {
-											callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOT_CONFIRMED"})));
-										} else {											
-											connectionData.user.profile = profTmp;
-											callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, connectionData));
+										if(!profTmp) {
+											callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOTFOUND"})));
+										} else {
+											if((!("emailConfirmed" in profTmp))||(!profTmp.emailConfirmed)) {
+												callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOT_CONFIRMED"})));
+											} else {											
+												connectionData.user.profile = profTmp;											
+												callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, connectionData));
+											}
 										}
 									}
 								}
@@ -647,24 +658,54 @@ var Client = function (clientConfig) {
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
 		},
-		//аутентификация через FaceBook
-		loginFB: function () {
-			log(["LOGIN VIA FB"]);
-			clnt.login("FB").then(function () {
-				log(["LOGIN VIA FB RESULT:", clnt.currentUser]);
+		//аутентификация через социальные сети
+		loginNetwork: function (prms, callBack) {
+			log(["LOGIN VIA " + prms.network]);
+			clnt.login(prms.network).then(function () {
+				log(["LOGIN VIA " + prms.network + " RESULT:", clnt.currentUser]);
+				var connectionData = {
+					authenticationToken: clnt.currentUser.mobileServiceAuthenticationToken,
+					user: {
+						userId: clnt.currentUser.userId
+					}
+				}
+				execServerApi({
+					language: prms.language,
+					session: {
+						user: {
+							userId: connectionData.user.userId
+						},
+						authenticationToken: connectionData.authenticationToken
+					},
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.getUserInfo,
+						method: serverMethods.get,
+						data: null
+					}),
+					callBack: function (stdResp) {
+						if(stdResp.STATE == respStates.ERR) {
+							callBack(stdResp);
+						} else {
+							var profTmp =  Utils.deSerialize(stdResp.MESSAGE)[0];
+							if(!profTmp) {
+								callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOTFOUND"})));
+							} else {
+								if((!("emailConfirmed" in profTmp))||(!profTmp.emailConfirmed)) {
+									callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOT_CONFIRMED"})));
+								} else {											
+									connectionData.user.profile = profTmp;								
+									callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, connectionData));
+								}
+							}
+						}
+					}
+				});
 			}, function (error) {
-				log(["LOGIN VIA FB ERROR:", error]);
+				log(["LOGIN VIA " + prms.network + " ERROR:", error]);
+				callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "CLNT_LOGIN_SOCIAL_ERR"})));
 			});
-		},
-		//аутентификация через VK
-		loginVK: function () {
-			log(["LOGIN VIA VK"]);
-			clnt.login("VK").then(function () {
-				log(["LOGIN VIA VK RESULT:", clnt.currentUser]);
-			}, function (error) {
-				log(["LOGIN VIA VK ERROR:", error]);
-			});
-		},
+		},		
 		//смена статуса объявления в избранном
 		toggleAdvertFavor: function (prms, callBack) {
 			try {

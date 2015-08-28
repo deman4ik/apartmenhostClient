@@ -644,7 +644,7 @@ var Profile = React.createClass({
 											language={this.props.language}
 											defaultOptionsState={this.state.profileTmp.gender}
 											appendEmptyOption={true}
-											emptyOptionLabel={Utils.getStrResource({lang: this.props.language, code: "UI_FLD_GENDER"})}
+											emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "UI_FLD_GENDER"}))}
 											onOptionChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "gender", value: value}})}, this)}/>
 									</div>
 				} else {
@@ -1108,7 +1108,7 @@ var Profile = React.createClass({
 											<div className="u-block-underline h3">
 												<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PROFILE"})}</h3>
 											</div>
-											<div className="u-block-owner addition2 u-row-bottom">
+											<div className="u-block-owner addition2">
 												<img className="u-img-author-m large" src={this.state.profile.picture.url}/>
 												{userName}												
 											</div>

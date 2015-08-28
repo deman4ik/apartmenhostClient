@@ -19,5 +19,5 @@ var postObjType = [
 	"POT_ROOM",
 	"POT_OFFICE",
 	"POT_FLAT",
-	"POT_ROOM"
+	"POT_HOTEL_ROOM"
 ];

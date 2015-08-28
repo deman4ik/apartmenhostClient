@@ -5,7 +5,13 @@ var LogInForm = React.createClass({
 	//переменные окружения
 	contextTypes: {
 		router: React.PropTypes.func //ссылка на роутер
-	},	
+	},
+	//состояние
+	getInitialState: function () {
+		return {
+			confirmResetPassword: false //признак восстановления пароля
+		};
+	},
 	//обработка результата входа
 	handleLogIn: function (result) {
 		this.props.onHideProgress();
@@ -55,6 +61,16 @@ var LogInForm = React.createClass({
 		}		
 		clnt.resetPassword(resData, this.handleResetPassword);
 	},
+	//сброс пароля подтвержден
+	doResetPassword: function () {
+		this.setState({confirmResetPassword: false}, Utils.bind(function () {
+			this.resetPassword(React.findDOMNode(this.refs.login).value);
+		}, this));		
+	},
+	//сброса пароля отменен
+	doNotResetPassword: function () {
+		this.setState({confirmResetPassword: false});
+	},
 	//обработка кнопки "Войти"
 	handleLogInClick: function () {
 		try {
@@ -80,7 +96,7 @@ var LogInForm = React.createClass({
 	//обработка кнопки "Забыл пароль"
 	handlePasswordResetClick: function () {
 		if(React.findDOMNode(this.refs.login).value) {
-			this.resetPassword(React.findDOMNode(this.refs.login).value);
+			this.setState({confirmResetPassword: true});			
 		} else {
 			this.props.onShowError(
 				Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
@@ -90,11 +106,19 @@ var LogInForm = React.createClass({
 	},
 	//обработка кнопки "Войти через FB"
 	handleLogInFbClick: function () {
-		clnt.loginFB();		
+		this.props.onDisplayProgress(Utils.getStrResource({
+			lang: this.props.language, 
+			code: "CLNT_LOGIN_PROCESS"
+		}));
+		clnt.loginNetwork({language: this.props.language, network: clnt.socialNetworks.FB}, this.handleLogIn);
 	},
 	//обработка кнопки "Войти через VK"
 	handleLogInVkClick: function () {
-		clnt.loginVK();		
+		this.props.onDisplayProgress(Utils.getStrResource({
+			lang: this.props.language, 
+			code: "CLNT_LOGIN_PROCESS"
+		}));
+		clnt.loginNetwork({language: this.props.language, network: clnt.socialNetworks.VK}, this.handleLogIn);		
 	},
 	//обработка кнопки "Отмена"
 	handleCloseClick: function () {
@@ -102,11 +126,21 @@ var LogInForm = React.createClass({
 	},
 	//генерация диалога
 	render: function () {
+		//подтверждение восстановления пароля
+		var confResetPasswordDlg;
+		if(this.state.confirmResetPassword) {
+			confResetPasswordDlg =	<MessageConf language={this.props.language}
+										title={Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_CONFIRM"})}
+										text={Utils.getStrResource({lang: this.props.language, code: "CLNT_CONFIRM_RESET_PASSWORD", values: [React.findDOMNode(this.refs.login).value]})}
+										onOk={this.doResetPassword}
+										onCancel={this.doNotResetPassword}/>
+		}
 		//генерация представления
 		return (
 			<div>
-				<div className="modal show messagebox-wraper" id="loginBox">
+				<div className="modal show messagebox-wraper" id="loginBox">					
 					<div className="modal-dialog">
+						{confResetPasswordDlg}
 						<div className="modal-content">
 							<div className="modal-header">
 								<h4 className="modal-title">

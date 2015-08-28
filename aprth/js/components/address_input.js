@@ -43,6 +43,9 @@ var AddressInput = React.createClass({
 	handleChange: function (e) {
 		this.setState({address: e.target.value, latitude: "", longitude: ""}, this.notifyParent);
 	},
+	//отработка потери фокуса
+	handleBlur: function () {		
+	},
 	//оповещение родителя о смене состояния адреса
 	notifyParent: function () {
 		if((this.props.onAddressChanged)&&(Utils.isFunction(this.props.onAddressChanged))) {
@@ -75,7 +78,8 @@ var AddressInput = React.createClass({
 				ref={this.props.name}
 				value={this.state.address}
 				placeholder={plh}
-				onChange={this.handleChange}/>	
+				onChange={this.handleChange}
+				onBlur={this.handleBlur}/>	
 		);
 	}
 });

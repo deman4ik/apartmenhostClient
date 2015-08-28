@@ -89,7 +89,7 @@ var RegConfirm = React.createClass({
 				"has-error": this.state.noCodeSpecified
 			});
 			content =	<div>
-							<div className="w-row u-row-bottom">
+							<div className="w-row">
 								<div className="w-col w-col-3">
 									<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_CONF_CODE"})}:</label>									
 									<div className="u-t-small">
