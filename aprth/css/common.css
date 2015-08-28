@@ -182,6 +182,11 @@ textarea.u-form-area-v {
 .u-row-search .w-col .u-datepicker-holder {
   padding-right:20px;
 }
+.u-row-search .w-col-5 {
+  padding-right:20px;
+}
+
+.u-row-search 
 .u-datepicker-holder > input {
   min-width: 110px;
 }

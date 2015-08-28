@@ -147,48 +147,52 @@ var PostsFindForm = React.createClass({
 		var classesAdrInput = cAdrInput({
 			"w-input": true,
 			"u-form-field": true,
-			"rel2": true,
-			"address": true,
 			"has-error": this.state.noAddressFilterSpecified	
 		});
 		var cDateInput = React.addons.classSet;
 		var classesDateInputFrom = cDateInput({
 			"w-input": true,
 			"u-form-field": true,
-			"rel": true,
 			"has-error": this.state.noDateFromFilterSpecified
 		});
 		var classesDateInputTo = cDateInput({
 			"w-input": true,
 			"u-form-field": true,
-			"rel": true,
 			"has-error": this.state.noDateToFilterSpecified
 		});
 		//представление поиска
 		return (
 			<div>
-				<div className="w-form u-form-wrapper">
+		             <div id="uFilter1" className="w-form u-form-wrapper">
 					<form className="w-clearfix u-form-body">
 						<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_ADVERTS_FILER"})}</h3>
-						<AddressInput classes={classesAdrInput}
+					<div className="w-row u-row-search">
+						<div className="w-col w-col-5" >
+						  <AddressInput classes={classesAdrInput}
 							name="address"
 							value={this.state.find.address}
 							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FILTER_ADRESS"})}
 							onAddressChanged={this.handleAddrChange}/>
-						<Calendar name="dFrom" 
+						</div>
+						<div className="w-col w-col-2">
+						  <Calendar name="dFrom" 
 							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}
 							defaultValue={(this.state.find.dFrom)?(new Date(this.state.find.dFrom)):""}
 							onDatePicked={this.handleDatePicked}
 							language={this.props.language}
 							inputClasses={classesDateInputFrom}/>
-						<Calendar name="dTo" 
+						</div>
+						<div className="w-col w-col-2">
+						  <Calendar name="dTo" 
 							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_TO"})}
 							defaultValue={(this.state.find.dTo)?(new Date(this.state.find.dTo)):""}
 							onDatePicked={this.handleDatePicked}
 							language={this.props.language}
 							inputClasses={classesDateInputTo}/>		
-						<OptionsSelector view={OptionsSelectorView.SELECT}
-							classes="w-select u-form-field rel2"
+						</div>
+						<div className="w-col w-col-2" >
+						    <OptionsSelector view={OptionsSelectorView.SELECT}
+							classes="w-select u-form-field"
 							language={this.props.language}
 							options={optionsFactory.buildOptions({
 										language: this.props.language, 
@@ -198,14 +202,14 @@ var PostsFindForm = React.createClass({
 							defaultOptionsState={this.state.find.sex}
 							appendEmptyOption={true}
 							emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"}))}/>
-						<input className="w-button u-btn-primary nofloat"
+						</div>
+						<div className="w-col w-col-1">
+						    <input className="w-button u-btn-primary nofloat"
 							type="button"
 							onClick={this.handleFindClick}
 							value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SEARCH"})}/>
-						<input className="w-button u-btn-regular" style={{display: "none"}}
-							type="button"
-							onClick={this.handleClearClick}
-							value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CLEAR"})}/>
+					        </div>
+					</div>
 					</form>					
 				</div>				
 			</div>
