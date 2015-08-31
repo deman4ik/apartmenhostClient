@@ -567,7 +567,7 @@ var ModifyPost = React.createClass({
 				pictItemDivStyle = {display: "inline"};
 				pictItemDivContStyle = {display: "inline-block"};
 				pictItemImgStyle = {height: "100px", cursor: "pointer"};
-				if(item.default) _.extend(pictItemImgStyle, {border: "solid 2px #bbd645"});
+				if(item.default) _.extend(pictItemImgStyle, {border: "solid 4px #bbd645"});
 				pictItemDivContDelStyle = {textAlign: "center"};
 				return (
 					<div key={i} style={pictItemDivStyle}>
@@ -752,6 +752,9 @@ var ModifyPost = React.createClass({
 													<label className="u-form-label n1" for="name">
 														{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PHOTO"})}:
 													</label>
+													<div className="u-t-small">
+														{Utils.getStrResource({lang: this.props.language, code: "UI_NOTE_PHOTO"})}
+													</div>													
 												</div>
 												<div className="w-col w-col-9 w-clearfix">
 													{pictsManager}
