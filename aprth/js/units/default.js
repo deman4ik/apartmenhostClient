@@ -2,6 +2,9 @@
 	Страница по-умолчанию
 */
 var DefaultPage = React.createClass({
+	componentDidUpdate: function () {
+		fixFooter();		
+	},	
 	//генерация представления страницы по-умолчанию
 	render: function () {
 		//сообщение по умолчанию
