@@ -172,6 +172,7 @@ p {
   position:relative;
   display: block;
   background-color: #81f0ec;
+  z-index:1000;
 }
 .u-img-slider {
   width: 100%;
