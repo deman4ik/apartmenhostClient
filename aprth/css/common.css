@@ -22,9 +22,7 @@
 h1.txt.search-result {
 	margin-top: 10px;
 }
-textarea.u-form-area-v {
-	resize: vertical;
-}
+
 .username {
 	padding-left: 38px !important;
 }
@@ -179,14 +177,6 @@ textarea.u-form-area-v {
 .u-datepicker-holder {
   display: inline-block;
 }
-.u-row-search .w-col .u-datepicker-holder {
-  padding-right:20px;
-}
-.u-row-search .w-col-5 {
-  padding-right:20px;
-}
-
-.u-row-search 
 .u-datepicker-holder > input {
   min-width: 110px;
 }
@@ -194,10 +184,10 @@ textarea.u-form-area-v {
     position: relative;
     float: none !important;
 }
-.has-icon > .u-form-field {
+.has-icon .u-form-field {
     padding-right: 30px;
 }
-.has-icon > .u-form-field-icon {
+.has-icon .u-form-field-icon {
     position: absolute;
     z-index: 5;
     top:8px;
@@ -206,13 +196,25 @@ textarea.u-form-area-v {
     text-align: center;
     color: #A2A2A2;
     font-weight: lighter;
+    cursor:pointer;
 }
-.has-icon > .u-form-field.dtcard+.u-form-field-icon {
-    right:2px;
-    width:24px;
+.u-row-search .w-col > .has-icon .u-form-field-icon {
+	    right: 0px;
+}
+.has-icon .u-form-field.dtcard+.u-form-field-icon {
+    Zright:2px;
+    Zwidth:24px;
 }
 .u-form-field-icon:hover {
 	color:#0be3dc;
+}
+
+/*search*/
+.u-row-search {
+	padding-right:20px;
+}
+.u-row-search .w-col {
+	padding-right: 20px;
 }
 
 /*rater*/

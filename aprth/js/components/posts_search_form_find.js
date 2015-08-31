@@ -141,8 +141,6 @@ var PostsFindForm = React.createClass({
 	//генерация представления формы поиска
 	render: function () {
 		//дополнительные стили
-		var lblStale = {paddingLeft: "5px"};
-		var aStyle = {textDecoration: "none"};		
 		var cAdrInput = React.addons.classSet;
 		var classesAdrInput = cAdrInput({
 			"w-input": true,
@@ -162,8 +160,7 @@ var PostsFindForm = React.createClass({
 		});
 		//представление поиска
 		return (
-			<div>
-		             <div id="uFilter1" className="w-form u-form-wrapper">
+		    <div className="w-form u-form-wrapper">
 					<form className="w-clearfix u-form-body">
 						<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_ADVERTS_FILER"})}</h3>
 					<div className="w-row u-row-search">
@@ -212,7 +209,6 @@ var PostsFindForm = React.createClass({
 					</div>
 					</form>					
 				</div>				
-			</div>
 		);
 	}
 });

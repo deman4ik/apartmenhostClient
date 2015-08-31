@@ -161,9 +161,9 @@ var OptionsSelector = React.createClass({
 		}
 		//финальная сборка содержимого
 		return (
-			<span>
+			<div>
 				{optionsList}
-			</span>
+			</div>
 		);
 	}
 });

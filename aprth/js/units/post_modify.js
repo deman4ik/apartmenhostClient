@@ -508,8 +508,8 @@ var ModifyPost = React.createClass({
 		//управление списком категорий цен
 		var priceCatsControl;
 		if((Array.isArray(this.state.priceCatsList))&&(this.state.priceCatsList.length > 0)) {
-			priceCatsControl =	<div>
-									<div style={{display: "inline-block"}}>
+			priceCatsControl =	<div className="w-row">
+			            <div className="w-col w-col-4 w-col-small-4 w-col-tiny-4 padr">
 										<OptionsSelector view={OptionsSelectorView.SELECT}
 											appendEmptyOption={true}
 											emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"}))}
@@ -521,20 +521,20 @@ var ModifyPost = React.createClass({
 											defaultOptionsState={this.state.post.priceCat}
 											onOptionChanged={Utils.bind(function (value) {this.handleFormItemChange({target: {id: "priceCat", value: value}})}, this)}/>
 									</div>
-									&nbsp;&nbsp;
-									<input className="w-input u-form-field rel" 
-										style={{marginTop: "10px"}}
-										type="number"													
-										placeholder={Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}
-										ref="priceCatVal"
-										id="priceCatVal"
-										value={this.state.post.priceCatVal}
-										onChange={this.handleFormItemChange}/>
-									<label className="u-form-label n1 rel">{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}</label>
-									&nbsp;&nbsp;
-									<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleAppendPriceCatClick}>
-										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD"})}
-									</a>
+									<div className="w-col  w-col-8 w-col-small-8 w-col-tiny-8">
+										<input className="w-input u-form-field rel" 
+											type="number"													
+											placeholder={Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}
+											ref="priceCatVal"
+											id="priceCatVal"
+											value={this.state.post.priceCatVal}
+											onChange={this.handleFormItemChange}/>
+										<label className="u-form-label n1 rel">{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}</label>
+										&nbsp;&nbsp;
+										<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleAppendPriceCatClick}>
+											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD"})}
+										</a>
+									</div>
 								</div>
 		}
 		//периоды недоступности жилья

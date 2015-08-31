@@ -529,6 +529,9 @@ p {
 .u-btn-regular.nofloat {
   float:none;
 }
+textarea.u-form-area-v {
+  resize: vertical;
+}
 .u-form-body {
   padding: 10px;
   background-color: white;
@@ -597,9 +600,6 @@ p {
   float: right;
   border-left-style: none;
   border-left-width: 0px;
-}
-.u-form-field.address {
-  width:670px;
 }
 .has-error {
   border-color: #ed5466;
@@ -1141,6 +1141,12 @@ textarea.w-input {
 }
 .w-nav[data-animation="over-right"] .w-nav-overlay, .w-nav[data-animation="over-right"] .w--nav-menu-open {
   z-index: 800;
+}
+.w-col.padr {
+  padding-right:20px;
+}
+.w-col.padl {
+  padding-left:20px;
 }
 
 /*иконки в главном меню*/
