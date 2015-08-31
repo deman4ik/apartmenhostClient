@@ -539,11 +539,14 @@ var Profile = React.createClass({
 			clnt.removeProfilePicture(delPrms, this.handleDeleteProfilePictureResult);
 		}
 	},
+	componentDidUpdate: function () {
+		fixFooter();		
+	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
 		this.buildReviewForm(this.props);
 		this.buildChPwdForm(this.props);
-		this.loadProfile();
+		this.loadProfile();	
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
@@ -658,7 +661,6 @@ var Profile = React.createClass({
 										type="text"
 										ref="email"
 										id="email"
-										disabled="true"
 										value={this.state.profileTmp.email}
 										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_MAIL"})}
 										onChange={this.handleFormItemChange}/>									

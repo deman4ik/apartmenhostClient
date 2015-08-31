@@ -9,6 +9,7 @@ var PostsFavorites = React.createClass({
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
+		fixFooter();
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
@@ -17,7 +18,7 @@ var PostsFavorites = React.createClass({
 	render: function () {
 		//генератор		
 		return (
-			<div className="content-center">
+			<div className="w-container">
 				<Posts mode={PostsModes.FAVORITES}
 					session={this.props.session}
 					onLogIn={this.props.onLogIn}
