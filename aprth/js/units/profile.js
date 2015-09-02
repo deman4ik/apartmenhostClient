@@ -613,14 +613,11 @@ var Profile = React.createClass({
 				//имя пользователя
 				var userName;
 				if(this.state.modeEdit) {
-					userName =	<div>
-									<input className="w-input u-form-field rel"
-										type="text"
-										ref="lastName"
-										id="lastName"
-										value={this.state.profileTmp.lastName}
-										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_LAST_NAME"})}
-										onChange={this.handleFormItemChange}/>
+					userName = <div className="w-row u-row-descr">												
+								<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
+									<div>{Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FIRST_NAME"})}  <span className="text-danger">*</span></div>
+								</div>
+								<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
 									<input className="w-input u-form-field rel"
 										type="text"
 										ref="firstName"
@@ -628,12 +625,22 @@ var Profile = React.createClass({
 										value={this.state.profileTmp.firstName}
 										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FIRST_NAME"})}
 										onChange={this.handleFormItemChange}/>
+									<input className="w-input u-form-field rel"
+										type="text"
+										ref="lastName"
+										id="lastName"
+										value={this.state.profileTmp.lastName}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_LAST_NAME"})}
+										onChange={this.handleFormItemChange}/>
 								</div>
+							</div>
 				} else {
-					userName =	<div className="u-t-center">
+					userName =	<div className="u-block-owner addition2">
+								<div className="u-t-center">
 									{this.state.profile.lastName} {this.state.profile.firstName}
 									<Rater total={5} rating={this.state.profile.rating}/>
 								</div>
+							</div>	
 				}
 				//пол
 				var userGender;
@@ -661,6 +668,7 @@ var Profile = React.createClass({
 										type="text"
 										ref="email"
 										id="email"
+										disabled="disabled"
 										value={this.state.profileTmp.email}
 										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_MAIL"})}
 										onChange={this.handleFormItemChange}/>									
@@ -1112,10 +1120,10 @@ var Profile = React.createClass({
 												<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PROFILE"})}</h3>
 											</div>
 											<div className="u-block-owner addition2">
-												<img className="u-img-author-m large" src={this.state.profile.picture.url}/>
-												{userName}												
+												<img className="u-img-author-m large" src={this.state.profile.picture.url}/>										
 											</div>
-											{userPictureEditor}
+											{userPictureEditor}													
+											{userName}																						
 											<div className="w-row u-row-descr">
 												<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
 													<div>{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_GENDER"})}</div>

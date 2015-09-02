@@ -623,7 +623,7 @@ var ModifyPost = React.createClass({
 										<form className="w-clearfix" id="modifyPostForm">
 											<div className="w-row">
 												<div className="w-col w-col-3">
-													<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PHONE"})}:</label>
+													<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PHONE"})}: <span className="text-danger">*</span></label>
 													<div className="u-t-small">{Utils.getStrResource({lang: this.props.language, code: "UI_NOTE_PHONE"})}</div>
 												</div>
 												<div className="w-col w-col-9">
@@ -640,7 +640,7 @@ var ModifyPost = React.createClass({
 											<div className="u-block-spacer2"></div>
 											<div className="w-row">
 												<div className="w-col w-col-3">
-													<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PRICE"})}:</label>
+													<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PRICE"})}: <span className="text-danger">*</span></label>
 												</div>
 												<div className="w-col w-col-9">
 													{genders}
@@ -651,7 +651,7 @@ var ModifyPost = React.createClass({
 											<div className="w-row">
 												<div className="w-col w-col-3">
 													<label className="u-form-label n1">
-														{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}:
+														{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}: <span className="text-danger">*</span>
 													</label>
 												</div>
 												<div className="w-col w-col-9">
@@ -667,10 +667,11 @@ var ModifyPost = React.createClass({
 														emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"}))}/>
 												</div>
 											</div>
+											<div className="u-block-spacer2"></div>
 											<div className="w-row">
 												<div className="w-col w-col-3">
 													<label className="u-form-label n1" for="address">
-														{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_ADRESS"})}:
+														{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_ADRESS"})}: <span className="text-danger">*</span>
 													</label>
 												</div>
 												<div className="w-col w-col-9">
