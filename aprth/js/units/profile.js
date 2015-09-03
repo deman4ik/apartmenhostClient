@@ -593,7 +593,7 @@ var Profile = React.createClass({
 				if(this.state.modeEdit) {
 					userPictureEditor =	<div className="w-row u-row-descr">												
 											<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
-												<div>Изображение</div>
+												<div>{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_USERPIC"})}</div>
 											</div>
 											<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
 												<ImageUpLoader language={this.props.language}
@@ -754,7 +754,7 @@ var Profile = React.createClass({
 											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_OK"})}
 										</button>
 										<button type="button" className="w-button u-btn-regular" onClick={this.handleCancelEditClick}>
-											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CLOSE"})}
+											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHANCEL"})}
 										</button>
 										<button type="button" className="w-button u-btn-regular" onClick={this.handleChPwdClick}>
 											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHPWD"})}
