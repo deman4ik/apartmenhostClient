@@ -71,33 +71,35 @@ var OptionsParser = React.createClass({
 				var classesOptionItem = cOptionItem({
 					"hightLight": (hlOption == option)
 				});
-				var optionsItem;
 				switch(view) {
 					case(OptionsParserView.LIST): {
-						optionsItem = 	<li>
-											<span className={classesOptionItem}>
-												{(convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option}
-											</span>
-										</li>
+						return (
+							<li>
+								<span className={classesOptionItem}>
+								{(convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option}
+								</span>
+							</li>
+						);
 						break;
 					}
 					case(OptionsParserView.ROW): {
-						optionsItem =	<span className={classesOptionItem}>
-											{(convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option}
-											{(i < (optionsLength - 1))?(rowSeparator + " "):""}
-										</span>
+						return (
+							<span className={classesOptionItem}>
+								{(convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option}
+								{(i < (optionsLength - 1))?(rowSeparator + " "):""}
+							</span>
+						);
 						break;
 					}				
 					default: {
-						optionsItem =	<span className={classesOptionItem}>
-											{(convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option}
-											{(i < (optionsLength - 1))?(rowSeparator + " "):""}
-										</span>
+						return (
+							<span className={classesOptionItem}>
+								{(convertOptions == OptionsParserConvert.DO_CONVERT)?Utils.getStrResource({lang: this.props.language, code: option}):option}
+								{(i < (optionsLength - 1))?(rowSeparator + " "):""}
+							</span>
+						);
 					}
 				}
-				return (
-					{optionsItem}			
-				);
 			}, this);
 			switch(view) {
 				case(OptionsParserView.LIST): {					
@@ -110,11 +112,11 @@ var OptionsParser = React.createClass({
 					break;
 				}
 				case(OptionsParserView.ROW): {
-					options = {optionsItems}
+					options = <span>{optionsItems}</span>
 					break;
 				}				
 				default: {
-					options = {optionsItems}
+					options = <span>{optionsItems}</span>
 				}
 			}
 		}
