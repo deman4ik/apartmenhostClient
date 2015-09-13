@@ -9,9 +9,11 @@ var Register = React.createClass({
 	//состояние формы сброса пароля
 	getInitialState: function () {
 		return {
+			name: "", //имя пользователя
 			mail: "", //E-Mail пользователя
 			password: "", //пароль
 			passwordConf: "", //подтверждение пароля
+			noNameSpecified: false, //флаг отсутствия имени пользователя
 			noMailSpecified: false, //флаг отсутствия E-Mailа
 			noPassSpecified: false, //флаг отсуствия пароля
 			noPassConfSpecified: false, //флаг отсуствия подтверждения пароля
@@ -36,6 +38,7 @@ var Register = React.createClass({
 		try {
 			var auth = authFactory.build({
 				language: this.props.language,
+				firstName: this.state.name,
 				userName: this.state.mail,
 				userPass: this.state.password
 			});
@@ -71,11 +74,14 @@ var Register = React.createClass({
 	checkPrmsAndRegister: function (doConfirm) {
 		var tmpState = {}
 		_.extend(tmpState, this.state);
+		tmpState.noNameSpecified = false;
+		tmpState.noMailSpecified = false;
 		tmpState.noCodeSpecified = false; 
 		tmpState.noPassSpecified = false;
 		tmpState.noPassConfSpecified = false;
 		tmpState.badPassConfSpecified = false;
 		if(
+			(this.state.name)&&
 			(this.state.mail)&&
 			(this.state.password)&&
 			(this.state.passwordConf)&&
@@ -83,6 +89,7 @@ var Register = React.createClass({
 		) {
 			this.setState(tmpState, this.register);
 		} else {
+			if(!this.state.name) tmpState.noNameSpecified = true;
 			if(!this.state.mail) tmpState.noMailSpecified = true;
 			if(!this.state.password) tmpState.noPassSpecified = true;
 			if(!this.state.passwordConf) tmpState.noPassConfSpecified = true;
@@ -103,6 +110,12 @@ var Register = React.createClass({
 	//генерация представления формы регистрации
 	render: function () {
 		//содержимое формы
+		var cNameInput = React.addons.classSet;
+		var classesNameInput = cNameInput({
+			"w-input": true,
+			"u-form-field": true,
+			"has-error": this.state.noNameSpecified
+		});
 		var cMailInput = React.addons.classSet;
 		var classesMailInput = cMailInput({
 			"w-input": true,
@@ -122,64 +135,81 @@ var Register = React.createClass({
 			"has-error": ((this.state.noPassConfSpecified)||(this.state.badPassConfSpecified))
 		});
 		var content =	<div>
-						<div className="w-row">
-							<div className="w-col w-col-3">
-								<label className="u-form-label n1">
-									{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_USER"})}:
-								</label>
-								<div className="u-t-small">
-									{Utils.getStrResource({lang: this.props.language, code: "UI_NOTE_USER"})}
+							<div className="w-row">
+								<div className="w-col w-col-3">
+									<label className="u-form-label n1">
+										{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_FIRST_NAME"})}:
+									</label>									
+								</div>
+								<div className="w-col w-col-9">
+									<input className={classesNameInput}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FIRST_NAME"})}
+										type="text" 
+										ref="name" 
+										id="name"
+										value={this.state.name}
+										onChange={this.handleFormItemChange}/>
 								</div>
 							</div>
-							<div className="w-col w-col-9">
-								<input className={classesMailInput}
-									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_USER"})}
-									type="text" 
-									ref="mail" 
-									id="mail"
-									value={this.state.mail}
-									onChange={this.handleFormItemChange}/>
+							<div className="w-row">
+								<div className="w-col w-col-3">
+									<label className="u-form-label n1">
+										{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_MAIL"})}:
+									</label>
+									<div className="u-t-small">
+										{Utils.getStrResource({lang: this.props.language, code: "UI_NOTE_USER"})}
+									</div>
+								</div>
+								<div className="w-col w-col-9">
+									<input className={classesMailInput}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_MAIL"})}
+										type="text" 
+										ref="mail" 
+										id="mail"
+										value={this.state.mail}
+										onChange={this.handleFormItemChange}/>
+								</div>
 							</div>
+							<div className="u-block-spacer2"></div>
+							<div className="w-row">
+								<div className="w-col w-col-3">
+									<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_NEW_PASS"})}:</label>									
+								</div>
+								<div className="w-col w-col-9">
+									<input className={classesPassInput}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_NEW_PASS"})}
+										type="password" 
+										ref="password" 
+										id="password"
+										value={this.state.password}
+										onChange={this.handleFormItemChange}/>
+								</div>
+							</div>
+							<div className="w-row">
+								<div className="w-col w-col-3">
+									<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_NEW_PASS_CONF"})}:</label>									
+								</div>
+								<div className="w-col w-col-9">
+									<input className={classesPassConfInput}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_NEW_PASS_CONF"})}
+										type="password" 
+										ref="passwordConf" 
+										id="passwordConf"
+										value={this.state.passwordConf}
+										onChange={this.handleFormItemChange}/>
+								</div>
+							</div>
+							<div className="u-block-spacer"></div>
+							<div className="u-block-spacer"></div>										
+							<input className="w-button u-btn-primary"
+								type="button"
+								value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_OK"})}
+								onClick={this.handleRegisterClick}/>
+							<input className="w-button u-btn-regular"
+								type="button"
+								value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHANCEL"})}
+								onClick={this.handleCancelClick}/>
 						</div>
-						<div className="w-row">
-							<div className="w-col w-col-3">
-								<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_NEW_PASS"})}:</label>									
-							</div>
-							<div className="w-col w-col-9">
-								<input className={classesPassInput}
-									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_NEW_PASS"})}
-									type="password" 
-									ref="password" 
-									id="password"
-									value={this.state.password}
-									onChange={this.handleFormItemChange}/>
-							</div>
-						</div>
-						<div className="w-row">
-							<div className="w-col w-col-3">
-								<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_NEW_PASS_CONF"})}:</label>									
-							</div>
-							<div className="w-col w-col-9">
-								<input className={classesPassConfInput}
-									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_NEW_PASS_CONF"})}
-									type="password" 
-									ref="passwordConf" 
-									id="passwordConf"
-									value={this.state.passwordConf}
-									onChange={this.handleFormItemChange}/>
-							</div>
-						</div>
-						<div className="u-block-spacer"></div>
-						<div className="u-block-spacer"></div>										
-						<input className="w-button u-btn-primary"
-							type="button"
-							value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_OK"})}
-							onClick={this.handleRegisterClick}/>
-						<input className="w-button u-btn-regular"
-							type="button"
-							value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHANCEL"})}
-							onClick={this.handleCancelClick}/>
-					</div>
 		//генератор		
 		return (
 			<div className="w-section">

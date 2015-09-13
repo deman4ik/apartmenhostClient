@@ -13,6 +13,7 @@ var AuthFactory = function () {
 		if(!params.userPass) 
 			throw new Error(Utils.getStrResource({lang: params.language, code: "CLNT_AUTH_NO_PASSWORD"}));
 		return {
+			firstName: params.firstName,
 			userName: params.userName,
 			userPass: params.userPass
 		}
@@ -35,11 +36,13 @@ var AuthFactory = function () {
 			throw new Error(Utils.getStrResource({code: "CLNT_NO_OBJECT"}));
 		if(!auth.language)
 			throw new Error(Utils.getStrResource({code: "CLNT_NO_LANGUAGE"}));
+		if(!auth.firstName)
+			throw new Error(Utils.getStrResource({lang: auth.language, code: "CLNT_REGISTER_NO_FIRST_NAME"}));
 		if(!auth.userName)
 			throw new Error(Utils.getStrResource({lang: auth.language, code: "CLNT_AUTH_NO_USER_NAME"}));
 		if(!auth.userPass)
 			throw new Error(Utils.getStrResource({lang: auth.language, code: "CLNT_AUTH_NO_PASSWORD"}));
-		return {"email": auth.userName, "password": auth.userPass};
+		return {"firstName": auth.firstName, "email": auth.userName, "password": auth.userPass};
 	}
 	//публичные члены класса (интерфейс)
 	return {

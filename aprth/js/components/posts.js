@@ -217,7 +217,7 @@ var Posts = React.createClass({
 			tmp.swLong = bounds.getSouthWest().lng();
 			tmp.neLat = bounds.getNorthEast().lat();
 			tmp.neLong = bounds.getNorthEast().lng();
-		}
+		}		
 		this.setState({filterClnt: tmp}, callBack);
 	},
 	//поиск и фильтрация
@@ -349,6 +349,7 @@ var Posts = React.createClass({
 			this.recalcSearchArea(this.findAndFilter);
 		});
 	},
+	//смена места радиуса поиска на карте
 	handleMapRadarPlaceChanged: function (newPlace) {
 		var tmp = {};
 		_.extend(tmp, this.state.filterClnt);
@@ -359,6 +360,23 @@ var Posts = React.createClass({
 			this.saveFilterState();
 			this.recalcSearchArea(this.findAndFilter);
 		});		
+	},
+	//смена границ карты
+	handleMapBoundsChange: function (newBounds) {
+		if((newBounds)&&(!this.state.filterClnt.useRadius)) {
+			var tmp = {};
+			_.extend(tmp, this.state.filterClnt);
+			tmp.latitude = newBounds.getCenter().lat();
+			tmp.longitude = newBounds.getCenter().lng();
+			tmp.swLat = newBounds.getSouthWest().lat();
+			tmp.swLong = newBounds.getSouthWest().lng();
+			tmp.neLat = newBounds.getNorthEast().lat();
+			tmp.neLong = newBounds.getNorthEast().lng();
+			this.setState({filterClnt: tmp}, function () {
+				this.saveFilterState();
+				this.findAndFilter();
+			});
+		}
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
@@ -443,7 +461,8 @@ var Posts = React.createClass({
 							zoom={10}
 							showRadar={(this.state.filterClnt.useRadius == PostsFilterPrms.postFilterUseRadius)?true:false}
 							onSearchRadarRadiusChange={this.handleMapRadarRadiusChanged}
-							onSearchRadarPlaceChange={this.handleMapRadarPlaceChanged}/>
+							onSearchRadarPlaceChange={this.handleMapRadarPlaceChanged}
+							onMapBoundsChange={this.handleMapBoundsChange}/>
 				//список объявлений
 				var postsList;
 				if((this.state.advertsReady)&&(this.state.advertsCnt > 0)) {

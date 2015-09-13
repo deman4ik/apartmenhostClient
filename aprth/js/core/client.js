@@ -413,6 +413,12 @@ var Client = function (clientConfig) {
 							code: "CLNT_NO_ELEM",
 							values: ["ServerRequest", "data"]
 						}));
+					if(!prms.data.firstName) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "firstName"]
+						}));
 					if(!prms.data.email) 
 						throw new Error(Utils.getStrResource({
 							lang: prms.language,

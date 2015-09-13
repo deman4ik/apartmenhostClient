@@ -36,6 +36,8 @@ var config = {
 	searchRadiusStep: 1000,
 	//признак использования радара для поиска
 	useSearchRadar: true,
+	//цвет заливки радара
+	radarBgColor: "#00ccc5",
 	//максимальное количество картинок на объявление
 	postMaxPictures: 20
 }
