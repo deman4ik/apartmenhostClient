@@ -509,10 +509,11 @@ var Client = function (clientConfig) {
 		if(prms.req) {
 			clnt.invokeApi(prms.req.API_NAME, {
 				body: prms.req.API_DATA,
-				method: prms.req.API_METHOD
+				method: prms.req.API_METHOD,
+				headers: {Accept: "application/json"}
 			}).done(
 				function (result) {					
-					log(["EXECUTE SERVER API RESULT:", result]);
+					log(["EXECUTE SERVER API RESULT:", result]);					
 					prms.callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, result.response));
 				},
 				function (error) {
