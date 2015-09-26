@@ -591,6 +591,21 @@ var Profile = React.createClass({
 				//аватар
 				var userPictureEditor;
 				if(this.state.modeEdit) {
+					var uploadBtnCaption;
+					var delBtn;
+					if(this.state.profile.picture.url != config.defaultProfilePictureUrl) {
+						delBtn =	<span>
+										&nbsp;&nbsp;
+										<a href="javascript:void(0);"
+											className="u-lnk-norm"
+											onClick={this.handleDeleteProfilePicture}>
+											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_DEL"})}
+										</a>
+									</span>
+						uploadBtnCaption = Utils.getStrResource({lang: this.props.language, code: "UI_BTN_UPD"});
+					} else {
+						uploadBtnCaption = Utils.getStrResource({lang: this.props.language, code: "UI_BTN_ADD"});
+					}
 					userPictureEditor =	<div className="w-row u-row-descr">												
 											<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
 												<div>{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_USERPIC"})}</div>
@@ -599,14 +614,9 @@ var Profile = React.createClass({
 												<ImageUpLoader language={this.props.language}
 													onUpLoaded={this.handleUploadProfilePicture}
 													style={ImageUpLoaderStyles.ANCOR}
-													caption={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_UPD"})}
+													caption={uploadBtnCaption}
 													single={true}/>
-												&nbsp;&nbsp;
-												<a href="javascript:void(0);"
-													className="u-lnk-norm"
-													onClick={this.handleDeleteProfilePicture}>
-													{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_DEL"})}
-												</a>										
+												{delBtn}										
 											</div>
 										</div>
 				}

@@ -289,7 +289,7 @@ var routes = (
 		<Route name="main" handler={Main}/>
 		<Route name="search" handler={PostsSearch}/>
 		<Route name="favorites" handler={PostsFavorites}/>
-		<Route name="article" handler={Article} path="articles/:articleId"/>
+		<Route name="articles" handler={Articles} path="articles"/>
 		<Route name="profile" handler={Profile}/>
 		<Route name="modifypost" handler={ModifyPost} path="modifypost/:mode"/>
 		<Route name="post" handler={Post}  path="posts/:postId"/>

@@ -37,40 +37,45 @@ var menus = [
 			{
 				code: "HowItWorks", 
 				title: "UI_FOOTER_MENU_HOWITWORKS", 
-				link: "article", 
-				linkParams: {articleId: "HOW_IT_WORKS"}, 
+				link: "articles", 
+				linkParams: {},
+				linkQuery: {name: "HOW_IT_WORKS"},
 				authAccess: false, 
 				col: 1
 			},
 			{
 				code: "TermsOfUse", 
 				title: "UI_FOOTER_MENU_TERMSUSE", 
-				link: "article", 
-				linkParams: {articleId: "TERMS_OF_USE"}, 
+				link: "articles", 
+				linkParams: {},
+				linkQuery: {name: "TERMS_OF_USE"},
 				authAccess: false, 
 				col: 1
 			},
 			{
 				code: "Rules", 
 				title: "UI_FOOTER_MENU_RULES", 
-				link: "article", 
-				linkParams: {articleId: "RULES"}, 
+				link: "articles", 
+				linkParams: {},
+				linkQuery: {name: "RULES"},
 				authAccess: false, 
 				col: 1
 			},
 			{
 				code: "Help", 
 				title: "UI_FOOTER_MENU_HELP", 
-				link: "article", 
-				linkParams: {articleId: "HELP"}, 
+				link: "articles", 
+				linkParams: {},
+				linkQuery: {name: "HELP"},
 				authAccess: false, 
 				col: 2
 			},
 			{
 				code: "Contacts", 
 				title: "UI_FOOTER_MENU_CONTACT", 
-				link: "article", 
-				linkParams: {articleId: "CONTACTS"}, 
+				link: "articles", 
+				linkParams: {},
+				linkQuery: {name: "CONTACTS"}, 
 				authAccess: false, 
 				col: 2
 			}

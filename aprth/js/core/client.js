@@ -1334,7 +1334,25 @@ var Client = function (clientConfig) {
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
-		},		
+		},
+		//считывание статей
+		getArticles: function (prms, callBack) {
+			try {
+				var filter = {};
+				var res = [];
+				_.extend(filter, prms.filter);
+				filter.lang = prms.language;
+				res = _.where(articles, filter);
+				//console.log(filter);
+				//console.log(res);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.OK, res));
+			} catch (error) {
+				log(["GET ARTICLES ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		}				
 	}
 }
 
