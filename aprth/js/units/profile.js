@@ -763,9 +763,9 @@ var Profile = React.createClass({
 										</div>
 										<div className="w-col w-col-2 u-col-query u-t-center">
 											<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.user.id)}>
-												<div>{item.user.firstName + " " + item.user.lastName}</div>
-												<Rater total={5} rating={item.user.rating}/>
+												<div>{item.user.firstName + " " + item.user.lastName}</div>												
 											</a>
+											<Rater total={5} rating={item.user.rating}/>
 										</div>										
 										<div className="w-col w-col-3 u-col-query u-t-center">
 												{Utils.formatDate({lang: this.props.language, 

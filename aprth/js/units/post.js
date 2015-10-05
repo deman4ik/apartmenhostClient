@@ -433,9 +433,9 @@ var Post = React.createClass({
 													href="javascript:void(0);"
 													onClick={this.handleOwnerClick}>
 													<img className="u-img-author-m" src={this.state.post.user.picture.xlarge}/>
-													<div>{this.state.post.user.lastName} {this.state.post.user.firstName}</div>
-													<Rater total={5} rating={this.state.post.user.rating}/>
+													<div>{this.state.post.user.lastName} {this.state.post.user.firstName}</div>													
 												</a>
+												<Rater total={5} rating={this.state.post.user.rating}/>
 											</div>											
 											<div className="u-block-cardprice">
 												<div className="u-block-ownertext">
