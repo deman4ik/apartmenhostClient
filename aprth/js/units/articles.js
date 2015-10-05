@@ -22,6 +22,7 @@ var Articles = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
+			console.log(resp.MESSAGE);
 			if((resp.MESSAGE)&&(Array.isArray(resp.MESSAGE))&&(resp.MESSAGE.length > 0)) {
 				this.setState({
 					articles: resp.MESSAGE,
@@ -65,7 +66,6 @@ var Articles = React.createClass({
 	},
 	//смена текущего топика
 	handleTopicChange: function (index) {
-		console.log(index);
 		this.setState({currentArticle: index});
 	},
 	//генерация представления страницы статьи
@@ -85,8 +85,7 @@ var Articles = React.createClass({
 		var article;
 		if((this.state.articlesReady)&&(Array.isArray(this.state.articles))) {
 			article =	<Article title={this.state.articles[this.state.currentArticle].title}
-							text={this.state.articles[this.state.currentArticle].text}
-							imageURL={this.state.articles[this.state.currentArticle].picture.url}/>
+							text={this.state.articles[this.state.currentArticle].text}/>
 		}
 		//генератор		
 		return (

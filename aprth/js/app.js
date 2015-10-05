@@ -296,6 +296,7 @@ var routes = (
 		<Route name="register" handler={Register}/>
 		<Route name="confirm" handler={RegConfirm}/>
 		<Route name="reset" handler={ResetPassConfirm}/>
+		<Route name="user" handler={ProfileView} path="user/:userId"/>		
 		<DefaultRoute handler={DefaultPage}/>
 		<NotFoundRoute handler={Unit404}/>		
 		<Redirect from="/" to="/main"/>

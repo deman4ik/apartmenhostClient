@@ -11,7 +11,7 @@ var ModifyPost = React.createClass({
 	//переменные окружения
 	contextTypes: {
 		router: React.PropTypes.func //ссылка на роутер
-	},	
+	},
 	//состояние
 	getInitialState: function () {
 		return {
@@ -471,7 +471,7 @@ var ModifyPost = React.createClass({
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {		
-		this.setState({mode: this.context.router.getCurrentParams().mode, priceCatsList: priceCats}, this.initForm);		
+		this.setState({mode: this.context.router.getCurrentParams().mode, priceCatsList: priceCats}, this.initForm);
 	},
 	//генерация представления страницы размещения объявления
 	render: function () {

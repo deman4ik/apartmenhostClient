@@ -204,6 +204,14 @@ var Post = React.createClass({
 				actionPrms: {callBack: this.makeComplaint}
 			});		
 	},
+	//обработка нажатия на владельца объявления
+	handleOwnerClick: function () {
+		this.context.router.transitionTo("user", {userId: this.state.post.userId});
+	},
+	//обработка нажатия на владельца объявления
+	handleReviewAuthorClick: function (authorUserId) {
+		this.context.router.transitionTo("user", {userId: authorUserId});
+	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
 		this.buildComplaintForm(this.props);
@@ -387,10 +395,14 @@ var Post = React.createClass({
 						<div className="w-row">
 							<div className="w-col w-col-3">
 								<div className="u-block-author-reviewlst">
-									<img className="u-img-author-review" 
-										src={item.fromUser.picture.url}
-										width="76"/>
-									<div>{item.fromUser.firstName}<br/>{item.fromUser.lastName}</div>
+									<a className="u-lnk-norm" 
+										href="javascript:void(0);"
+										onClick={this.handleReviewAuthorClick.bind(this, item.fromUser.id)}>
+										<img className="u-img-author-review" 
+											src={item.fromUser.picture.url}
+											width="76"/>
+										<div>{item.fromUser.firstName}<br/>{item.fromUser.lastName}</div>
+									</a>
 								</div>
 							</div>
 							<div className="w-col w-col-9">
@@ -415,12 +427,16 @@ var Post = React.createClass({
 								{complaintForm}
 								<div className="w-container">
 									<div className="w-row">							    
-										<div className="w-col w-col-5 u-col-card">
+										<div className="w-col w-col-5 u-col-card">											 
 											<div className="u-block-owner">
-												<img className="u-img-author-m" src={this.state.post.user.picture.xlarge}/>
-												<div>{this.state.post.user.lastName} {this.state.post.user.firstName}</div>
-												<Rater total={5} rating={this.state.post.user.rating}/>
-											</div>
+												<a className="u-lnk-norm" 
+													href="javascript:void(0);"
+													onClick={this.handleOwnerClick}>
+													<img className="u-img-author-m" src={this.state.post.user.picture.xlarge}/>
+													<div>{this.state.post.user.lastName} {this.state.post.user.firstName}</div>
+													<Rater total={5} rating={this.state.post.user.rating}/>
+												</a>
+											</div>											
 											<div className="u-block-cardprice">
 												<div className="u-block-ownertext">
 													<div className="u-t-price">
