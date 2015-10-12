@@ -1003,7 +1003,10 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   text-decoration: none;
   cursor:pointer;
 }
-.u-btn-land:hover {
+.u-btn-land:hover,
+.u-lnk-small:focus,
+.u-lnk-small:active 
+ {
   background-color: #64d3f5;
   color: rgba(255, 255, 255, 0.82);
   text-decoration: none;
