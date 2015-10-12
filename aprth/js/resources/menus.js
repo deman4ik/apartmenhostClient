@@ -39,7 +39,7 @@ var menus = [
 				title: "UI_FOOTER_MENU_HOWITWORKS", 
 				link: "articles", 
 				linkParams: {},
-				linkQuery: {name: "HOW_IT_WORKS"},
+				linkQuery: {filter: {name: "HOW_IT_WORKS"}, title: "UI_FOOTER_MENU_HOWITWORKS", convertTitle: true},
 				authAccess: false, 
 				col: 1
 			},
@@ -48,7 +48,7 @@ var menus = [
 				title: "UI_FOOTER_MENU_TERMSUSE", 
 				link: "articles", 
 				linkParams: {},
-				linkQuery: {name: "TERMS_OF_USE"},
+				linkQuery: {filter: {name: "TERMS_OF_USE"}, title: "UI_FOOTER_MENU_TERMSUSE", convertTitle: true},
 				authAccess: false, 
 				col: 1
 			},
@@ -57,7 +57,7 @@ var menus = [
 				title: "UI_FOOTER_MENU_RULES", 
 				link: "articles", 
 				linkParams: {},
-				linkQuery: {name: "RULES"},
+				linkQuery: {filter: {name: "RULES"}, title: "UI_FOOTER_MENU_RULES", convertTitle: true},
 				authAccess: false, 
 				col: 1
 			},
@@ -66,7 +66,7 @@ var menus = [
 				title: "UI_FOOTER_MENU_HELP", 
 				link: "articles", 
 				linkParams: {},
-				linkQuery: {name: "HELP"},
+				linkQuery: {filter: {name: "HELP"}, title: "UI_FOOTER_MENU_HELP", convertTitle: true},
 				authAccess: false, 
 				col: 2
 			},
@@ -75,7 +75,7 @@ var menus = [
 				title: "UI_FOOTER_MENU_CONTACT", 
 				link: "articles", 
 				linkParams: {},
-				linkQuery: {name: "CONTACTS"}, 
+				linkQuery: {filter: {name: "CONTACTS"}, title: "UI_FOOTER_MENU_CONTACT", convertTitle: true}, 
 				authAccess: false, 
 				col: 2
 			}

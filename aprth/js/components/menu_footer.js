@@ -16,7 +16,7 @@ var FooterMainMenu = React.createClass({
 		}
 	},
 	//обработка нажатия на пункт меню
-	onFooterMenuClick: function (menuItem) {
+	onFooterMenuClick: function (menuItem) {		
 		this.context.router.transitionTo(menuItem.link, menuItem.linkParams, menuItem.linkQuery);
 	},
 	//инициализация компонента при подключении к страничке

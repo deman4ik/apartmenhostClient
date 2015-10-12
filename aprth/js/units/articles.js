@@ -9,11 +9,12 @@ var Articles = React.createClass({
 	//состояние страницы статьи
 	getInitialState: function () {
 		return {
-			articlesReady: false, //признак загруженности статей
-			singleMode: true, //признак отображения только одной статьи
-			filter: {}, //фильтр статей
-			articles: [], //статьи
-			currentArticle: 0 //идентификатор текущей статьи
+			articlesReady: false, //признак загруженности статей			
+			query: { //запрос на отображение статей
+				title: "", //заголовок статей
+				filter: {}, //фильтр статей
+			},
+			articles: [], //статьи			
 		}
 	},
 	//обработка результатов получения статей
@@ -21,21 +22,16 @@ var Articles = React.createClass({
 		this.props.onHideProgress();
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
-		} else {
-			console.log(resp.MESSAGE);
+		} else {			
 			if((resp.MESSAGE)&&(Array.isArray(resp.MESSAGE))&&(resp.MESSAGE.length > 0)) {
 				this.setState({
 					articles: resp.MESSAGE,
-					currentArticle: 0,
-					articlesReady: true,
-					singleMode: (resp.MESSAGE.length == 1)
+					articlesReady: true
 				});
 			} else {
 				this.setState({
 					articles: [],
-					currentArticle: 0,
-					articlesReady: false,
-					singleMode: true
+					articlesReady: false					
 				});
 			}
 		}
@@ -45,13 +41,28 @@ var Articles = React.createClass({
 		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 		var getPrms = {
 			language: this.props.language, 
-			filter: this.state.filter
+			filter: this.state.query.filter
 		}
 		clnt.getArticles(getPrms, this.handleGetArticlesResult);		
 	},
+	//разбор запроса из URL
+	parseQuery: function () {
+		var query = {
+			filter: {},
+			title: ""
+		}
+		var tmp = this.context.router.getCurrentQuery();
+		_.extend(query.filter, tmp.filter);
+		query.title = tmp.title;		
+		if(tmp.convertTitle === "true") {
+			query.title = Utils.getStrResource({lang: this.props.language, code: tmp.title});
+		}
+		return query;
+	},
 	//инициализация состояния
-	initState: function (props) {
-		this.setState({filter: this.context.router.getCurrentQuery()}, this.getArticles);
+	initState: function (props) {		
+		var q = this.parseQuery();
+		this.setState({query: q}, this.getArticles);		
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
@@ -59,39 +70,27 @@ var Articles = React.createClass({
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
+		var q = this.parseQuery();
 		if(
 			(newProps.language != this.props.language)||
-			(Utils.serialize(this.state.filter) != Utils.serialize(this.context.router.getCurrentQuery()))
+			(Utils.serialize(this.state.query) != Utils.serialize(q))
 		) this.initState(newProps);
-	},
-	//смена текущего топика
-	handleTopicChange: function (index) {
-		this.setState({currentArticle: index});
 	},
 	//генерация представления страницы статьи
 	render: function () {
-		//список тем
-		var articlesTopics;
-		if(
-			(this.state.articlesReady)&&
-			(Array.isArray(this.state.articles))&&
-			(!this.state.singleMode)
-		) {
-			articlesTopics = 	<ArticlesTopics topics={_.pluck(this.state.articles, "title")}
-									current={this.state.currentArticle}
-									onTopicChange={this.handleTopicChange}/>
-		}
-		//содержимое активной статьи
-		var article;
+		//содержимое статей
+		var articles;
 		if((this.state.articlesReady)&&(Array.isArray(this.state.articles))) {
-			article =	<Article title={this.state.articles[this.state.currentArticle].title}
-							text={this.state.articles[this.state.currentArticle].text}/>
+			articles = <ArticleList articles={this.state.articles}/>
 		}
 		//генератор		
 		return (
-			<div>
-				{article}
-			</div>
+			<div className="w-container">
+				<div className="u-block-spacer"></div>
+				<div className="u-block-spacer"></div>
+				<h1 className="u-t-h1-main">{this.state.query.title}</h1>
+				{articles}
+			</div>			
 		);
 	}
 });
