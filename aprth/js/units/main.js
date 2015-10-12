@@ -17,8 +17,7 @@ var Main = React.createClass({
 	handleGetTopicsResult: function (resp) {		
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.setState({topics: [], topicsLoaded: false});
-		} else {
-			
+		} else {			
 			if((resp.MESSAGE)&&(Array.isArray(resp.MESSAGE))&&(resp.MESSAGE.length > 0)) {
 				this.setState({topics: resp.MESSAGE, topicsLoaded: true});
 			} else {
@@ -61,14 +60,14 @@ var Main = React.createClass({
 					</div>
 				);
 			}, this);
-			topics = <div className="w-container">
-						<h1 className="u-t-h1-main">{Utils.getStrResource({lang: this.props.language, code: "UI_FOOTER_MENU_HOWITWORKS"})}</h1>
-						<div className="u-block-spacer"></div>
-						<div className="w-row">
-							{topicsitems}
+			topics =	<div className="w-container">
+							<h1 className="u-t-h1-main">{Utils.getStrResource({lang: this.props.language, code: "UI_FOOTER_MENU_HOWITWORKS"})}</h1>
+							<div className="u-block-spacer"></div>
+							<div className="w-row">
+								{topicsitems}
+							</div>
+							<div className="u-block-spacer"></div>
 						</div>
-						<div className="u-block-spacer"></div>
-					</div>
 		}		
 		//генератор		
 		return (
