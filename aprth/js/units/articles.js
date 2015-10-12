@@ -91,18 +91,7 @@ var Articles = React.createClass({
 		//генератор		
 		return (
 			<div>
-				<div>
-					<table>
-						<tr>
-							<td>
-								{articlesTopics}
-							</td>
-							<td>
-								{article}
-							</td>
-						</tr>
-					</table>	
-				</div>
+				{article}
 			</div>
 		);
 	}

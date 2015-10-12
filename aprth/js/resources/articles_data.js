@@ -5,8 +5,8 @@ var articles = [
 	{
 		id: "1",
 		name: "HOW_IT_WORKS",
-		title: "Зачем мне регистрироваться",
-		text: "А вот зачем - это самый самый классный сервис и вообще...",
+		title: "Для собственников",
+		text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
 		type: "ARTICLE",
 		lang: "RU",
 		pictureId: "",
@@ -31,7 +31,7 @@ var articles = [
 	{
 		id: "2",
 		name: "HOW_IT_WORKS",
-		title: "Где прилипает",
+		title: "Условия использования",
 		text: "А прилипает везде. Как только зарегаешься - будешь в шоколаде",
 		type: "ARTICLE",
 		lang: "RU",
@@ -57,8 +57,8 @@ var articles = [
 	{
 		id: "3",
 		name: "HOW_IT_WORKS",
-		title: "Что я могу тут делать",
-		text: "Можно добавить обявление. И ещё.. у нас тут Даша глотает... Это что-то...",
+		title: "Правила",
+		text: "Можно добавить обявление. И ещё.. у нас тут Даша ... Это что-то...",
 		type: "ARTICLE",
 		lang: "RU",
 		pictureId: "",

@@ -21,13 +21,19 @@ var Article = React.createClass({
 		}
 		//генератор		
 		return (
-			<div>
-				<div>
-					<div><b>{this.props.title}</b></div>
-					{image}
-					<div>{this.props.text}</div>
-				</div>
-			</div>
+			<div className="w-container">
+			  <div className="u-block-spacer"></div>
+			  <div className="u-block-spacer"></div>
+	      <h1 className="u-t-h1-main">как это работает?</h1>
+	      <div className="w-row">
+	        <div className="w-col w-col-3 u-col-howto">
+	          <h2>{this.props.title}</h2>
+	        </div>
+	        <div className="w-col w-col-9 u-col-howto">
+	          <p>{this.props.text}</p>
+	        </div>
+	      </div>
+	    </div>		
 		);
 	}
 });

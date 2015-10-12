@@ -15,12 +15,14 @@ h1 {
   font-weight: 700;
 }
 h2 {
-  margin-top: 68px;
-  margin-bottom: 20px;
-  font-size: 41px;
-  line-height: 46px;
-  font-weight: 400;
-  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #4ac2c9;
+  font-size: 16px;
+  line-height: 36px;
+  font-weight: 500;
+  text-align: left;
+  text-transform: uppercase;
 }
 h3 {
   margin-bottom: 6px;
@@ -955,6 +957,107 @@ textarea.u-form-area-v {
 html.w-mod-js *[data-ix="hide-on-load"] {
   display: none;
 }
+/*landing*/
+.u-sect-hero {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  padding-top: 310px;
+  padding-bottom: 210px;
+  background-image: -webkit-linear-gradient(rgba(25, 50, 59, 0.72) 1%, rgba(23, 46, 53, 0.2) 98%), url('../img/tmp/house.jpg');
+  background-image: linear-gradient(rgba(25, 50, 59, 0.72) 1%, rgba(23, 46, 53, 0.2) 98%), url('../img/tmp/house.jpg');
+  background-position: 0px 0px, 0px 0px;
+  background-size: auto, cover;
+  background-attachment: scroll, fixed;
+}
+.u-sect-land.under {
+  margin-top: 600px;
+  padding-top: 4px;
+  padding-bottom: 16px;
+}
+.u-t-h1-land {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: white;
+  font-size: 30px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.u-t-h1-land.sub1 {
+  font-family:'Varela Round', sans-serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+}
+.u-btn-land {
+  display: block;
+  width: 150px;
+  margin-right: auto;
+  margin-left: auto;
+  border: 2px none white;
+  border-radius: 4px;
+  background-color: #00c7c0;
+  text-align: center;
+  text-decoration: none;
+  cursor:pointer;
+}
+.u-btn-land.card:hover {
+  background-color: #64d3f5;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  cursor:pointer;
+}
+.u-block-land {
+  padding-top: 8px;
+}
+.u-t-h1-main {
+  width: 200px;
+  border-bottom: 1px solid #a5a8a8;
+  color: #a5a8a8;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.u-col-howto {
+  height: 220px;
+  padding: 10px 15px 20px 10px;
+}
+.u-col-howto.card {
+  cursor:pointer;
+}
+.u-col-howto.card:hover {
+  background-color: #eef6f7;
+  cursor:pointer;
+}
+.u-t-h1-land2 {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  color: black;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 500;
+  text-align: center;
+}
+.u-t-h1-land2.sub {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 22px;
+  font-size: 33px;
+  font-style: italic;
+}
+.u-block-land-item {
+  width: 25%;
+  padding-right: 10px;
+  padding-left: 10px;
+  float: left;
+}
+.u-block-land-item.center {
+  width: 100%;
+}
 
 @media (max-width: 991px) {
   p {
@@ -1234,3 +1337,4 @@ textarea.w-input {
 .hightLight {
     color: #e65e5e;
 }
+

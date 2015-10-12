@@ -2,7 +2,7 @@ function fixFooter(){
 	var windowHeight = $(window).height();
 	var bodyHeight = $(".u-sect-main").height();
 	// A.K. только если это не мобильный
-	if ( $(window).width() > 991 && bodyHeight + $(".u-sect-page-footer").outerHeight(true) < windowHeight ) {
+	if ( $(window).width() > 991 && bodyHeight + $(".u-sect-page-footer").outerHeight(true) < windowHeight && !$(".u-sect-hero")) {
 		$(".u-sect-page-footer").css("position", "absolute");
 		$(".u-sect-page-footer").css("left", 0);
 		$(".u-sect-page-footer").css("right", 0);
