@@ -17,7 +17,6 @@ var Article = React.createClass({
 	render: function () {
 		//генератор		
 		return (
-<<<<<<< HEAD
 			<div className="w-container">
 			  <div className="u-block-spacer"></div>
 			  <div className="u-block-spacer"></div>
@@ -31,14 +30,6 @@ var Article = React.createClass({
 	        </div>
 	      </div>
 	    </div>		
-=======
-			<div>
-				<div>
-					<div><b>{this.props.title}</b></div>
-					<div>{this.props.text}</div>
-				</div>
-			</div>
->>>>>>> d76273e7d487cc1bbf333995611bb1bb79fb385c
 		);
 	}
 });
