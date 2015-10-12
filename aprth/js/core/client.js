@@ -35,7 +35,8 @@ var Client = function (clientConfig) {
 		register: "StandartRegistration", //запрос на регистрацию
 		registerConfirm: "EmailConfirm", //подтверждение регистрации
 		resetPassword: "PasswordReset", //запрос на сброс пароля
-		changePassword: "PasswordChange" //смена пароля
+		changePassword: "PasswordChange", //смена пароля
+		article: "Article" //статьи
 	}
 	//коды стандартных ответов сервера
 	var serverStdErrCodes = {
@@ -146,6 +147,17 @@ var Client = function (clientConfig) {
 						}));					
 					//работаем от метода
 					switch (prms.method) {
+						//считывание
+						case(serverMethods.get): {
+							if(!prms.data.userId) 
+								throw new Error(Utils.getStrResource({
+									lang: prms.language,
+									code: "CLNT_NO_ELEM",
+									values: ["ServerRequest", "userId"]
+								}));
+							return fillSrvStdReqData(serverActions.userProfile + "/" + prms.data.userId, serverMethods.get, "");
+							break;
+						}
 						//исправление
 						case(serverMethods.upd): {
 							return fillSrvStdReqData(serverActions.userProfile, serverMethods.upd, prms.data);
@@ -485,6 +497,43 @@ var Client = function (clientConfig) {
 					return fillSrvStdReqData(serverActions.changePassword, serverMethods.ins, prms.data);
 					break;
 				}
+				//работа со статьями
+				case(serverActions.article): {					
+					if(!prms.method) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "method"]
+						}));
+					if(!prms.data) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));					
+					//работаем от метода
+					switch (prms.method) {
+						//считывание статьи
+						case(serverMethods.get): {
+							if(!prms.data.filter) 
+								throw new Error(Utils.getStrResource({
+									lang: prms.language,
+									code: "CLNT_NO_ELEM",
+									values: ["ServerRequest", "filer"]
+								}));
+							var filter = {};
+							_.extend(filter, prms.data.filter);
+							filter.lang = prms.language;
+							return fillSrvStdReqData(serverActions.article + "s?filter=" + Utils.serialize(filter), serverMethods.get, "");
+							break;
+						}
+						//неизвестный метод
+						default: {
+							throw new Error("Метод '" + prms.method + "' для действия '" + prms.action + "' не поддерживается сервером!");
+						}
+					}					
+					break;
+				}
 				//неизвестное действие
 				default: {
 					throw new Error("Действие '" + prms.action + "' не поддерживается сервером!");
@@ -555,42 +604,6 @@ var Client = function (clientConfig) {
 			);
 		} else {
 			throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_WS_NO_QUERY"}));
-		}
-	}
-	//считывание/поиск объявлений
-	var getAdverts = function (prms, callBack) {
-		try {
-			execServerApi({
-				language: prms.language,
-				session: prms.session,
-				req: buildServerRequest({
-					language: prms.language,
-					action: serverActions.userAdvert,
-					method: serverMethods.get,
-					data: prms.filter
-				}),
-				callBack: function (resp) {
-					if(resp.STATE == respStates.ERR)
-						callBack(resp);
-					else {
-						resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);						
-						resp.MESSAGE.map(function (item, i) {
-							if(item.apartment) Utils.setApartmentDefaultPicture(item.apartment);
-							if(item.user) Utils.setProfileDefaultPicture(item.user);
-							if((item.reviews)&&(Array.isArray(item.reviews))) {
-								item.reviews.map(function (review, i) {
-									Utils.setProfileDefaultPicture(review.fromUser);
-								}, this);
-							}
-						}, this);
-						callBack(resp);
-					}
-				}
-			});
-		} catch (error) {
-			log(["GETING ADVERS ERROR", error]);
-			if(Utils.isFunction(callBack))
-				callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 		}
 	}
 	//публичные члены класса (интерфейс)
@@ -800,7 +813,41 @@ var Client = function (clientConfig) {
 			}
 		},
 		//считывание/поиск объявлений
-		getAdverts: getAdverts,
+		getAdverts: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.userAdvert,
+						method: serverMethods.get,
+						data: prms.filter
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);						
+							resp.MESSAGE.map(function (item, i) {
+								if(item.apartment) Utils.setApartmentDefaultPicture(item.apartment);
+								if(item.user) Utils.setProfileDefaultPicture(item.user);
+								if((item.reviews)&&(Array.isArray(item.reviews))) {
+									item.reviews.map(function (review, i) {
+										Utils.setProfileDefaultPicture(review.fromUser);
+									}, this);
+								}
+							}, this);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["GETING ADVERS ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
 		//добавление объявления
 		addAdvert: function (prms, callBack) {
 			try {
@@ -944,51 +991,33 @@ var Client = function (clientConfig) {
 		},
 		//считывание профиля пользователя
 		getProfile: function (prms, callBack) {
-			try {
-				if(!prms)
-					throw new Error(Utils.getStrResource({code: "CLNT_NO_OBJECT"}));
-				if(!prms.language)
-					throw new Error(Utils.getStrResource({code: "CLNT_NO_LANGUAGE"}));
-				if((!callBack)||(!Utils.isFunction(callBack)))
-					throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_WS_NO_CALL_BACK"}));
-				if(!prms.profileId)
-					throw new Error(Utils.getStrResource({lang: prms.language, code: "CLNT_NO_ID"}));
-				if((!prms.session)||(!checkSession(prms.session)))
-					throw new Error(Utils.getStrResource({lang: prms.language, code: "SRV_UNAUTH"}));
-				clnt.currentUser = {
-					"userId": prms.session.user.userId,
-					"mobileServiceAuthenticationToken": prms.session.authenticationToken
-				};
-				var profileTable = clnt.getTable("Profile");
-				profileTable.lookup(prms.profileId).then(function (profileItem) {
-					var getAdvertsPrms = {
-						language: prms.language, 
-						filter: {userId: prms.profileId},
-						session: prms.session
-					}		
-					getAdverts(getAdvertsPrms, function (resp) {
-						if(resp.STATE == respStates.ERR) {
+			try {				
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.userProfile,
+						method: serverMethods.get,
+						data:  {userId: prms.userId}
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
 							callBack(resp);
-						} else {
-							if((resp.MESSAGE)&&(Array.isArray(resp.MESSAGE))&&(resp.MESSAGE.length > 0)) {
-								profileItem.adverts = resp.MESSAGE;
-								profileItem.advertsCount = resp.MESSAGE.length;								
-							} else {
-								profileItem.adverts = [];
-								profileItem.advertsCount = 0;								
+						else {
+							var profileItem = Utils.deSerialize(resp.MESSAGE)[0];
+							if(profileItem) {
+								if((!profileItem.picture)||(!profileItem.picture.url)) {
+									profileItem.picture = {};
+									profileItem.picture.url = config.defaultProfilePictureUrl;
+									profileItem.picture.default = true;
+								}
+								callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, profileItem));
+							} else {								
+								callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOTFOUND"})));
 							}
-							if((!profileItem.picture)||(!profileItem.picture.url)) {
-								profileItem.picture = {};
-								profileItem.picture.url = config.defaultProfilePictureUrl;
-								profileItem.picture.default = true;
-							}
-							log(["GETING PROFILE SERVER RESULT:", profileItem]);
-							callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, profileItem));
 						}
-					});
-				}, function (error) {
-					log(["GETING PROFILE SERVER ERROR:", error]);
-					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+					}
 				});
 			} catch (error) {
 				log(["GETING PROFILE ERROR:", error]);
@@ -1338,15 +1367,23 @@ var Client = function (clientConfig) {
 		//считывание статей
 		getArticles: function (prms, callBack) {
 			try {
-				var filter = {};
-				var res = [];
-				_.extend(filter, prms.filter);
-				filter.lang = prms.language;
-				res = _.where(articles, filter);
-				//console.log(filter);
-				//console.log(res);
-				if(Utils.isFunction(callBack))
-					callBack(fillSrvStdRespData(respTypes.STD, respStates.OK, res));
+				execServerApi({
+					language: prms.language,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.article,
+						method: serverMethods.get,
+						data: {filter: prms.filter}
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
 			} catch (error) {
 				log(["GET ARTICLES ERROR", error]);
 				if(Utils.isFunction(callBack))
