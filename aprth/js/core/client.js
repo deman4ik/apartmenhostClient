@@ -520,11 +520,41 @@ var Client = function (clientConfig) {
 									lang: prms.language,
 									code: "CLNT_NO_ELEM",
 									values: ["ServerRequest", "filer"]
-								}));
-							var filter = {};
-							_.extend(filter, prms.data.filter);
-							filter.lang = prms.language;
-							return fillSrvStdReqData(serverActions.article + "s?filter=" + Utils.serialize(filter), serverMethods.get, "");
+								}));							
+							return fillSrvStdReqData(serverActions.article + "s?filter=" + Utils.serialize(prms.data.filter), serverMethods.get, "");
+							break;
+						}
+						//добавление статьи
+						case(serverMethods.ins): {
+							if(!prms.data) 
+								throw new Error(Utils.getStrResource({
+									lang: prms.language,
+									code: "CLNT_NO_ELEM",
+									values: ["ServerRequest", "data"]
+								}));							
+							return fillSrvStdReqData(serverActions.article, serverMethods.ins, prms.data);
+							break;
+						}
+						//исправление статьи
+						case(serverMethods.upd): {
+							if(!prms.data.articleId) 
+								throw new Error(Utils.getStrResource({
+									lang: prms.language,
+									code: "CLNT_NO_ELEM",
+									values: ["ServerRequest", "articleId"]
+								}));							
+							return fillSrvStdReqData(serverActions.article + "/" + prms.data.articleId, serverMethods.upd, prms.data);
+							break;
+						}
+						//удаление статьи
+						case(serverMethods.del): {
+							if(!prms.data.articleId) 
+								throw new Error(Utils.getStrResource({
+									lang: prms.language,
+									code: "CLNT_NO_ELEM",
+									values: ["ServerRequest", "articleId"]
+								}));							
+							return fillSrvStdReqData(serverActions.article + "/" + prms.data.articleId, serverMethods.del, "");
 							break;
 						}
 						//неизвестный метод
@@ -1367,13 +1397,16 @@ var Client = function (clientConfig) {
 		//считывание статей
 		getArticles: function (prms, callBack) {
 			try {
+				var filter = {};
+				if(prms.filter) _.extend(filter, prms.filter);
+				if(prms.addLanguage != false) filter.lang = prms.language;				
 				execServerApi({
 					language: prms.language,
 					req: buildServerRequest({
 						language: prms.language,
 						action: serverActions.article,
 						method: serverMethods.get,
-						data: {filter: prms.filter}
+						data: {filter: filter}
 					}),
 					callBack: function (resp) {
 						if(resp.STATE == respStates.ERR)
@@ -1389,7 +1422,85 @@ var Client = function (clientConfig) {
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
-		}				
+		},
+		//добавление статьи
+		addArticle: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.article,
+						method: serverMethods.ins,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["ADD ARTICLES ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//исправление статьи
+		updateArticle: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.article,
+						method: serverMethods.upd,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["UPDATE ARTICLES ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//удаление статьи
+		removeArticle: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.article,
+						method: serverMethods.del,
+						data: {articleId: prms.articleId}
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["REMOVE ARTICLES ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		}
 	}
 }
 

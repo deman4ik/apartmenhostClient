@@ -39,9 +39,12 @@ var Articles = React.createClass({
 	//загрузка данных статей
 	getArticles: function () {
 		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+		var f = {};
+		_.extend(f, this.state.query.filter);
+		f.type = "ARTICLE";
 		var getPrms = {
 			language: this.props.language, 
-			filter: this.state.query.filter
+			filter: f
 		}
 		clnt.getArticles(getPrms, this.handleGetArticlesResult);		
 	},
