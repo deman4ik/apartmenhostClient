@@ -963,8 +963,8 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   left: 0px;
   top: 0px;
   right: 0px;
-  padding-top: 310px;
-  padding-bottom: 210px;
+  padding-top: 250px;
+  padding-bottom: 260px;
   background-image: -webkit-linear-gradient(rgba(25, 50, 59, 0.72) 1%, rgba(23, 46, 53, 0.2) 98%), url('../img/tmp/house.jpg');
   background-image: linear-gradient(rgba(25, 50, 59, 0.72) 1%, rgba(23, 46, 53, 0.2) 98%), url('../img/tmp/house.jpg');
   background-position: 0px 0px, 0px 0px;
@@ -1023,6 +1023,7 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   font-weight: 500;
   letter-spacing: 2px;
   text-transform: uppercase;
+  margin-top:20px;
 }
 .u-col-howto {
   height: 220px;
@@ -1061,7 +1062,25 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 .u-block-land-item.center {
   width: 100%;
 }
+.u-block-search-main {
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+}
+.u-block-search-main .u-form-wrapper {
+  background-color: rgba(255, 255, 255, 0);
+  box-shadow: none;
+}
+.u-block-search-main .u-form-wrapper .u-form-body {
+  background-color: rgba(255, 255, 255, 0);
+}
+.u-block-search-main .u-form-wrapper .u-form-body h3 {
+  color: rgba(125, 144, 145, 0);
+}
 
+
+/*--------------------------------- media ---------------------------------*/
 @media (max-width: 991px) {
   p {
     display: inline;
