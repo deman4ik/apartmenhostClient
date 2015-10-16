@@ -162,14 +162,14 @@ var PostsFindForm = React.createClass({
 		return (
 		    <div className="w-form u-form-wrapper">
 					<form className="w-clearfix u-form-body">
-						<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_ADVERTS_FILER"})}</h3>
 					<div className="w-row u-row-search">
-						<div className="w-col w-col-5" >
+						<div className="w-col w-col-5 has-icon-left">
 						  <AddressInput classes={classesAdrInput}
 							name="address"
 							value={this.state.find.address}
 							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_FILTER_ADRESS"})}
 							onAddressChanged={this.handleAddrChange}/>
+						  <i className="u-form-field-icon glyphicon glyphicon-search"/>
 						</div>
 						<div className="w-col w-col-2">
 						  <Calendar name="dFrom" 

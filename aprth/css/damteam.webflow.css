@@ -929,17 +929,6 @@ textarea.u-form-area-v {
   margin-right: auto;
   margin-left: auto;
 }
-.u-block-slide.temp_style {
-  height: 100%;
-  background-image: url('../images/06.jpg');
-  background-position: 50% 50%;
-  background-size: 100%;
-}
-.u-block-slide.temp_style2 {
-  background-image: url('../images/2013-10-04_151552.jpg');
-  background-position: 50% 50%;
-  background-size: 100%;
-}
 .u-t-date-r {
   position: relative;
   right: 0px;
@@ -1171,6 +1160,14 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   .u-form-field.address {
     width:100%;
   }  
+  .u-sect-hero {
+    padding-top: 80px;
+    padding-bottom: 360px;
+  }  
+  .u-t-h1-main {
+    margin-left:10px;
+  }
+
 }
 @media (max-width: 767px) {
   p {

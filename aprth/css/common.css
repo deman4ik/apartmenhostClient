@@ -181,12 +181,15 @@ h1.txt.search-result {
 .u-datepicker-holder > input {
   min-width: 110px;
 }
-.has-icon {
+.has-icon, .has-icon-left {
     position: relative;
-    float: none !important;
+    Zfloat: none !important;
 }
 .has-icon .u-form-field {
     padding-right: 30px;
+}
+.has-icon-left .u-form-field {
+    padding-left: 30px;
 }
 .has-icon .u-form-field-icon {
     position: absolute;
@@ -197,13 +200,23 @@ h1.txt.search-result {
     text-align: center;
     color: #A2A2A2;
     font-weight: lighter;
-    cursor:pointer;
+}
+.has-icon-left .u-form-field-icon {
+    position: absolute;
+    z-index: 5;
+    top:8px;
+    left: 10px;
+    width: 34px;
+    text-align: center;
+    color: #A2A2A2;
+    font-weight: lighter;
 }
 .u-row-search .w-col > .has-icon .u-form-field-icon {
 	    right: 0px;
 }
-.u-form-field-icon:hover {
+.has-icon .u-form-field-icon:hover {
 	color:#0be3dc;
+	cursor:pointer;
 }
 
 /*search*/
