@@ -57,7 +57,6 @@ var Map = React.createClass({
 								m.infoWindow.close();
 								m.infoWindowOpen = false;
 							}
-
 						}, this));
 					}
 				}, this);
