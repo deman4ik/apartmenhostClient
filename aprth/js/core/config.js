@@ -26,6 +26,12 @@ var config = {
 	defaultPictureUrl: "aprth/img/def_photo.png",
 	//аватар по-умолчанию
 	defaultProfilePictureUrl: "aprth/img/def_ava.png",
+	//масштаб карты по умолчанию
+	defaultMapZoom: 15,
+	//масштаб карты отображения адреса в объявлении
+	postMapZoom: 14,
+	//масштаб карты поиска
+	searchMapZoom: 10,
 	//радиус поиска на карте по умолчанию (метры)
 	searchRadius: 5000,
 	//минимальный радиус поиска на карте (метры)

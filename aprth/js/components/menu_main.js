@@ -75,20 +75,28 @@ var MainMenu = React.createClass({
 		if(this.state.menuReady) {
 			items = this.state.menu.items.map(function (menuItem, i) {
 				if((!menuItem.authAccess)||(this.props.session.loggedIn == menuItem.authAccess)) {
-					var cItem = React.addons.classSet;
-					var classesItem = cItem({
-						"w-nav-link": true,
-						"u-nav-link": true,
-						"w--current": (this.context.router.getCurrentPathname() == menuItem.path)
-					});
-					return (
-						<a className={classesItem} 
-							key={i}
-							href={"#/" + menuItem.link}
-							onClick={this.handleMenuItemClick.bind(this, i)}>
-								{Utils.getStrResource({lang: this.props.language, code: menuItem.title})}
-						</a>
-					);
+					var build = true;
+					if((menuItem.excludePaths)&&(Array.isArray(menuItem.excludePaths))) {
+						if(_.indexOf(menuItem.excludePaths, this.context.router.getCurrentPathname()) != -1) {
+							build = false;
+						}
+					}
+					if(build) {
+						var cItem = React.addons.classSet;
+						var classesItem = cItem({
+							"w-nav-link": true,
+							"u-nav-link": true,
+							"w--current": (this.context.router.getCurrentPathname() == menuItem.path)
+						});
+						return (
+							<a className={classesItem} 
+								key={i}
+								href={"#/" + menuItem.link}
+								onClick={this.handleMenuItemClick.bind(this, i)}>
+									{Utils.getStrResource({lang: this.props.language, code: menuItem.title})}
+							</a>
+						);
+					}
 				}
 			}, this);
 		}

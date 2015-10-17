@@ -1,6 +1,28 @@
 /*
 	Объявления
 */
+//фильтр объявлений
+var getPostsFilter = function () {
+	var tmpFilter = {
+		useRadius: "", //искать в радиусе
+		radius: config.searchRadius, //радиус поиска по карте
+		latitude: "", //широта выбранной точки поиска
+		longitude: "", //долгота выбранной точки поиска
+		address: "", //адрес жилья		
+		swLat: "", //широта ЮВ угла квадрата поиска по выбранной точке
+		swLong: "", //долгота ЮВ угла квадрата поиска по выбранной точке
+		neLat: "", //широта СЗ угла квадрата поиска по выбранной точке
+		neLong: "", //долгота СЗ угла квадрата поиска по выбранной точке
+		dFrom: "", //дата начала периода бронирования
+		dTo: "", //дата коночания периода бронирования
+		sex: "", //пол постояльца
+		apartType: "", //тип жилья
+		priceFrom: "", //цена с
+		priceTo: "", //цена по
+		price: "" //цена (сводное состояние)
+	}
+	return tmpFilter;	
+};
 //режимы работы клсса объявлений
 var PostsModes = {
 	FAVORITES: "favorites", //режим избранного
@@ -20,24 +42,7 @@ var Posts = React.createClass({
 			advertsCnt: 0, //количество объявлений
 			advertsReady: false, //флаг доступности списка объявлений для отображения
 			filterIsSet: false, //флаг установленности фильтра			
-			filterClnt: { //текущее состояние фильтра
-				useRadius: "", //искать в радиусе
-				radius: config.searchRadius, //радиус поиска по карте
-				latitude: "", //широта выбранной точки поиска
-				longitude: "", //долгота выбранной точки поиска
-				address: "", //адрес жилья		
-				swLat: "", //широта ЮВ угла квадрата поиска по выбранной точке
-				swLong: "", //долгота ЮВ угла квадрата поиска по выбранной точке
-				neLat: "", //широта СЗ угла квадрата поиска по выбранной точке
-				neLong: "", //долгота СЗ угла квадрата поиска по выбранной точке
-				dFrom: "", //дата начала периода бронирования
-				dTo: "", //дата коночания периода бронирования
-				sex: "", //пол постояльца
-				apartType: "", //тип жилья
-				priceFrom: "", //цена с
-				priceTo: "", //цена по
-				price: "" //цена (сводное состояние)
-			},
+			filterClnt: getPostsFilter(), //текущее состояние фильтра
 			filter: {}, //текущее состояние фильтра	(для сервера)			
 		}
 	},
@@ -173,14 +178,17 @@ var Posts = React.createClass({
 	//загрузка сохраненного фильтра
 	loadFilterState: function (callBack) {
 		var filterParams = Utils.loadObjectState("filterParams");
+		var filterClntNew = {};
+		_.extend(filterClntNew, this.state.filterClnt);
+		_.extend(filterClntNew, filterParams);
 		if(filterParams) {
-			if((!config.useSearchRadar)||(filterParams.useRadius != PostsFilterPrms.postFilterUseRadius)) {
-				filterParams.radius = config.searchRadius;
-				this.setState({filterClnt: filterParams}, Utils.bind(function () {
+			if((!config.useSearchRadar)||(filterClntNew.useRadius != PostsFilterPrms.postFilterUseRadius)) {
+				filterClntNew.radius = config.searchRadius;
+				this.setState({filterClnt: filterClntNew}, Utils.bind(function () {
 					this.recalcSearchArea(callBack);
 				}, this));					
 			} else {
-				this.setState({filterClnt: filterParams}, callBack);
+				this.setState({filterClnt: filterClntNew}, callBack);
 			}
 		} else {
 			callBack();
@@ -206,19 +214,15 @@ var Posts = React.createClass({
 	recalcSearchArea: function (callBack)  {
 		var tmp = {};
 		_.extend(tmp, this.state.filterClnt);
-		tmp.swLat = "";
-		tmp.swLong = "";
-		tmp.neLat = "";
-		tmp.neLong = "";
-		if((tmp.latitude)&&(tmp.longitude)&&(tmp.radius)) {
+		if((tmp.latitude)&&(tmp.longitude)&&(tmp.radius)&&(tmp.useRadius == PostsFilterPrms.postFilterUseRadius)) {
 			var c = new google.maps.Circle({center: new google.maps.LatLng(tmp.latitude, tmp.longitude), radius: tmp.radius});
 			var bounds = c.getBounds();			
 			tmp.swLat = bounds.getSouthWest().lat();
 			tmp.swLong = bounds.getSouthWest().lng();
 			tmp.neLat = bounds.getNorthEast().lat();
 			tmp.neLong = bounds.getNorthEast().lng();
-		}		
-		this.setState({filterClnt: tmp}, callBack);
+		}
+		this.setState({filterClnt: tmp}, callBack);		
 	},
 	//поиск и фильтрация
 	findAndFilter: function () {
@@ -458,7 +462,7 @@ var Posts = React.createClass({
 							address={this.state.filterClnt.address}
 							markers={this.state.markers}
 							mode={mapModes.modeGroup}
-							zoom={10}
+							zoom={config.searchMapZoom}
 							showRadar={(this.state.filterClnt.useRadius == PostsFilterPrms.postFilterUseRadius)?true:false}
 							onSearchRadarRadiusChange={this.handleMapRadarRadiusChanged}
 							onSearchRadarPlaceChange={this.handleMapRadarPlaceChanged}

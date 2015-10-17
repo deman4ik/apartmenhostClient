@@ -11,21 +11,24 @@ var menus = [
 				title: "UI_MAIN_MENU_SEARCH", 
 				link: "search",
 				path: "/search",
-				authAccess: false
+				authAccess: false,
+				excludePaths: ["/main"]
 			},
 			{
 				code: "Profile", 
 				title: "UI_MAIN_MENU_PROFILE", 
 				link: "profile",
 				path: "/profile",
-				authAccess: true
+				authAccess: true,
+				excludePaths: []
 			},
 			{
 				code: "Favorites", 
 				title: "UI_MAIN_MENU_FAVOR", 
 				link: "favorites",
 				path: "/favorites",
-				authAccess: true
+				authAccess: true,
+				excludePaths: []
 			}			
 		]
 	},

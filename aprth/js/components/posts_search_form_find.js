@@ -161,7 +161,7 @@ var PostsFindForm = React.createClass({
 		//представление поиска
 		return (
 		    <div className="w-form u-form-wrapper">
-					<form className="w-clearfix u-form-body">
+				<form className="w-clearfix u-form-body">
 					<div className="w-row u-row-search">
 						<div className="w-col w-col-5 has-icon-left">
 						  <AddressInput classes={classesAdrInput}
@@ -207,8 +207,8 @@ var PostsFindForm = React.createClass({
 							value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SEARCH"})}/>
 					        </div>
 					</div>
-					</form>					
-				</div>				
+				</form>					
+			</div>				
 		);
 	}
 });

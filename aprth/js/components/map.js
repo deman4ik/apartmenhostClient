@@ -255,10 +255,11 @@ var Map = React.createClass({
 		var mapTmp = new google.maps.Map(
 			React.findDOMNode(this.refs.mapCanvas), 
 			{
-				zoom: (this.props.zoom)?this.props.zoom:15,
+				zoom: (this.props.zoom)?this.props.zoom:config.defaultMapZoom,
 				scrollwheel: ("scrollWheel" in this.props)?this.props.scrollWheel:true
 			}
 		);
+		google.maps.event.addListenerOnce(mapTmp, "idle", Utils.bind(function () {this.handleMapDragEnd();}, this));
 		google.maps.event.addListener(mapTmp, "dragend", Utils.bind(function () {this.handleMapDragEnd();}, this));
 		google.maps.event.addListener(mapTmp, "zoom_changed", Utils.bind(function () {this.handleMapZoomChanged();}, this));
 		this.setState({map: mapTmp}, function () {this.initState(this.props);});

@@ -10,26 +10,7 @@ var Main = React.createClass({
 	getInitialState: function () {
 		return {
 			topicsLoaded: false, //признак загруженности статей
-			topics: [], //список статей заглавной страницы
-			filterClnt: { //текущее состояние фильтра
-				useRadius: "", //искать в радиусе
-				radius: config.searchRadius, //радиус поиска по карте
-				latitude: "", //широта выбранной точки поиска
-				longitude: "", //долгота выбранной точки поиска
-				address: "", //адрес жилья		
-				swLat: "", //широта ЮВ угла квадрата поиска по выбранной точке
-				swLong: "", //долгота ЮВ угла квадрата поиска по выбранной точке
-				neLat: "", //широта СЗ угла квадрата поиска по выбранной точке
-				neLong: "", //долгота СЗ угла квадрата поиска по выбранной точке
-				dFrom: "", //дата начала периода бронирования
-				dTo: "", //дата коночания периода бронирования
-				sex: "", //пол постояльца
-				apartType: "", //тип жилья
-				priceFrom: "", //цена с
-				priceTo: "", //цена по
-				price: "" //цена (сводное состояние)
-			},
-			filter: {} //текущее состояние фильтра	(для сервера)				
+			topics: [], //список статей заглавной страницы							
 		}
 	},
 	//обработка результатов получения статей заглавной страницы
@@ -68,9 +49,8 @@ var Main = React.createClass({
 	},
 	//нажатие на поиск
 	onFind: function (find) {
-		this.setState({filterIsSet: true}, Utils.bind(function () {			
-			this.onFindChange(find, this.findAndFilter);
-		}, this));
+		Utils.saveObjectState("filterParams", find);
+		this.context.router.transitionTo("search", {}, {});
 	},
 	//нажатие на очистку поиска
 	onFindClear: function () {
@@ -98,15 +78,7 @@ var Main = React.createClass({
 	},
 	//генерация представления главной страницы
 	render: function () {
-		var postsFindForm =	<PostsFindForm language={this.props.language}										
-								latitude={this.state.filterClnt.latitude}
-								longitude={this.state.filterClnt.longitude}
-								address={this.state.filterClnt.address}
-								dFrom={this.state.filterClnt.dFrom}
-								dTo={this.state.filterClnt.dTo}
-								sex={this.state.filterClnt.sex}										
-								onFind={this.onFind}
-								onFindClear={this.onFindClear}/>		
+		var postsFindForm =	<PostsFindForm language={this.props.language} onFind={this.onFind}/>		
 		//статьи заглавной страницы
 		var topics;
 		if(this.state.topicsLoaded) {
@@ -131,18 +103,28 @@ var Main = React.createClass({
 		return (
 			<div name="landing">
 				<div className="w-section u-sect-hero">
-					<h1 className="u-t-h1-land">Сдай своё жильё</h1>
-					<h1 className="u-t-h1-land sub1">И живи спокойно.</h1>
+					<h1 className="u-t-h1-land">
+						{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAIN_MAKE_ACTION"})}
+					</h1>
+					<h1 className="u-t-h1-land sub1">
+						{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAIN_AND_BE_OK"})}
+					</h1>
 					<div className="u-block-land">
-						<a className="w-button u-btn-land" href="#">Попробовать</a>
+						<a className="w-button u-btn-land" href="#">
+							{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_MAIN_TRY_NOW"})}
+						</a>
 					</div>
 					<div className="u-block-search-main">
 							{postsFindForm}					
 					</div>					
 				</div>
 				<div className="w-section u-sect-land under">
-					<h1 className="u-t-h1-land2 sub">или</h1>
-					<h1 className="u-t-h1-land2">Найди себе новое!</h1>
+					<h1 className="u-t-h1-land2 sub">
+						{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAIN_OR"})}
+					</h1>
+					<h1 className="u-t-h1-land2">
+						{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAIN_TRY_ANOTHER_ACTION"})}
+					</h1>
 					<div className="u-block-spacer"></div>
 					<div className="w-container">
 						<div className="u-block-land-item"><img calss="u-tmp-img" src="aprth/img/tmp/1.jpg"></img></div>
