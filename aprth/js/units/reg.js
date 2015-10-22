@@ -18,6 +18,7 @@ var Register = React.createClass({
 			noPassSpecified: false, //флаг отсуствия пароля
 			noPassConfSpecified: false, //флаг отсуствия подтверждения пароля
 			badPassConfSpecified: false, //флаг некорректного подтверждения пароля
+			agreeEULA: "" //флаг согласия пользователя с лицензионным соглашением			
 		}
 	},
 	//обработка результата регистрации
@@ -72,29 +73,39 @@ var Register = React.createClass({
 	},
 	//выполнение регистрации
 	checkPrmsAndRegister: function (doConfirm) {
-		var tmpState = {}
-		_.extend(tmpState, this.state);
-		tmpState.noNameSpecified = false;
-		tmpState.noMailSpecified = false;
-		tmpState.noCodeSpecified = false; 
-		tmpState.noPassSpecified = false;
-		tmpState.noPassConfSpecified = false;
-		tmpState.badPassConfSpecified = false;
-		if(
-			(this.state.name)&&
-			(this.state.mail)&&
-			(this.state.password)&&
-			(this.state.passwordConf)&&
-			(this.state.password == this.state.passwordConf)
-		) {
-			this.setState(tmpState, this.register);
+		if(this.state.agreeEULA) {
+			var tmpState = {}
+			_.extend(tmpState, this.state);
+			tmpState.noNameSpecified = false;
+			tmpState.noMailSpecified = false;
+			tmpState.noCodeSpecified = false; 
+			tmpState.noPassSpecified = false;
+			tmpState.noPassConfSpecified = false;
+			tmpState.badPassConfSpecified = false;
+			if(
+				(this.state.name)&&
+				(this.state.mail)&&
+				(this.state.password)&&
+				(this.state.passwordConf)&&
+				(this.state.password == this.state.passwordConf)
+			) {
+				this.setState(tmpState, this.register);
+			} else {
+				if(!this.state.name) tmpState.noNameSpecified = true;
+				if(!this.state.mail) tmpState.noMailSpecified = true;
+				if(!this.state.password) tmpState.noPassSpecified = true;
+				if(!this.state.passwordConf) tmpState.noPassConfSpecified = true;
+				if(this.state.password != this.state.passwordConf) tmpState.badPassConfSpecified = true;
+				this.setState(tmpState);
+			}
 		} else {
-			if(!this.state.name) tmpState.noNameSpecified = true;
-			if(!this.state.mail) tmpState.noMailSpecified = true;
-			if(!this.state.password) tmpState.noPassSpecified = true;
-			if(!this.state.passwordConf) tmpState.noPassConfSpecified = true;
-			if(this.state.password != this.state.passwordConf) tmpState.badPassConfSpecified = true;
-			this.setState(tmpState);
+			this.props.onShowError(Utils.getStrResource({
+					lang: this.props.language, 
+					code: "CLNT_COMMON_ERROR"}), 
+				Utils.getStrResource({
+					lang: this.props.language, 
+					code: "CLNT_NO_EULA_AGREE"})
+			);
 		}
 	},	
 	//обработка кнопки "Регистрация"
@@ -106,6 +117,14 @@ var Register = React.createClass({
 		if(!this.context.router.goBack()) {
 			this.context.router.transitionTo("main");
 		}
+	},
+	//обработка выбора использования радиуса поиска
+	handleAgreeChecked: function (status) {
+		this.setState({agreeEULA: status});
+	},
+	//обработка надатия на чтение EULA
+	handleReadAgreementClick: function () {
+		this.context.router.transitionTo("articles", {}, {filter: {name: "TERMS_OF_USE"}, title: "UI_FOOTER_MENU_TERMSUSE", convertTitle: true});
 	},
 	//генерация представления формы регистрации
 	render: function () {
@@ -197,6 +216,28 @@ var Register = React.createClass({
 										id="passwordConf"
 										value={this.state.passwordConf}
 										onChange={this.handleFormItemChange}/>
+								</div>
+							</div>
+							<div className="u-block-spacer2"></div>
+							<div className="u-block-spacer"></div>						
+							<div className="w-row">
+								<div className="w-col w-col-12">
+									<a href="javascript:void(0);" onClick={this.handleReadAgreementClick}>									
+										{Utils.getStrResource({lang: this.props.language, code: "CLNT_EULA_NOTE"})}
+									</a>
+								</div>
+							</div>
+							<div className="u-block-spacer"></div>
+							<div className="w-row">
+								<div className="w-col w-col-12">
+									<OptionsSelector view={OptionsSelectorView.CHECK}
+											language={this.props.language}
+											options={optionsFactory.buildOptions({
+														language: this.props.language,
+														id: "agreeEULA",
+														options: ["CLNT_EULA_AGREE"]})}
+											onOptionChanged={this.handleAgreeChecked}
+											defaultOptionsState={this.state.agreeEULA}/>									
 								</div>
 							</div>
 							<div className="u-block-spacer"></div>

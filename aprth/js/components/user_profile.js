@@ -124,7 +124,7 @@ var UserProfile = React.createClass({
 		this.props.onHideProgress();
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
-		} else {
+		} else {			
 			this.setState({profile: resp.MESSAGE, profileTmp: resp.MESSAGE, profileReady: true});
 			if(this.state.notifyParentProfileChanged) {
 				this.setState({notifyParentProfileChanged: false}, this.notifyParentProfileChanged);

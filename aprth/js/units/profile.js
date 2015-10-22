@@ -279,8 +279,8 @@ var Profile = React.createClass({
 		}
 	},
 	//обработка нажатия на карточку объявления
-	handlePostClick: function (postId) {
-		this.context.router.transitionTo("modifypost", {mode: ModifyPostModes.EDIT}, {postId: postId});
+	handlePostClick: function (post) {
+		this.context.router.transitionTo("modifypost", {mode: ModifyPostModes.EDIT}, {postId: post.id});
 	},	
 	//обработка нажатия на кнопку создания объявления
 	handleAddPostClick: function () {
@@ -299,8 +299,8 @@ var Profile = React.createClass({
 		}
 	},
 	//запрос подтверждения удаления объявления
-	askRemoveAdvert: function (postId) {
-		this.setState({confirmDeletePost: true, deletingPostItemId: postId});
+	askRemoveAdvert: function (post) {
+		this.setState({confirmDeletePost: true, deletingPostItemId: post.id});
 	},
 	//подтверждение удаления объявления получено
 	doRemoveAdvert: function () {
@@ -342,7 +342,7 @@ var Profile = React.createClass({
 		}
 	},	
 	//обработка загрузки профиля
-	handleProfileLoad: function (newProfile) {		
+	handleProfileLoad: function (newProfile) {
 		if(!this.state.profileLoaded) this.setState({profileLoaded: true, advertsLoaded: false}, this.loadProfilePosts);
 	},
 	//обновление компонента
@@ -394,57 +394,18 @@ var Profile = React.createClass({
 									onHideProgress={this.props.onHideProgress}
 									onShowError={this.props.onShowError}
 									onShowMessage={this.props.onShowMessage}/>
-			//объявления (хоть ты, Лешенька, и говоришь что оно будет только одно, и БЕЗ КНОПКИ УДАЛИТЬ, я закладываю возможность вёрстки СПИСКА объявлений)
+			//объявления
 			var adverts;
 			if((this.state.advertsLoaded)&&(this.state.profileLoaded)) {
-				var advertsList;
-				if((this.state.adverts)&&(Array.isArray(this.state.adverts))&&(this.state.advertsCount > 0)) {
-					advertsList = this.state.adverts.map(function (item, i) {
-						return (
-							<div key={i}>
-								<a className="w-inline-block u-lnk-norm" 
-									href="javascript:void(0);" 
-									onClick={this.handlePostClick.bind(this, item.id)}>
-									<div className="w-row u-row-cardlst bordered">
-										<div className="w-col w-col-5 w-col-stack w-col-small-6">
-											<img src={_.find(item.apartment.pictures, {default: true}).url}/>
-										</div>
-										<div className="w-col w-col-7 w-col-stack w-col-small-6">
-											<div className="u-block-card-desc">
-												<h1>{Utils.getStrResource({lang: this.props.language, code: item.apartment.type})}</h1>
-												<div>{item.apartment.adress}</div>
-											</div>
-										</div>
-									</div>
-								</a>
-								<div className="u-block-spacer"></div>
-								<div className="w-clearfix u-block-right">
-									<a className="u-btn btn-sm u-btn-danger"
-										href="javascript:void(0);"
-										onClick={this.askRemoveAdvert.bind(this, item.id)}>
-										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_DELETE_ADVERT"})}										
-									</a>
-								</div>
-								<div className="u-block-spacer"></div>							
-							</div>
-						);
-					}, this);
-					
-				} else {
-					if(this.state.profileLoaded) {
-						advertsList =	<center>
-											<a className="u-t-right u-lnk-norm" href="javascript:void(0);" onClick={this.handleAddPostClick}>
-												{Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_ADVERTS"})}
-											</a>
-										</center>									
-					}
-				}
-				adverts =	<div>
-								<div className="u-block-underline h3">
-									<h3>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ADVERT"})}</h3>
-								</div>
-								{advertsList}
-							</div>
+				adverts =	<ProfileAdvertsList language={this.props.language}
+								title={Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ADVERT"})}
+								noAdvertsMessage={Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_ADVERTS"})}
+								showAddButton={true}
+								showRemoveButton={true}
+								adverts={this.state.adverts}
+								onItemClick={this.handlePostClick}
+								onItemAddClick={this.handleAddPostClick}
+								onItemDeleteClick={this.askRemoveAdvert}/>
 			}
 			//табы отзывов/запросов
 			var reviewsTabsItems;

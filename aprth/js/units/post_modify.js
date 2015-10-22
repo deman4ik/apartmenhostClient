@@ -509,7 +509,7 @@ var ModifyPost = React.createClass({
 		var priceCatsControl;
 		if((Array.isArray(this.state.priceCatsList))&&(this.state.priceCatsList.length > 0)) {
 			priceCatsControl =	<div className="w-row">
-			            <div className="w-col w-col-4 w-col-small-4 w-col-tiny-4 padr">
+						            <div className="w-col w-col-4 w-col-small-4 w-col-tiny-4 padr">
 										<OptionsSelector view={OptionsSelectorView.SELECT}
 											appendEmptyOption={true}
 											emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"}))}
