@@ -148,82 +148,80 @@ var PostsFilterForm = React.createClass({
 		}
 		//представление фильтра
 		return (
-			<div>		
-				<div className="w-clearfix u-block-underline">
+			<div className="u-block-filter">		
+				<div className="w-clearfix u-block-filter-toggle">
 					<a className="u-lnk-norm h1" href="javascript:void(0);" style={aStyle} onClick={this.handleFilterToggleClick}>
-						{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FILTER"})}
+						<i className="glyphicon glyphicon-filter"></i>{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FILTER"})}
 					</a>
 				</div>
-				<div>
-					<div className="u-block-filter-add u-block-underline" style={filterToggle}>
-						<div className="w-form">
-							<form className="u-form-body">		
-								<div className="w-row">
-									<div className="w-col w-col-4">
-										<label className="u-form-label n1">
-											{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}:
-										</label>
-									</div>
-									<div className="w-col w-col-8">
-										<OptionsSelector view={OptionsSelectorView.SELECT}
-											language={this.props.language}
-											options={optionsFactory.buildOptions({
-														language: this.props.language,
-														id: "apartType",
-														options: postObjType})}
-											onOptionChanged={this.handleSelectedApartType}
-											defaultOptionsState={this.state.filter.apartType}
-											appendEmptyOption={true}
-											emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"}))}/>
-									</div>
-								</div>													
-								<div className="w-row">
-									<div className="w-col w-col-4">
-										<label className="u-form-label n1">
-											{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PRICE"})}:
-										</label>
-									</div>
-									<div className="w-col w-col-8">
-										<OptionsSelector view={OptionsSelectorView.RADIO}
-											language={this.props.language}
-											name="price"
-											options={optionsFactory.buildOptions({
-														language: this.props.language, 
-														id: "price",
-														options: ["", PostsFilterPriceLimits.from, PostsFilterPriceLimits.from + "-" + PostsFilterPriceLimits.to, PostsFilterPriceLimits.to],
-														labels: [Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ANY_PRICE"}),
-																Utils.getStrResource({
-																	lang: this.props.language, 
-																	code: "UI_LBL_LESS",
-																	values: [
-																		PostsFilterPriceLimits.from,
-																		Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
-																	]
-																}),
-																Utils.getStrResource({
-																	lang: this.props.language, 
-																	code: "UI_LBL_BETWEEN",
-																	values: [
-																		PostsFilterPriceLimits.from,
-																		PostsFilterPriceLimits.to,
-																		Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
-																	]
-																}),
-																Utils.getStrResource({
-																	lang: this.props.language, 
-																	code: "UI_LBL_MORE",
-																	values: [
-																		PostsFilterPriceLimits.to,
-																		Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
-																	]
-																})]})}
-											onOptionChanged={this.handleSelectedPrice}
-											defaultOptionsState={[this.state.filter.price]}/>				
-									</div>
+				<div className="u-block-filter-add u-block-underline" style={filterToggle}>
+					<div className="w-form">
+						<form className="u-form-body">		
+							<div className="w-row">
+								<div className="w-col w-col-4">
+									<label className="u-form-label n1">
+										{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"})}:
+									</label>
 								</div>
-								{searchRadius}
-							</form>
-						</div>
+								<div className="w-col w-col-8">
+									<OptionsSelector view={OptionsSelectorView.SELECT}
+										language={this.props.language}
+										options={optionsFactory.buildOptions({
+													language: this.props.language,
+													id: "apartType",
+													options: postObjType})}
+										onOptionChanged={this.handleSelectedApartType}
+										defaultOptionsState={this.state.filter.apartType}
+										appendEmptyOption={true}
+										emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_APARTMENTTYPE"}))}/>
+								</div>
+							</div>													
+							<div className="w-row">
+								<div className="w-col w-col-4">
+									<label className="u-form-label n1">
+										{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PRICE"})}:
+									</label>
+								</div>
+								<div className="w-col w-col-8">
+									<OptionsSelector view={OptionsSelectorView.RADIO}
+										language={this.props.language}
+										name="price"
+										options={optionsFactory.buildOptions({
+													language: this.props.language, 
+													id: "price",
+													options: ["", PostsFilterPriceLimits.from, PostsFilterPriceLimits.from + "-" + PostsFilterPriceLimits.to, PostsFilterPriceLimits.to],
+													labels: [Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ANY_PRICE"}),
+															Utils.getStrResource({
+																lang: this.props.language, 
+																code: "UI_LBL_LESS",
+																values: [
+																	PostsFilterPriceLimits.from,
+																	Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
+																]
+															}),
+															Utils.getStrResource({
+																lang: this.props.language, 
+																code: "UI_LBL_BETWEEN",
+																values: [
+																	PostsFilterPriceLimits.from,
+																	PostsFilterPriceLimits.to,
+																	Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
+																]
+															}),
+															Utils.getStrResource({
+																lang: this.props.language, 
+																code: "UI_LBL_MORE",
+																values: [
+																	PostsFilterPriceLimits.to,
+																	Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})
+																]
+															})]})}
+										onOptionChanged={this.handleSelectedPrice}
+										defaultOptionsState={[this.state.filter.price]}/>				
+								</div>
+							</div>
+							{searchRadius}
+						</form>
 					</div>
 				</div>
 			</div>

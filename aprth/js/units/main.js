@@ -114,7 +114,7 @@ var Main = React.createClass({
 							{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_MAIN_TRY_NOW"})}
 						</a>
 					</div>
-					<div className="u-block-search-main">
+					<div className="content-center u-block-search-main">
 							{postsFindForm}					
 					</div>					
 				</div>

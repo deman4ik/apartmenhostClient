@@ -20,10 +20,6 @@
 	margin-top: 15px;
 }
 
-h1.txt.search-result {
-	margin-top: 10px;
-}
-
 .username {
 	padding-left: 38px !important;
 }
@@ -73,8 +69,8 @@ h1.txt.search-result {
 }
 .modal-content.warning .modal-footer {
 	background-color: #FFF;
-	border-bottom-right-radius: 6px;
-	border-bottom-left-radius:6px;
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius:4px;
 }
 .btn-warning:hover, .btn-warning:focus, .btn-warning.focus, .btn-warning:active, .btn-warning.active, .open > .dropdown-toggle.btn-warning {
     color: #FFF;
@@ -84,6 +80,7 @@ h1.txt.search-result {
 .text-warning {	
 	color:#DA9E00 !important;
 }
+
 /*danger, success*/
 .text-success {
 	color: #4e7325;
@@ -181,6 +178,8 @@ h1.txt.search-result {
 .u-datepicker-holder > input {
   min-width: 110px;
 }
+
+/*has icon*/
 .has-icon, .has-icon-left {
     position: relative;
     Zfloat: none !important;
@@ -194,7 +193,7 @@ h1.txt.search-result {
 .has-icon .u-form-field-icon {
     position: absolute;
     z-index: 5;
-    top:8px;
+    top:10px;
     right: 16px;
     width: 34px;
     text-align: center;
@@ -204,7 +203,7 @@ h1.txt.search-result {
 .has-icon-left .u-form-field-icon {
     position: absolute;
     z-index: 5;
-    top:8px;
+    top:10px;
     left: 10px;
     width: 34px;
     text-align: center;
@@ -222,36 +221,32 @@ h1.txt.search-result {
 /*search*/
 .u-row-search {
 	padding-right:20px;
+	padding-top: 10px;
 }
-.u-row-search .w-col {
-	padding-right: 20px;
+.u-row-search .w-col > .w-button {
+	padding:5px 10px;
 }
 
 /*rater*/
 .rater {
 	padding: 5px 5px 5px 0px;
 }
-
 .rater-item {
 	cursor: default;
 	color: gray;
 	font-size: 20px;
 }
-
 .rater-count {
 	cursor: default;
 	color: gray;
 	font-size: 17px;
 }
-
 .rater-item-active {
 	color: #FFB000;
 }
-
 .rater-item-rw {
 	cursor: pointer;
 }
-
 .rater-item-rw:hover {
 	color: #FFB000;
 }
@@ -264,6 +259,7 @@ a > .rater, a.u-block-card-desc:hover, a.u-block-card-desc .rater .rater-item, a
 .image-button {
 	cursor:pointer;	
 }
+
 /*nano scroller*/
 .nano { 
 	max-width: 800px; 
