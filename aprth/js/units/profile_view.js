@@ -13,7 +13,10 @@ var ProfileView = React.createClass({
 			profileLoaded: false, //флаг загруженности профиля
 			adverts: [], //объявления профиля
 			advertsCount: 0, //счетчик объявлений профиля
-			advertsLoaded: false, //флаг загруженности объявлений профиля			
+			advertsLoaded: false, //флаг загруженности объявлений профиля
+			reviews: [], //отзывы
+			reviewsCount: 0, //счетчик отзывов
+			reviewsLoaded: false //флаг загруженности отзывов
 		}
 	},
 	//обработка результатов загрузки объявлений
@@ -43,14 +46,36 @@ var ProfileView = React.createClass({
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
+		if(this.state.userId != this.context.router.getCurrentParams().userId) {
+			this.setState({
+				userId: this.context.router.getCurrentParams().userId,
+				profileLoaded: false,
+				adverts: [],
+				advertsCount: 0,
+				advertsLoaded: false,
+				reviews: [],
+				reviewsCount: 0,
+				reviewsLoaded: false
+			});
+		}
 	},
 	//обработка загрузки профиля
-	handleProfileLoad: function (newProfile) {		
-		if(!this.state.profileLoaded) this.setState({profileLoaded: true, advertsLoaded: false}, this.loadProfilePosts);
+	handleProfileLoad: function (newProfile) {
+		if(!this.state.profileLoaded) this.setState({
+			profileLoaded: true,
+			reviewsLoaded: true,
+			reviews: newProfile.reviews,
+			reviewsCount: newProfile.reviews.length,
+			advertsLoaded: false
+		}, this.loadProfilePosts);
 	},
 	//обработка нажатия на объявление
 	handlePostClick: function (post) {		
 		this.context.router.transitionTo("post", {postId: post.id}, {});
+	},
+	//обработка нажатий на ссылки на пользователей
+	handleUserClick: function (userId) {
+		this.context.router.transitionTo("user", {userId: userId});
 	},
 	//генерация представления профиля
 	render: function () {
@@ -74,6 +99,63 @@ var ProfileView = React.createClass({
 							adverts={this.state.adverts}
 							onItemClick={this.handlePostClick}/>
 		}
+		//отзывы профиля
+		var reviews;
+		if((this.state.reviewsLoaded)&&(this.state.reviewsCount > 0)) {
+			var reviewsList = this.state.reviews.map(function (item, i) {
+				var arrow;
+				if(item.type == ProfileOrdersTypes.owner) {
+					arrow = <span className="glyphicon u-request-direct glyphicon-arrow-right"></span>
+				} else {
+					arrow = <span className="glyphicon u-request-direct glyphicon-arrow-left my"></span>
+				}
+				var cReviewItem = React.addons.classSet;
+				var classesReviewItem = cReviewItem({
+					"w-row": true,
+					"u-row-underline": (i < this.state.reviewsCount - 1)
+				});
+				return (
+					<div className={classesReviewItem}>
+						<div className="w-col w-col-2">
+							<div className="u-block-author-reviewlst">
+								<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.fromUser.id)}>
+									<img className="u-img-author-review" 
+										src={item.fromUser.picture.large} 
+										width="76"/>
+									<div>{item.fromUser.firstName + " " + item.fromUser.lastName}</div>
+								</a>
+							</div>
+						</div>
+						<div className="w-col w-col-1 w-clearfix">
+							{arrow}
+						</div>		
+						<div className="w-col w-col-9 w-clearfix">
+							<div>
+								<Rater total={5} rating={item.rating} align={"left"}/>
+								<p>{item.text}</p>
+							</div>
+							<div className="u-t-small u-t-right u-t-rel">
+								{Utils.formatDate({lang: this.props.language, 
+									date: item.createdAt})}
+							</div>
+						</div>
+					</div>					
+				);
+			}, this);
+			reviews =	<div>
+							<div className="w-tabs u-block-tabs">
+								<div className="w-tab-menu">
+									<a className="w-tab-link w-inline-block w--current" href="javascript:void(0);">
+										<div>{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_REVIEWS"})}</div>
+									</a>
+								</div>
+							</div>
+							<div className="w-tab-content u-tab-cont1">
+								{reviewsList}
+							</div>
+							<div className="u-block-spacer"></div>
+						</div>
+		}
 		//сгенерируем представление для просмотра профиля		
 		return (
 			<div classNameName="content-center">
@@ -87,7 +169,9 @@ var ProfileView = React.createClass({
 								{adverts}											
 							</div>
 						</div>
-					</div>					
+					</div>
+					<div className="u-block-spacer"></div>
+					{reviews}												
 				</section>
 			</div>
 		);
