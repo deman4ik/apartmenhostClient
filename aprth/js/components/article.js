@@ -22,7 +22,7 @@ var Article = React.createClass({
 					<h2>{this.props.article.title}</h2>
 				</div>
 				<div className="w-col w-col-9">
-					<p>{this.props.article.text}</p>
+					<p dangerouslySetInnerHTML={{__html:this.props.article.text}}></p>
 				</div>
 			</div>
 		);
