@@ -126,16 +126,6 @@ var Main = React.createClass({
 						{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAIN_TRY_ANOTHER_ACTION"})}
 					</h1>
 					<div className="u-block-spacer"></div>
-					<div className="w-container">
-						<div className="u-block-land-item"><img calss="u-tmp-img" src="aprth/img/tmp/1.jpg"></img></div>
-						<div className="u-block-land-item"><img calss="u-tmp-img" src="aprth/img/tmp/2.jpg"></img></div>
-						<div className="u-block-land-item"><img calss="u-tmp-img" src="aprth/img/tmp/3.jpg"></img></div>
-						<div className="u-block-land-item"><img calss="u-tmp-img" src="aprth/img/tmp/4.jpg"></img></div>
-						<div className="u-block-land-item"><img calss="u-tmp-img" src="aprth/img/tmp/5.jpg"></img></div>
-						<div className="u-block-land-item"><img calss="u-tmp-img" src="aprth/img/tmp/6.jpg"></img></div>
-						<div className="u-block-land-item"><img calss="u-tmp-img" src="aprth/img/tmp/8.jpg"></img></div>
-						<div className="u-block-land-item"><img calss="u-tmp-img" src="aprth/img/tmp/2.jpg"></img></div>
-					</div>
 				</div>
 				<div className="w-section u-sect-land">
 					{topics}

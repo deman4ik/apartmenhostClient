@@ -258,14 +258,14 @@ a > .rater, a.u-block-card-desc:hover, a.u-block-card-desc .rater .rater-item, a
 }
 
 /*nano scroller*/
-.nano { 
-	max-width: 800px; 
-  Zmax-height: 650px;
-  height:650px;
+@media (min-width: 991px) {
+	.nano { 
+		max-width: 800px; 
+	  height:650px;
+	}
+	.nano > .nano-content { padding: 10px; }
+	.nano > .nano-pane > .nano-slider { 
+		background-color: rgba(115, 130, 130, 0.51);
+		z-index: 999;
+	}
 }
-.nano > .nano-content { padding: 10px; }
-.nano > .nano-pane > .nano-slider { 
-	background-color: rgba(115, 130, 130, 0.51);
-	z-index: 999;
-}
-

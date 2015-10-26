@@ -1,4 +1,5 @@
 /** initial setup **/
+@media (min-width: 991px) {
 .nano {
   position : relative;
   width    : 100%;
@@ -52,4 +53,5 @@
 .nano:hover > .nano-pane, .nano-pane.active, .nano-pane.flashed {
   visibility : visible\9; /* Target only IE7 and IE8 with this hack */
   opacity    : 0.99;
+}
 }
