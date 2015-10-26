@@ -86,7 +86,7 @@ var Main = React.createClass({
 				return (
 					<div className="w-col w-col-4 u-col-howto card" key={i} onClick={this.onTopicClick.bind(this, i)}>
 						<h2>{item.title}</h2>
-						<p>{item.text}</p>
+						<p dangerouslySetInnerHTML={{__html:item.text}}></p>
 					</div>
 				);
 			}, this);
