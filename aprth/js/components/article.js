@@ -18,11 +18,11 @@ var Article = React.createClass({
 		//генератор		
 		return (
 			<div className="w-row">
-				<div className="w-col w-col-3 u-col-howto">
+				<div className="w-col w-col-3">
 					<h2>{this.props.article.title}</h2>
 				</div>
-				<div className="w-col w-col-9 u-col-howto">
-					<p dangerouslySetInnerHTML={{__html:this.props.article.text}}></p>
+				<div className="w-col w-col-9">
+					<p>{this.props.article.text}</p>
 				</div>
 			</div>
 		);
