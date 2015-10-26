@@ -74,6 +74,19 @@ p {
   text-decoration: none;
   cursor:pointer;
 }
+.u-btn.filter,
+.u-btn.filter:visited,
+.u-btn.filter:focus,
+.u-btn.filter:active {
+  border-color: #cfd9db;
+  background-color: #f8f8f8;
+  color: #7d9091;  
+  float:right;
+}
+.u-btn.filter:hover {
+  border-color: #C0C8CA;
+  background-color:#ffffff;
+}
 .u-btn:hover {
   border-color: #bbd645;
   background-color: #bbd645;
@@ -118,26 +131,34 @@ p {
   color: #ffffff;
   cursor:text;
 }
+.u-btn.right {
+  float:right;
+}
 .u-btn.btn-sm {
   padding: 2px 6px;
   font-size: 13px;
 }
-.u-btn.btn-sm.right {
-  float:right;
-}
-.u-btn.btn-sm > span {
+.u-btn.btn-sm > span, .u-btn.fav > span {
   color: #296573;
   padding:0;
 }
-.u-btn.btn-sm.btn-done {
+.u-btn.fav {
+  background-color: #ecf0f1;
+  border-color: #cfd9db;  
+  color: #7d9091;
+}
+.u-btn.fav:hover {
+  background-color: #dde4e6;
+}
+.u-btn.btn-done {
   border-color: #cfd9db;
   background-color: #ecf0f1;
   color: #7d9091;
 }
-.u-btn.btn-sm.btn-done:hover {
+.u-btn.btn-done:hover {
   background-color: #dde4e6;
 }
-.u-btn.btn-sm.btn-done > span {
+.u-btn.btn-done > span {
   color: #7d9091;
   padding:0;
 }
@@ -574,7 +595,7 @@ textarea.u-form-area-v {
 }
 .u-form-field {
   padding: 4px 8px 4px 8px;
-  height:34px;
+  height:38px;
   border: 1px solid #cfd9db;
   border-radius: 2px;
 }
@@ -641,6 +662,11 @@ textarea.u-form-area-v {
   width: 20px;
   height: 20px;
 }
+.u-block-spacer2 {
+  height: 12px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #e8e8e8;
+}
 .u-block-footer-logo {
   margin-top: 10px;
 }
@@ -671,21 +697,30 @@ textarea.u-form-area-v {
   background-color: white;
   box-shadow: #7d9091 1px 1px 3px 0px;
 }
+.u-row-search {
+  padding-right:20px;
+  padding-top: 10px;
+}
+.u-row-search .w-col > .w-button {
+  padding:6px 10px;
+}
 h1.search-result {
   margin-top: 14px;
   padding-left: 8px;
 }
-.u-block-filter, .u-block-filter-add .w-form .u-form-body {
-  background-color: #edefed;
+.u-block-filter-add {
+  background-color: #fff;
+}
+.u-block-filter-add .w-form .u-form-body {
+  background-color: #F4F5F4;
+}
+.u-block-filter-toggle {
+  background-color: #EAECEA;
+  padding:6px 10px;
 }
 .u-block-filter-add {
   position: relative;
   z-index: 100;
-}
-.u-block-spacer2 {
-  height: 12px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #e8e8e8;
 }
 .u-row-cardlst {
   padding: 8px;
@@ -693,7 +728,7 @@ h1.search-result {
   font-size: 14px;
 }
 .u-row-cardlst:hover {
-  background-color: #f8f8f8;
+  background-color: #F3F7FF;
 }
 .u-row-cardlst.bordered {
   margin-top: 14px;

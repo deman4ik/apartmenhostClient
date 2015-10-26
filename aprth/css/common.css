@@ -29,7 +29,13 @@
 .has-success .u-form-field {
 	border-color: #3c763d;
 }
-
+.u-sect-page-cardlst > .u-form-wrapper {
+  box-shadow: none;
+  border-radius: 4px;	
+  border-style: solid;
+  border-width: 1px;
+  border-color: #D5D4D4;
+}
 /*диалоги bootstrap*/
 .messagebox-wraper {
   z-index: 2000;
@@ -218,15 +224,6 @@
 	cursor:pointer;
 }
 
-/*search*/
-.u-row-search {
-	padding-right:20px;
-	padding-top: 10px;
-}
-.u-row-search .w-col > .w-button {
-	padding:5px 10px;
-}
-
 /*rater*/
 .rater {
 	padding: 5px 5px 5px 0px;
@@ -263,9 +260,12 @@ a > .rater, a.u-block-card-desc:hover, a.u-block-card-desc .rater .rater-item, a
 /*nano scroller*/
 .nano { 
 	max-width: 800px; 
-  max-height: 550px;
-  height:550px;
+  Zmax-height: 650px;
+  height:650px;
 }
 .nano > .nano-content { padding: 10px; }
-.nano > .nano-pane > .nano-slider { background-color: rgba(115, 130, 130, 0.51);}
+.nano > .nano-pane > .nano-slider { 
+	background-color: rgba(115, 130, 130, 0.51);
+	z-index: 999;
+}
 

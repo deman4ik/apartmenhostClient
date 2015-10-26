@@ -15,7 +15,7 @@ var PostsFilterForm = React.createClass({
 	//состояние фильтра
 	getInitialState: function () {
 		return {
-			filterToggle: true, //флаг отображения/сокрытия тела фильтра
+			filterToggle: false, //флаг отображения/сокрытия тела фильтра
 			filter: { //параметры фильтра
 				useRadius: PostsFilterPrms.postFilterUseRadius, //искать в радиусе
 				radius: config.searchRadius, //радиус поиска по карте
@@ -150,7 +150,7 @@ var PostsFilterForm = React.createClass({
 		return (
 			<div className="u-block-filter">		
 				<div className="w-clearfix u-block-filter-toggle">
-					<a className="u-lnk-norm h1" href="javascript:void(0);" style={aStyle} onClick={this.handleFilterToggleClick}>
+					<a className="u-btn filter" href="javascript:void(0);" style={aStyle} onClick={this.handleFilterToggleClick}>
 						<i className="glyphicon glyphicon-filter"></i>{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_FILTER"})}
 					</a>
 				</div>

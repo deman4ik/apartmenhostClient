@@ -70,17 +70,17 @@ var PostItem = React.createClass({
 		var classesFavorBtn = cFavorBtn({
 			"u-btn": true,
 			"btn-sm": true,
-			"btn-done": (this.props.item.isFavorite)
+			"fav": !(this.props.item.isFavorite)
 		});
 		var favorBtn;
 		if(this.props.item.isFavorite) {
 			favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
-							<span className="glyphicon glyphicon-ok btn" aria-hidden="true"></span>
+							<span className="glyphicon glyphicon-heart btn" aria-hidden="true"></span>
 							{favorText}
 						</a>
 		} else {
 			favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
-							<span className="glyphicon glyphicon-heart btn" aria-hidden="true"></span>
+							<span className="glyphicon glyphicon-heart-empty btn" aria-hidden="true"></span>
 							{favorText}
 						</a>			
 		}
@@ -123,8 +123,8 @@ var PostItem = React.createClass({
 							{favorBtn}						
 						</div>						
 					</div>
-					<div className="w-col w-col-4 w-col-small-4">
-						<div className="u-block-lnk" onClick={this.handlePostClick}>
+					<div className="w-col w-col-4 w-col-small-4" onClick={this.handlePostClick}>
+						<div className="u-block-lnk">
 							{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}:&nbsp;
 							<strong>
 								<OptionsParser language={this.props.language}								
