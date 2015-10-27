@@ -1,7 +1,7 @@
 /*
 	Список объявлений в профиле пользователя
 */
-var ProfileAdvertsList = React.createClass({
+var ProfilePostsList = React.createClass({
 	//состояние списка объявлений
 	getInitialState: function () {
 		return {
@@ -19,6 +19,12 @@ var ProfileAdvertsList = React.createClass({
 			this.props.onItemClick(item);
 		}
 	},
+	//оповещение родителя о нажатии на кнопку редактирования элемента списка объявлений
+	notifyParentItemEditClick: function (item) {
+		if((this.props.onItemEditClick)&&(Utils.isFunction(this.props.onItemEditClick))) {
+			this.props.onItemEditClick(item);
+		}
+	},
 	//оповещение родителя о нажатии на кнопку удаления элемента списка объявлений
 	notifyParentItemDeleteClick: function (item) {
 		if((this.props.onItemDeleteClick)&&(Utils.isFunction(this.props.onItemDeleteClick))) {
@@ -34,6 +40,10 @@ var ProfileAdvertsList = React.createClass({
 	//обработка нажатия на элемент списка объявлений
 	handleItemClick: function (item) {
 		this.notifyParentItemClick(item);
+	},
+	//обработка нажатия на кнопку редактирования элемента списка объявлений
+	handleItemEditClick: function (item) {
+		this.notifyParentItemEditClick(item);
 	},
 	//обработка нажатия на кнопку удаления элемента списка объявлений
 	handleItemDeleteClick: function (item) {
@@ -56,9 +66,15 @@ var ProfileAdvertsList = React.createClass({
 		var advertsList;
 		if((this.props.adverts)&&(Array.isArray(this.props.adverts))&&(this.props.adverts.length > 0)) {
 			advertsList = this.props.adverts.map(function (item, i) {
-				var removeButton;
-				if(this.props.showRemoveButton) {
-					removeButton =	<div className="w-clearfix u-block-right">
+				var editButtons;
+				if(this.props.showEditButtons) {
+					editButtons =	<div className="w-clearfix u-block-right">
+										<a className="u-btn btn-sm"
+											href="javascript:void(0);"
+											onClick={this.handleItemEditClick.bind(this, item)}>
+											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_UPD"})}										
+										</a>
+										&nbsp;
 										<a className="u-btn btn-sm u-btn-danger"
 											href="javascript:void(0);"
 											onClick={this.handleItemDeleteClick.bind(this, item)}>
@@ -83,7 +99,7 @@ var ProfileAdvertsList = React.createClass({
 								</div>
 							</div>
 						</a>
-						{removeButton}
+						{editButtons}
 						<div className="u-block-spacer"></div>						
 					</div>
 				);

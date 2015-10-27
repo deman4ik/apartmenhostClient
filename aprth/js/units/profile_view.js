@@ -91,11 +91,11 @@ var ProfileView = React.createClass({
 		//объявления профиля
 		var adverts;
 		if((this.state.advertsLoaded)&&(this.state.profileLoaded)) {				
-			adverts =	<ProfileAdvertsList language={this.props.language}
+			adverts =	<ProfilePostsList language={this.props.language}
 							title={Utils.getStrResource({lang: this.props.language, code: "CLNT_ADVERTS_VIEW_TITLE"})}
 							noAdvertsMessage={Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_ADVERTS_VIEW"})}
 							showAddButton={false}
-							showRemoveButton={false}
+							showEditButtons={false}
 							adverts={this.state.adverts}
 							onItemClick={this.handlePostClick}/>
 		}

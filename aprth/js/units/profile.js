@@ -280,8 +280,12 @@ var Profile = React.createClass({
 	},
 	//обработка нажатия на карточку объявления
 	handlePostClick: function (post) {
+		this.context.router.transitionTo("post", {postId: post.id}, {});
+	},
+	//обработка нажатия на кнопку редактирования карточки объявления
+	handlePostEditClick: function (post) {
 		this.context.router.transitionTo("modifypost", {mode: ModifyPostModes.EDIT}, {postId: post.id});
-	},	
+	},
 	//обработка нажатия на кнопку создания объявления
 	handleAddPostClick: function () {
 		this.context.router.transitionTo("modifypost", {mode: ModifyPostModes.ADD});
@@ -397,14 +401,15 @@ var Profile = React.createClass({
 			//объявления
 			var adverts;
 			if((this.state.advertsLoaded)&&(this.state.profileLoaded)) {
-				adverts =	<ProfileAdvertsList language={this.props.language}
+				adverts =	<ProfilePostsList language={this.props.language}
 								title={Utils.getStrResource({lang: this.props.language, code: "UI_LBL_ADVERT"})}
 								noAdvertsMessage={Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_ADVERTS"})}
 								showAddButton={true}
-								showRemoveButton={true}
+								showEditButtons={true}
 								adverts={this.state.adverts}
 								onItemClick={this.handlePostClick}
 								onItemAddClick={this.handleAddPostClick}
+								onItemEditClick={this.handlePostEditClick}
 								onItemDeleteClick={this.askRemoveAdvert}/>
 			}
 			//табы отзывов/запросов
