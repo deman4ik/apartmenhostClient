@@ -8,8 +8,8 @@ var profileGender = [
 ];
 //категории цен
 var priceCats = [
-	"PC_MALE",
-	"PC_FEMALE",
+	"PC_DOG",
+	"PC_CAT",
 	"PC_THING",
 	"PC_ALIEN"	
 ];

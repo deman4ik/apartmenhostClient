@@ -183,8 +183,8 @@ var langs = [
 		PG_MALE: "Мужской",
 		PG_FEMALE: "Женский",
 		//ресурсы для описания списков - категории цен
-		PC_MALE: "Мужской",
-		PC_FEMALE: "Женский",
+		PC_DOG: "Собака",
+		PC_CAT: "Кот",
 		PC_THING: "Средний",
 		PC_ALIEN: "Инопланетный",
 		//ресурсы для описания списков - типы недвижимости
@@ -469,8 +469,8 @@ var langs = [
 		PG_MALE: "Male",
 		PG_FEMALE: "Female",
 		//ресурсы для описания списков - категории цен
-		PC_MALE: "Male",
-		PC_FEMALE: "Female",
+		PC_DOG: "Dog",
+		PC_CAT: "Cat",
 		PC_THING: "The Thing",
 		PC_ALIEN: "Alien",
 		//ресурсы для описания списков - типы недвижимости
