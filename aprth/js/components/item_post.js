@@ -125,7 +125,7 @@ var PostItem = React.createClass({
 					</div>
 					<div className="w-col w-col-4 w-col-small-4" onClick={this.handlePostClick}>
 						<div className="u-block-lnk">
-							{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"})}:&nbsp;
+							{Utils.getStrResource({lang: this.props.language, code: "MD_ITM_PET_TYPE"})}:&nbsp;
 							<strong>
 								<OptionsParser language={this.props.language}								
 									options={_.pluck(this.props.item.genders, "name")}

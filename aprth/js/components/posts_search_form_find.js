@@ -198,7 +198,7 @@ var PostsFindForm = React.createClass({
 							onOptionChanged={this.handleSelectedSex}
 							defaultOptionsState={this.state.find.sex}
 							appendEmptyOption={true}
-							emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"}))}/>
+							emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_PET_TYPE"}))}/>
 						</div>
 						<div className="w-col w-col-1">
 						    <input className="w-button u-btn-primary nofloat"

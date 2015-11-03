@@ -270,7 +270,7 @@ var Post = React.createClass({
 								<form className="w-clearfix">
 									<OptionsSelector view={OptionsSelectorView.SELECT}
 										appendEmptyOption={true}
-										emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_GUEST_SEX"}))}
+										emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_PET_TYPE"}))}
 										options={optionsFactory.buildOptions({
 													language: this.props.language, 
 													id: "priceCat",
