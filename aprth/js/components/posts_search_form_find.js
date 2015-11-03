@@ -171,6 +171,19 @@ var PostsFindForm = React.createClass({
 							onAddressChanged={this.handleAddrChange}/>
 						  <i className="u-form-field-icon glyphicon glyphicon-search"/>
 						</div>
+						<div className="w-col w-col-2" >
+						    <OptionsSelector view={OptionsSelectorView.SELECT}
+							classes="w-select u-form-field"
+							language={this.props.language}
+							options={optionsFactory.buildOptions({
+										language: this.props.language, 
+										id: "sex",
+										options: priceCats})}
+							onOptionChanged={this.handleSelectedSex}
+							defaultOptionsState={this.state.find.sex}
+							appendEmptyOption={true}
+							emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_PET_TYPE"}))}/>
+						</div>						
 						<div className="w-col w-col-2">
 						  <Calendar name="dFrom" 
 							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}
@@ -186,19 +199,6 @@ var PostsFindForm = React.createClass({
 							onDatePicked={this.handleDatePicked}
 							language={this.props.language}
 							inputClasses={classesDateInputTo}/>		
-						</div>
-						<div className="w-col w-col-2" >
-						    <OptionsSelector view={OptionsSelectorView.SELECT}
-							classes="w-select u-form-field"
-							language={this.props.language}
-							options={optionsFactory.buildOptions({
-										language: this.props.language, 
-										id: "sex",
-										options: priceCats})}
-							onOptionChanged={this.handleSelectedSex}
-							defaultOptionsState={this.state.find.sex}
-							appendEmptyOption={true}
-							emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_PET_TYPE"}))}/>
 						</div>
 						<div className="w-col w-col-1">
 						    <input className="w-button u-btn-primary nofloat"
