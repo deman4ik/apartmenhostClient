@@ -49,6 +49,7 @@ var Main = React.createClass({
 	},
 	//нажатие на поиск
 	onFind: function (find) {
+		Utils.deleteObjectState("filterParams");
 		Utils.saveObjectState("filterParams", find);
 		this.context.router.transitionTo("search", {}, {});
 	},

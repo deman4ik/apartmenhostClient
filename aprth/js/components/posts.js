@@ -43,7 +43,15 @@ var Posts = React.createClass({
 			advertsReady: false, //флаг доступности списка объявлений для отображения
 			filterIsSet: false, //флаг установленности фильтра			
 			filterClnt: getPostsFilter(), //текущее состояние фильтра
-			filter: {}, //текущее состояние фильтра	(для сервера)			
+			filter: {}, //текущее состояние фильтра	(для сервера)
+			mapBounds: { //текущее состояние карты (границы)
+				latitude: "", //широта центра области карты
+				longitude: "", //долгота центра области карты
+				swLat: "", //широта ЮВ угла области карты
+				swLong: "", //долгота ЮВ угла области карты
+				neLat: "", //широта СЗ угла области карты
+				neLong: "", //долгота СЗ угла области карты
+			}			
 		}
 	},
 	//расчет "цены за период" объявлений по датам
@@ -173,6 +181,7 @@ var Posts = React.createClass({
 	},
 	//сохранение фильтра
 	saveFilterState: function () {
+		Utils.deleteObjectState("filterParams");
 		Utils.saveObjectState("filterParams", this.state.filterClnt);
 	},
 	//загрузка сохраненного фильтра
@@ -222,6 +231,12 @@ var Posts = React.createClass({
 			tmp.neLat = bounds.getNorthEast().lat();
 			tmp.neLong = bounds.getNorthEast().lng();
 		}
+		if(tmp.useRadius != PostsFilterPrms.postFilterUseRadius) {
+			tmp.swLat = this.state.mapBounds.swLat;
+			tmp.swLong = this.state.mapBounds.swLong;
+			tmp.neLat = this.state.mapBounds.neLat;
+			tmp.neLong = this.state.mapBounds.neLong;
+		}
 		this.setState({filterClnt: tmp}, callBack);		
 	},
 	//поиск и фильтрация
@@ -266,7 +281,10 @@ var Posts = React.createClass({
 		var recalcSA = false;
 		var tmp = {};
 		_.extend(tmp, this.state.filterClnt);
-		if(this.state.filterClnt.radius != filter.radius) recalcSA = true;
+		if(
+			(this.state.filterClnt.radius != filter.radius)||
+			(this.state.filterClnt.useRadius != filter.useRadius)
+		) recalcSA = true;
 		tmp.useRadius = filter.useRadius;
 		tmp.radius = filter.radius;
 		tmp.apartType = filter.apartType;
@@ -369,14 +387,22 @@ var Posts = React.createClass({
 	handleMapBoundsChange: function (newBounds) {
 		if((newBounds)&&(!this.state.filterClnt.useRadius)) {
 			var tmp = {};
+			var mbTmp = {};
 			_.extend(tmp, this.state.filterClnt);
+			_.extend(mbTmp, this.state.mapBounds);
 			tmp.latitude = newBounds.getCenter().lat();
 			tmp.longitude = newBounds.getCenter().lng();
 			tmp.swLat = newBounds.getSouthWest().lat();
 			tmp.swLong = newBounds.getSouthWest().lng();
 			tmp.neLat = newBounds.getNorthEast().lat();
 			tmp.neLong = newBounds.getNorthEast().lng();
-			this.setState({filterClnt: tmp}, function () {
+			mbTmp.latitude = newBounds.getCenter().lat();
+			mbTmp.longitude = newBounds.getCenter().lng();
+			mbTmp.swLat = newBounds.getSouthWest().lat();
+			mbTmp.swLong = newBounds.getSouthWest().lng();
+			mbTmp.neLat = newBounds.getNorthEast().lat();
+			mbTmp.neLong = newBounds.getNorthEast().lng();
+			this.setState({filterClnt: tmp, mapBounds: mbTmp}, function () {
 				this.saveFilterState();
 				this.findAndFilter();
 			});
