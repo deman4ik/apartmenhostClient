@@ -994,9 +994,8 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   left: 0px;
   top: 0px;
   right: 0px;
-  bottom: 0px;
+  height: 700px;
   padding-top: 250px;
-  padding-bottom: 260px;
   background-image: -webkit-linear-gradient(rgba(59, 31, 25, 0.44) 1%, rgba(23, 46, 53, 0.2) 98%), url('../img/tmp/house.jpg');
   background-image: linear-gradient(rgba(59, 31, 25, 0.44) 1%, rgba(23, 46, 53, 0.2) 98%), url('../img/tmp/house.jpg');
   background-position: 0px 0px, 0px 0px;
