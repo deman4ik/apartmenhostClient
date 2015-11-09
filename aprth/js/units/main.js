@@ -120,12 +120,6 @@ var Main = React.createClass({
 					</div>					
 				</div>
 				<div className="w-section u-sect-land under">
-					<h1 className="u-t-h1-land2 sub">
-						{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAIN_OR"})}
-					</h1>
-					<h1 className="u-t-h1-land2">
-						{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAIN_TRY_ANOTHER_ACTION"})}
-					</h1>
 					<div className="u-block-spacer"></div>
 				</div>
 				<div className="w-section u-sect-land">
