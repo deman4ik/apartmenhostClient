@@ -990,20 +990,19 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 }
 /*landing*/
 .u-sect-hero {
-  position: absolute;
+  position: relative;
   left: 0px;
   top: 0px;
   right: 0px;
-  height: 700px;
-  padding-top: 250px;
+  height: 600px;
+  padding-top: 200px;
   background-image: -webkit-linear-gradient(rgba(59, 31, 25, 0.44) 1%, rgba(23, 46, 53, 0.2) 98%), url('../img/tmp/house.jpg');
   background-image: linear-gradient(rgba(59, 31, 25, 0.44) 1%, rgba(23, 46, 53, 0.2) 98%), url('../img/tmp/house.jpg');
-  background-position: 0px 0px, 0px 0px;
+  background-position: left bottom;
   background-size: cover;
   background-attachment: scroll, fixed;
 }
 .u-sect-land.under {
-  margin-top: 600px;
   padding-top: 4px;
   padding-bottom: 16px;
 }
