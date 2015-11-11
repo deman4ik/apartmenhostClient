@@ -1,4 +1,4 @@
-/*
+﻿/*
 	Конфигурация клиентского приложения
 */
 var config = {
@@ -7,7 +7,7 @@ var config = {
 	//ключ сервера
 	serverAppKey: "ntYnnTKTdxhWcfEDGPQMMYvNKyiUtx61",
 	//ключ для Google APIs
-	googleAppKey: "AIzaSyCE7mx3wrx6GChi6odnbAZ8jSejP2YnTbM",
+	googleAppKey: "AIzaSyB9kvb4U_99FmLMZwlbQzf6AWuM9CDz0hs",
 	//широта центра карты по-умолчанию
 	latitude: 55.755833,
 	//долгота центра карты по-умолчанию
