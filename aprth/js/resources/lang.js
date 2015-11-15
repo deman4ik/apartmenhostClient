@@ -87,7 +87,7 @@ var langs = [
 		UI_BTN_PICK_ON_MAP: "Указать на карте",
 		UI_BTN_RESET_PASS: "Восстановить пароль",
 		UI_BTN_CHPWD: "Сменить пароль",
-		UI_BTN_MAIN_TRY_NOW: "Попробовать",
+		UI_BTN_MAIN_TRY_NOW: "Как это работает",
 		UI_TITLE_APP: "Petforaweek",
 		UI_TITLE_LOGIN: "Вход",
 		UI_TITLE_ADD_RENT_POST: "Размещение объявления о приеме питомцев",

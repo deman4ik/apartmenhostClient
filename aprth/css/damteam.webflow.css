@@ -1000,7 +1000,6 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   background-image: linear-gradient(rgba(59, 31, 25, 0.44) 1%, rgba(23, 46, 53, 0.2) 98%), url('../img/tmp/house.jpg');
   background-position: left bottom;
   background-size: cover;
-  background-attachment: scroll, fixed;
 }
 .u-sect-land.under {
   padding-top: 4px;
@@ -1023,7 +1022,7 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 }
 .u-btn-land {
   display: block;
-  width: 150px;
+  width: 175px;
   margin-right: auto;
   margin-left: auto;
   border: 2px none white;
