@@ -43,9 +43,18 @@ var Main = React.createClass({
 			this.getTopics(newProps.language);		
 		}
 	},
+	goToHowItWorks: function (activeIndex) {
+		this.context.router.transitionTo("articles",
+			{},
+			{filter: {name: "HOW_IT_WORKS"}, 
+			title: "UI_FOOTER_MENU_HOWITWORKS",
+			activeArticle: activeIndex||0,
+			convertTitle: true
+		});
+	},
 	//обработка нажатия на статью заглавной страницы
 	onTopicClick: function (index) {
-		this.context.router.transitionTo("articles", {}, {filter: {name: "HOW_IT_WORKS"}, title: "UI_FOOTER_MENU_HOWITWORKS", convertTitle: true});
+		this.goToHowItWorks(index);
 	},
 	//нажатие на поиск
 	onFind: function (find) {
@@ -76,6 +85,10 @@ var Main = React.createClass({
 		this.setState({filterClnt: tmp, adverts: [], advertsCnt: 0, advertsReady: false, markers: [], filterIsSet: false}, function () {
 			this.saveFilterState();
 		});
+	},
+	//обработка нажатия на кнопку "Попробовать"
+	onTryButtonClick: function () {
+		this.goToHowItWorks();
 	},
 	//генерация представления главной страницы
 	render: function () {
@@ -111,12 +124,14 @@ var Main = React.createClass({
 						{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAIN_AND_BE_OK"})}
 					</h1>
 					<div className="u-block-land">
-						<a className="w-button u-btn-land" href="#">
+						<a className="w-button u-btn-land"
+							href="javascript:void(0);"
+							onClick={this.onTryButtonClick}>
 							{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_MAIN_TRY_NOW"})}
 						</a>
 					</div>
 					<div className="content-center u-block-search-main">
-							{postsFindForm}					
+						{postsFindForm}					
 					</div>					
 				</div>
 				<div className="w-section u-sect-land under">

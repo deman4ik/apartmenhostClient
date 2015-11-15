@@ -257,6 +257,24 @@ a > .rater, a.u-block-card-desc:hover, a.u-block-card-desc .rater .rater-item, a
 	cursor:pointer;	
 }
 
+.article-topic {
+	cursor: pointer;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.article-topic :hover {
+	color: #e1ff59;
+}
+
+.article-topic-active {
+	background-color: #eef6f7;
+}
+
+.article-topic-active :hover {
+	color: #4ac2c9 !important;
+}
+
 /*nano scroller*/
 @media (min-width: 991px) {
 	.nano { 
