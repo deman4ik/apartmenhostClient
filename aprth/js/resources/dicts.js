@@ -13,6 +13,7 @@ var priceCats = [
 	"PC_BIRD",
 	"PC_FISH",
 	"PC_RABBIT",
+	"PC_FERRET",
 	"PC_MOUSE",	
 	"PC_REPTILE",
 	"PC_SPIDER",
