@@ -1064,6 +1064,11 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   background-color: #eef6f7;
   cursor:pointer;
 }
+.u-col-howto p {
+    display: inherit;
+    height: inherit;
+    padding-top: 4pt;
+}
 .u-t-h1-land2 {
   padding-top: 4px;
   padding-bottom: 4px;
