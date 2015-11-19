@@ -191,8 +191,10 @@ var langs = [
 		PC_FERRET: "Хорек",
 		PC_MOUSE: "Грызун",
 		PC_REPTILE: "Рептилия",
+		PC_PRIMATE: "Примат",
 		PC_SPIDER: "Паук",
 		PC_INSECT: "Насекомое",
+		PC_PLANT: "Растения и цветы",
 		PC_OTHER: "Другой питомец",
 		//ресурсы для описания списков - типы недвижимости
 		POT_APARTMENT: "Квартира",		
@@ -483,8 +485,10 @@ var langs = [
 		PC_FERRET: "Ferret",		
 		PC_MOUSE: "Mouse",
 		PC_REPTILE: "Reptile",
+		PC_PRIMATE: "Primate",
 		PC_SPIDER: "Spider",
 		PC_INSECT: "Insects",
+		PC_PLANT: "Plants and flowers",		
 		PC_OTHER: "Different pet",
 		//ресурсы для описания списков - типы недвижимости
 		POT_APARTMENT: "Apartment",		

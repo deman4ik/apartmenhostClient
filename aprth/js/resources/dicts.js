@@ -16,8 +16,10 @@ var priceCats = [
 	"PC_FERRET",
 	"PC_MOUSE",	
 	"PC_REPTILE",
+	"PC_PRIMATE",	
 	"PC_SPIDER",
 	"PC_INSECT",	
+	"PC_PLANT",
 	"PC_OTHER"
 ];
 //типы объектов обявления
