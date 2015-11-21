@@ -510,7 +510,7 @@ var langs = [
 		SRV_APARTMENT_DEPENDENCY: "Object have dependencies!",
 		SRV_CARD_EXISTS: "Your advert card already exists!",
 		SRV_RESERVATION_EXISTS: "Reservation already exists!",
-		SRV_RESERVATION_SELF: "You can't reserve your own ad!"
+		SRV_RESERVATION_SELF: "You can't reserve your own ad!",
 		SRV_CARD_WRONG_DATE: "Bad dates! Check interval limits!",
 		SRV_RESERVATION_UNAVAILABLE_DATE: "Bad dates! Apartment not available!",
 		SRV_CARD_INVALID_FILTER: "No cards filter specified!",
