@@ -215,6 +215,7 @@ var langs = [
 		SRV_APARTMENT_DEPENDENCY: "У данного объекта есть зависимости!",
 		SRV_CARD_EXISTS: "У Вас уже есть объявление!",
 		SRV_RESERVATION_EXISTS: "Вы уже отрправили запрос на указанные даты!",
+		SRV_RESERVATION_SELF: "Вы не можете бронировать свое объявление!",
 		SRV_CARD_WRONG_DATE: "Некорректно указаны даты! Проверьте границы диапазона!",
 		SRV_RESERVATION_UNAVAILABLE_DATE: "Некорректно указаны даты! Объект недоступен в указанное время!",
 		SRV_CARD_INVALID_FILTER: "Не заданы параметры отбора карточек объявлений!",
@@ -509,6 +510,7 @@ var langs = [
 		SRV_APARTMENT_DEPENDENCY: "Object have dependencies!",
 		SRV_CARD_EXISTS: "Your advert card already exists!",
 		SRV_RESERVATION_EXISTS: "Reservation already exists!",
+		SRV_RESERVATION_SELF: "You can't reserve your own ad!"
 		SRV_CARD_WRONG_DATE: "Bad dates! Check interval limits!",
 		SRV_RESERVATION_UNAVAILABLE_DATE: "Bad dates! Apartment not available!",
 		SRV_CARD_INVALID_FILTER: "No cards filter specified!",
