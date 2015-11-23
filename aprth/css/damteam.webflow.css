@@ -1044,8 +1044,8 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 .u-block-land {
   padding-top: 8px;
 }
-.u-t-h1-main {
-  width: 200px;
+
+.u-t-h1 {
   border-bottom: 1px solid #a5a8a8;
   color: #a5a8a8;
   font-size: 14px;
@@ -1053,6 +1053,9 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-top:20px;
+}
+.u-t-h1.main {
+	width: 200px;
 }
 .u-col-howto {
   padding: 10px 15px 20px 10px;
@@ -1064,10 +1067,24 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   background-color: #eef6f7;
   cursor:pointer;
 }
+.u-col-howto.card h2 {
+  margin-top: 16px;
+  line-height: 22px;
+	font-weight: 400;  
+}
 .u-col-howto p {
     display: inherit;
     height: inherit;
     padding-top: 4pt;
+}
+.u-col-howto p.card-footer {
+	float:right;
+	width:114pt;
+}
+.u-col-howto p.card-footer i {
+  color:#4ac2c9; 
+  font-weight: 400;
+  vertical-align: text-top;
 }
 .u-t-h1-land2 {
   padding-top: 4px;
@@ -1110,6 +1127,23 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 }
 .u-block-search-main .u-form-wrapper .u-form-body h3 {
   color: rgba(125, 144, 145, 0);
+}
+
+.u-t-article-topic {
+  margin-top: 16px;
+  line-height: 22px;
+	font-weight: 400;  
+	cursor: pointer;
+	padding: 6px;
+}
+.u-t-article-topic:hover {
+	color: #e1ff59;
+}
+.u-t-article-topic.active {
+	background-color: #eef6f7;
+}
+.u-t-article-topic.active:hover {
+	color: #4ac2c9 !important;
 }
 
 .u-block-fade-bottom {
@@ -1220,8 +1254,9 @@ html.w-mod-js *[data-ix="hide-on-load"] {
     padding-top: 80px;
     padding-bottom: 360px;
   }  
-  .u-t-h1-main {
+  .u-t-h1 {
     margin-left:10px;
+    margin-right:10px;
   }
 
 }

@@ -28,22 +28,22 @@ var ArticleTopicsList = React.createClass({
 				//стиль элемента
 				var cTitle = React.addons.classSet;
 				var classesTitle = cTitle({
-					"article-topic": true,
-					"article-topic-active": (i == this.props.current)
+					"u-t-article-topic": true,
+					"active": (i == this.props.current)
 				});				
 				//генерация элемента ссписка тем
 				return (
-					<div key={i} 
+					<h2 key={i} 
 						onClick={this.onTopicClick.bind(this, i)}
 						className={classesTitle}>
-						<h2>{item}</h2>
-					</div>
+						{item}
+					</h2>
 				);
 			}, this);
 		}
 		//генератор		
 		return (
-			<div>
+			<div name="article_topics">
 				{topics}
 			</div>
 		);

@@ -105,7 +105,7 @@ var Main = React.createClass({
 				);
 			}, this);
 			topics =	<div className="w-container">
-							<h1 className="u-t-h1-main">{Utils.getStrResource({lang: this.props.language, code: "UI_FOOTER_MENU_HOWITWORKS"})}</h1>
+							<h1 className="u-t-h1 main">{Utils.getStrResource({lang: this.props.language, code: "UI_FOOTER_MENU_HOWITWORKS"})}</h1>
 							<div className="u-block-spacer"></div>
 							<div className="w-row">
 								{topicsitems}

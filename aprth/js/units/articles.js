@@ -94,7 +94,7 @@ var Articles = React.createClass({
 		var articles;
 		if((this.state.articlesReady)&&(Array.isArray(this.state.articles))) {
 			if(_.pluck(this.state.articles, "title").length > 1) {
-				articles =	<div>
+				articles =	<div name="articles">
 								<div className="w-col w-col-3">
 									<ArticleTopicsList topics={_.pluck(this.state.articles, "title")}
 										onTopicChange={this.handleTopicChange}
@@ -106,10 +106,10 @@ var Articles = React.createClass({
 								</div>
 							</div>
 			} else {
-				articles =	<div>
+				articles =	<div name="articles">
 								<div className="w-col w-col-12 u-col-howto">
 									<Article article={this.state.articles[this.state.currentArticle]}
-										hideTitle={false}/>
+										hideTitle={true}/>
 								</div>
 							</div>
 			}
@@ -119,7 +119,7 @@ var Articles = React.createClass({
 			<div className="w-container">
 				<div className="u-block-spacer"></div>
 				<div className="u-block-spacer"></div>
-				<h1 className="u-t-h1-main">{this.state.query.title}</h1>
+				<h1 className="u-t-h1">{this.state.query.title}</h1>
 				{articles}
 			</div>			
 		);
