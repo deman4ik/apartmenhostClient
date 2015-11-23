@@ -5,7 +5,6 @@
 	background: url('../img/tmp/house.jpg') no-repeat center;
 }
 
-/*w-container есть же!*/
 .content-center {
 	max-width: 1360px;
 	margin-left: auto;
@@ -14,10 +13,6 @@
 
 .inline-message {
 	text-align: center;
-}
-
-.form-group {
-	margin-top: 15px;
 }
 
 .username {
@@ -36,19 +31,23 @@
   border-width: 1px;
   border-color: #D5D4D4;
 }
-/*диалоги bootstrap*/
+
+/*dialog bootstrap*/
 .messagebox-wraper {
-  z-index: 2000;
+  z-index: 1999;
 }
 .modal-dialog {
 	z-index: 2000;
 }
 .modal-backdrop.in {
     opacity: 0.1;
-    z-index: 1999;
+    z-index: 1998;
 }
 .modal-content {
 	background-color: #f8f8f8;
+	border-radius: 4px;
+	box-shadow: 0 2px 10px rgba(0,0,0,.2);	
+  -webkit-box-shadow: 0 2px 10px rgba(0,0,0,.2);
 }
 .modal-body {
 	background-color: #FFF;
@@ -60,7 +59,35 @@
 }
 .modal-footer {
 	padding:12px;
+	font-size: 14px;
 }
+.modal-footer a.u-lnk-norm, .modal-footer span {
+	line-height: 24px;
+}
+.form-group {
+	margin:0;	
+	margin-top: 15px;
+}
+.form-control {
+	border-radius: 2px;
+	box-shadow:none;
+	-webkit-box-shadow: none;
+	transition: border-color ease-in-out .2s;
+  -webkit-transition: border-color ease-in-out .2s;
+  -o-transition: border-color ease-in-out .2s;	
+}
+.form-control:focus {
+  border-color: #0be3dc;
+  outline: 0;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+
+/*dialog login*/
+.modal-dialog.login-form {
+	width:320px;
+}
+
 /*warning - message_conf*/
 .modal-content.warning {
 	color:#DA9E00 !important;
@@ -269,4 +296,9 @@ a > .rater, a.u-block-card-desc:hover, a.u-block-card-desc .rater .rater-item, a
 		background-color: rgba(115, 130, 130, 0.51);
 		z-index: 999;
 	}
+}
+@media (max-width: 479px) {
+	.modal-dialog.login-form {
+		width:300px;
+	}	
 }

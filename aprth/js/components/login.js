@@ -139,79 +139,80 @@ var LogInForm = React.createClass({
 		return (
 			<div>
 				<div className="modal show messagebox-wraper" id="loginBox">					
-					<div className="modal-dialog">
+					<div className="modal-dialog login-form">
 						{confResetPasswordDlg}
 						<div className="modal-content">
 							<div className="modal-header">
+								<button type="button" className="close" onClick={this.handleCloseClick}>×</button>	
 								<h4 className="modal-title">
 									{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_LOGIN"})}
 								</h4>
 							</div>
-							<div className="modal-body">
-								<br/>
-								<form className="form-horizontal loginForm" role="form" id="loginForm">
-									<div className="panel-default">
-										<div className="panel-body">
-											<div className="form-group">
-												<label for="inputLogin" className="control-label hidden-xs hidden-sm col-md-4 col-lg-4">
-													{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_USER"})}
-												</label>
-												<div className="col-xs-offset-0 col-xs-12 col-sm-offset-0 col-sm-12 col-md-8 col-lg-8">
-													<input type="text" 
-														className="form-control"
-														placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_USER"})}
-														ref="login"
-														defaultValue={this.props.defaultUser}/>
-												</div>
-											</div>
-											<div className="form-group">
-												<label for="inputPassword" className="control-label hidden-xs hidden-sm col-md-4 col-lg-4">
-													{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PASS"})}
-												</label>
-												<div className="col-xs-offset-0 col-xs-12 col-sm-offset-0 col-sm-12 col-md-8 col-lg-8">
-													<input type="password"
-														className="form-control"
-														placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_PASS"})}
-														ref="password"
-														defaultValue={this.props.defaultPassword}/>
-														<a className="u-t-right u-lnk-small"
-															href="javascript:void(0);"
-															onClick={this.handlePasswordResetClick}>
-															{Utils.getStrResource({lang: this.props.language, code: "CLNT_RESTORE_PASS_FORGET"})}
-														</a>
-												</div>												
-											</div>
-										</div>
+							<div className="u-form-body">
+							  <div>
+							  	<a className="u-btn block loginfb" href="javascript:void(0);" onClick={this.handleLogInFbClick}>
+							  		<img className="u-img-login-icon" 
+							  			src="aprth/img/facebook-512px.svg" 
+							  			width="32" 
+							  			height="32" 
+							  			title={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN_FB"})}/>
+							  			{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN_FB"})}
+							  	</a>
+							  </div>								
+							  <div className="form-group">
+							  	<a className="u-btn block loginvk" href="javascript:void(0);" onClick={this.handleLogInVkClick}>
+							  		<img className="u-img-login-icon" 
+							  			src="aprth/img/vkontakte-512px.svg" 
+							  			width="32" 
+							  			height="32" 
+							  			title={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN_VK"})}/>
+							  			{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN_VK"})}
+							  	</a>
+							  </div>							  
+							  <div className="u-block-spacer2"></div>
+								<form className="w-clearfix" role="form" id="loginForm">					
+									<div>
+											<center>{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_LOGIN_EMAIL"})}</center>
+											<input type="text" 
+												className="form-control"
+												placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_USER"})}
+												ref="login"
+												defaultValue={this.props.defaultUser}/>
 									</div>
+									<div className="form-group">
+											<input type="password"
+												className="form-control"
+												placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_PASS"})}
+												ref="password"
+												defaultValue={this.props.defaultPassword}/>
+									</div>
+									<div className="form-group">						
+										<a className="u-lnk-norm u-t-right text-warning"
+											href="javascript:void(0);"
+											onClick={this.handlePasswordResetClick}>
+											{Utils.getStrResource({lang: this.props.language, code: "CLNT_RESTORE_PASS_FORGET"})}
+										</a>
+									</div>
+									<div className="u-block-spacer"></div>
+									<div className="form-group">
+										<button type="button" className="w-button block u-btn-primary" onClick={this.handleLogInClick}>
+											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN"})}
+										</button>
+								  </div>
 								</form>
 							</div>
-							<div className="modal-footer">								
-									<img className="image-button u-t-left" 
-										src="aprth/img/fb.png" 
-										width={32} 
-										height={32}
-										title={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN_FB"})}
-										onClick={this.handleLogInFbClick}/>							
-									<img className="image-button u-t-left"
-										src="aprth/img/vk.png" 
-										width={32} 
-										height={32}
-										title={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN_VK"})}
-										onClick={this.handleLogInVkClick}/>
-								<button type="button" className="w-button u-btn-primary u-t-right" onClick={this.handleLogInClick}>
-									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_LOGIN"})}
-								</button>
-								<button type="button" className="w-button u-btn-regular u-t-right" onClick={this.handleRegisterClick}>
+							<div className="modal-footer">			
+								<span className="u-t-left">{Utils.getStrResource({lang: this.props.language, code: "UI_TITLE_LOGIN_NOACCNT"})}</span>	
+								<a className="u-lnk-norm u-t-right text-warning" 
+								  href="javascript:void(0);"
+									onClick={this.handleRegisterClick}>
 									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_REGISTER"})}
-								</button>								
-								<button type="button" className="w-button u-btn-regular u-t-right" onClick={this.handleCloseClick}>
-									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHANCEL"})}
-								</button>								
+								</a>													
 							</div>
 						</div>
 					</div>
 				</div>
-				<div className="modal-backdrop fade in"></div>
+				<div className="modal-backdrop fade in" ></div>
 			</div>
 		);
 	}

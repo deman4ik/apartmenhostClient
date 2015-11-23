@@ -110,7 +110,7 @@ p {
 }
 .u-btn.query {
   left: 0px;
-  top: -6px;
+  top: -7px;
   right: 0px;
   bottom: 0px;
   display: block;
@@ -178,6 +178,35 @@ p {
   background-color: white;
   color: #cae650;
   text-decoration: none;
+}
+.u-btn.block {
+	display: block;
+	width:100%;
+	border:none;
+  color: #fff;
+  font-size: 16px;
+  padding:10px;	
+}
+.u-btn.loginfb,
+.u-btn.loginfb:focus,
+.u-btn.loginfb:active {
+	background-color: #3B5998;
+}
+.u-btn.loginfb:hover {
+	background-color: #3964a8;
+}
+.u-btn.loginvk,
+.u-btn.loginvk:focus,
+.u-btn.loginvk:active {
+	background-color: #42658B;
+}
+.u-btn.loginvk:hover {
+	background-color: #476d95;
+}
+.u-img-login-icon {
+	position: absolute;
+  top: 6px;
+  left: 20px;
 }
 .u-t-price {
   margin-top: 0px;
@@ -1346,8 +1375,18 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 }
 
 /* --------- added ----------*/
+.w-input {
+	border-radius:2px;
+}
+.w-input:focus {
+	border-color:#0be3dc;
+}
 textarea.w-input {
   height: 88px;
+}
+.w-button.block {
+	display:block;
+	width:100%;
 }
 /*кнопка мобильного меню*/
 .w-dropdown-btn, .w-dropdown-toggle, .w-dropdown-link {
