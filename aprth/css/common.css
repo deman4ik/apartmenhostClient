@@ -285,11 +285,14 @@ a > .rater, a.u-block-card-desc:hover, a.u-block-card-desc .rater .rater-item, a
 }
 
 
-/*nano scroller*/
+/*nano scroller and map*/
 @media (min-width: 991px) {
 	.nano { 
 		max-width: 800px; 
-	  height:650px;
+	  height:480px;
+	}
+	.u-block-cardlst-map {
+	  height:480px;
 	}
 	.nano > .nano-content { padding: 10px; }
 	.nano > .nano-pane > .nano-slider { 
@@ -297,6 +300,16 @@ a > .rater, a.u-block-card-desc:hover, a.u-block-card-desc .rater .rater-item, a
 		z-index: 999;
 	}
 }
+@media (min-width: 1367px) {
+	.nano { 
+		max-width: 800px; 
+	  height:740px;
+	}
+	.u-block-cardlst-map {
+		height:740px;
+	}
+}
+/*modal*/
 @media (max-width: 479px) {
 	.modal-dialog.login-form {
 		width:300px;
