@@ -1109,6 +1109,8 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 .u-col-howto p.card-footer {
 	float:right;
 	width:114pt;
+	line-height: 16px;
+	margin-top: 8px;
 }
 .u-col-howto p.card-footer i {
   color:#4ac2c9; 
