@@ -29,12 +29,10 @@ var Article = React.createClass({
 		}
 		//генератор		
 		return (
-			<div className="w-row">
-				<div className="w-col w-col-9 u-col-howto">
+				<div className="u-col-howto">
 					{title}
 					<p id={"ArticleText"}></p>
 				</div>
-			</div>
 		);
 	}
 });
