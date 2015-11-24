@@ -26,7 +26,6 @@ var Articles = React.createClass({
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {			
 			if((resp.MESSAGE)&&(Array.isArray(resp.MESSAGE))&&(resp.MESSAGE.length > 0)) {
-				console.log(resp.MESSAGE);
 				this.setState({
 					articles: resp.MESSAGE,
 					articlesReady: true
