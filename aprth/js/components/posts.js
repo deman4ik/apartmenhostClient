@@ -500,7 +500,8 @@ var Posts = React.createClass({
 									onItemClick={this.onItemClick}
 									language={this.props.language}
 									items={this.state.adverts}
-									mode={this.props.mode}/>
+									mode={this.props.mode}
+									session={this.props.session}/>
 				}
 				//соберем финальный вид компонента
 				content =	<div className="w-section u-sect-page-cardlst">
@@ -534,7 +535,8 @@ var Posts = React.createClass({
 										onItemClick={this.onItemClick}
 										language={this.props.language}
 										items={this.state.adverts}
-										mode={this.props.mode}/>
+										mode={this.props.mode}
+										session={this.props.session}/>
 					} else {
 						if((this.state.advertsReady)&&(this.state.advertsCnt == 0)) {				
 							postsList =	<InLineMessage type={Utils.getMessageTypeInf()} 

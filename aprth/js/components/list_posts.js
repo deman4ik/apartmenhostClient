@@ -22,7 +22,8 @@ var PostsList = React.createClass({
 					onItemClick={this.props.onItemClick}
 					language={this.props.language}
 					item={item}
-					mode={this.props.mode}/>
+					mode={this.props.mode}
+					session={this.props.session}/>
 			);
 		}, this);
 		//представление списка

@@ -1,6 +1,42 @@
 /*
 	Главная страница
 */
+//статья главной страницы
+var MainTopic = React.createClass({
+	//оповещение родителя о нажатии на статью
+	notifyParentTopicClick: function () {
+		if((this.props.onTopiclClick)&&(Utils.isFunction(this.props.onTopiclClick))) {
+				this.props.onTopiclClick(this.props.topic.index);
+		}
+	},
+	//форммирование содержимого сатьи
+	createTopicText: function (topic) {
+		$("#TopicText" + topic.index).html(topic.text);		
+	},
+	//инициализация при подключении компонента к странице
+	componentDidMount: function () {
+		this.createTopicText(this.props.topic)
+	},
+	//обновление свойств компонента
+	componentWillReceiveProps: function (newProps) {		
+		if(newProps.topic.text != this.props.topic.text)
+			this.createTopicText(newProps.topic);		
+	},
+	//обработка нажатия на элемент
+	onTopicClick: function () {
+		this.notifyParentTopicClick();
+	},
+	//генерация представления топика
+	render: function () {
+		return (
+			<div className="w-col w-col-4 u-col-howto card" onClick={this.onTopicClick}>
+				<h2>{this.props.topic.title}</h2>
+				<p id={"TopicText" + this.props.topic.index}></p>
+			</div>
+		);
+	}
+});
+//класс главной страницы
 var Main = React.createClass({
 	//переменные окружения
 	contextTypes: {
@@ -97,10 +133,10 @@ var Main = React.createClass({
 		var topics;
 		if(this.state.topicsLoaded) {
 			var topicsitems = this.state.topics.map(function (item, i) {
+				item.index = i;
 				return (
-					<div className="w-col w-col-4 u-col-howto card" key={i} onClick={this.onTopicClick.bind(this, i)}>
-						<h2>{item.title}</h2>
-						<p dangerouslySetInnerHTML={{__html:item.text}}></p>
+					<div>
+						<MainTopic topic={item} key={i} onTopiclClick={this.onTopicClick}/>
 					</div>
 				);
 			}, this);

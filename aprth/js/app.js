@@ -146,12 +146,14 @@ var App = React.createClass({
 	},
 	//обработка результатов выполнения входа в систему
 	handleLogInOk: function (sessionInfo) {
+		var tmpSession = {loggedIn: true, sessionInfo: {}};
+		_.extend(tmpSession.sessionInfo, sessionInfo);
 		this.setState(
 			{
 				loggingIn: false, 
-				session: {loggedIn: true, sessionInfo: sessionInfo}
+				session: tmpSession
 			}, 
-			function () {
+			function () {				
 				Utils.saveObjectState("sessionState", this.state.session);
 				this.processAfterAuth();
 			}
@@ -205,7 +207,7 @@ var App = React.createClass({
 	componentDidMount: function () {
 		var sessionState = Utils.loadObjectState("sessionState");
 		this.handleResize();
-		window.addEventListener("resize", this.handleResize);
+		window.addEventListener("resize", this.handleResize);		
 		if(sessionState) {
 			this.setState({session: sessionState, 
 				language: config.languageDefault,
@@ -221,7 +223,7 @@ var App = React.createClass({
 	},
 	//завершение перерисовки состояния
 	componentDidUpdate: function (prevProps, prevState) {
-	},
+	},	
 	//генерация приложения
 	render: function () {
 		//индикатор процесса

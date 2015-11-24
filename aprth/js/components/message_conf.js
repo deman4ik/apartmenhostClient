@@ -10,6 +10,29 @@ var MessageConf = React.createClass({
 	handleCancel: function () {
 		this.props.onCancel();
 	},
+	//обработка события клавиатуры
+	handleKeyDown: function (event) {
+		if(event.keyCode == 27) {
+			this.handleCancel();			
+		}
+		if(event.keyCode == 13) {
+			this.handleOk();			
+		}		
+	},
+	bindKeyDown: function () {
+		$(document.body).on("keydown", this.handleKeyDown);
+	},
+	unBindKeyDown: function () {
+		$(document.body).off("keydown", this.handleKeyDown);
+	},
+	//инициализация при старте приложения
+	componentDidMount: function () {
+		this.bindKeyDown();
+	},
+	//отключение компонента от страницы
+	componentWillUnmount: function() {
+		this.unBindKeyDown();
+	},
 	//генерация представления диалога
 	render: function () {
 		//классы заголовка

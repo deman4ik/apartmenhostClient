@@ -21,6 +21,17 @@ var PostItem = React.createClass({
 	//обновление параметров элемента
 	componentWillReceiveProps: function (newProps) {
 	},
+	//проверка на "своё" обявления
+	isMyPost: function () {
+		var res = false;
+		try {
+			if(this.props.session.loggedIn) {
+				if(this.props.item.apartment.userId == this.props.session.sessionInfo.user.profile.id)
+					res = true;
+			}
+		} catch (e) {}
+		return res;
+	},
 	//генерация представления элемента
 	render: function () {
 		//дополнительные стили
@@ -79,10 +90,11 @@ var PostItem = React.createClass({
 							{favorText}
 						</a>
 		} else {
-			favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
-							<span className="glyphicon glyphicon-heart-empty btn" aria-hidden="true"></span>
-							{favorText}
-						</a>			
+			if(!this.isMyPost())
+				favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
+								<span className="glyphicon glyphicon-heart-empty btn" aria-hidden="true"></span>
+								{favorText}
+							</a>			
 		}
 		var hlPc;
 		if(this.props.item.higlightPriceCat) {

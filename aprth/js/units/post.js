@@ -230,6 +230,17 @@ var Post = React.createClass({
 			this.buildComplaintForm(newProps);
 		}
 	},
+	//проверка на "своё" обявления
+	isMyPost: function () {
+		var res = false;
+		try {
+			if(this.props.session.loggedIn) {
+				if(this.state.post.apartment.userId == this.props.session.sessionInfo.user.profile.id)
+					res = true;
+			}
+		} catch (e) {}
+		return res;
+	},
 	//генерация представления объявления
 	render: function () {
 		//дополнительные стили
@@ -299,9 +310,11 @@ var Post = React.createClass({
 			//кнопка бронирования
 			var bookBtn;
 			if(!this.state.postBooked) {
-				bookBtn =	<a className="u-btn query" href="javascript:void(0);" onClick={this.handleBookClick} style={aStyle}>
-								{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_REQ_RENT"})}
-							</a>											
+				if(!this.isMyPost()) {
+					bookBtn =	<a className="u-btn query" href="javascript:void(0);" onClick={this.handleBookClick} style={aStyle}>
+									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_REQ_RENT"})}
+								</a>
+				}
 			} else {
 				bookBtn =	<a className="u-btn query booked" href="javascript:void(0);" style={aStyle}>
 								<span className="glyphicon glyphicon-ok btn" aria-hidden="true"></span>
@@ -348,6 +361,26 @@ var Post = React.createClass({
 							{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_CAN_RATE_AFTER_BOOKING"})}
 						</span>
 			}
+			//блок отзывов, телефона и жалоб
+			var phoneAndComplaint;
+			if(!this.isMyPost()) {
+				phoneAndComplaint = <div>
+										<div className="u-block-owner addition">
+											<div>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAKE_CALL"})}</div>
+											{phone}
+										</div>
+										<div className="u-block-owner addition2">
+											<div>
+												{rate}										
+											</div>
+											<div className="u-t-small center">
+												<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleSendComplaintClick}>
+													{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SEND_COMPLAINT"})}
+												</a>
+											</div>
+										</div>
+									</div>
+			}
 			//кнопка управления избранным
 			var favorText;
 			if(this.state.post.isFavorite) {
@@ -369,10 +402,11 @@ var Post = React.createClass({
 								{favorText}
 							</a>
 			} else {
-				favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
-								<span className="glyphicon glyphicon-heart btn" aria-hidden="true"></span>
-								{favorText}
-							</a>				
+				if(!this.isMyPost())
+					favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
+									<span className="glyphicon glyphicon-heart btn" aria-hidden="true"></span>
+									{favorText}
+								</a>				
 			}	
 			//дополнительные опции объявления
 			var advOptions;
@@ -453,20 +487,7 @@ var Post = React.createClass({
 												{bookFrm}
 												{bookBtn}											
 											</div>
-											<div className="u-block-owner addition">
-												<div>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAKE_CALL"})}</div>
-												{phone}
-											</div>
-											<div className="u-block-owner addition2">
-												<div>
-													{rate}												
-												</div>
-												<div className="u-t-small center">
-													<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleSendComplaintClick}>
-														{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SEND_COMPLAINT"})}
-													</a>
-												</div>
-											</div>
+											{phoneAndComplaint}
 											<div className="empty"></div>
 											<div className="u-block-spacer"></div>
 										</div>
