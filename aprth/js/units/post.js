@@ -393,18 +393,18 @@ var Post = React.createClass({
 				"u-btn": true,
 				"btn-sm": true,
 				"right": true,
-				"btn-done": (this.state.post.isFavorite)
+				"fav": !(this.state.post.isFavorite)
 			});
 			var favorBtn;
 			if(this.state.post.isFavorite) {
 				favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
-								<span className="glyphicon glyphicon-ok btn" aria-hidden="true"></span>
+								<span className="glyphicon glyphicon-heart btn" aria-hidden="true"></span>
 								{favorText}
 							</a>
 			} else {
 				if(!this.isMyPost())
 					favorBtn =	<a className={classesFavorBtn} href="javascript:void(0);" style={aStyle} onClick={this.handleFavorClick}>
-									<span className="glyphicon glyphicon-heart btn" aria-hidden="true"></span>
+									<span className="glyphicon glyphicon-heart-empty btn" aria-hidden="true"></span>
 									{favorText}
 								</a>				
 			}	
