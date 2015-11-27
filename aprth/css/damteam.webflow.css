@@ -1374,6 +1374,9 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   .u-form-field.rel2 {
     width:100%;
   }  
+  .u-btn.filter  span {
+  	display:none;
+  }
 }
 
 /* --------- added ----------*/
