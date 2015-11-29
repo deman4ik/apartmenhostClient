@@ -163,7 +163,14 @@ var Post = React.createClass({
 	},
 	//нажатие на запрос телефона
 	handleShowPhoneClick: function () {
-		this.setState({showPhone: true});
+		if(this.props.session.loggedIn)
+			this.setState({showPhone: true});
+		else
+			this.props.onLogIn({
+				actionType: AppAfterAuthActionTypes.CALLBACK, 
+				actionPrms: {callBack: this.makeBooking}
+			});				
+		
 	},
 	//получение ответа о смене статуса в избранном
 	handleFavorChange: function (resp) {
