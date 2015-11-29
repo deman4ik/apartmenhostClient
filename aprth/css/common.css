@@ -227,7 +227,7 @@
     position: absolute;
     z-index: 5;
     top:10px;
-    right: 16px;
+    right: 2px;
     width: 34px;
     text-align: center;
     color: #A2A2A2;
@@ -308,6 +308,7 @@ a > .rater, a.u-block-card-desc:hover, a.u-block-card-desc .rater .rater-item, a
 	.u-block-cardlst-map {
 		height:740px;
 	}
+
 }
 /*modal*/
 @media (max-width: 479px) {
