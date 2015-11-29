@@ -38,7 +38,7 @@ var LangMenu = React.createClass({
 			);
 		}, this);
 		return (
-			<div className="w-col w-col-4 w-col-small-4 w-col-tiny-4 u-col-lang">
+			<div className="w-col w-col-2 w-col-small-2 w-col-tiny-2 u-col-lang">
 				{languageItems}				
 			</div>
 		);

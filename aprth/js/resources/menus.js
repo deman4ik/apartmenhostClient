@@ -91,24 +91,28 @@ var menus = [
 			{
 				code: "FaceBook", 
 				title: "UI_FOOTER_MENU_SOCIAL_FACEBOOK", 
+				image: "aprth/img/facebook.png",
 				link: "http://www.fb.com",				
 				authAccess: false
 			},
 			{
 				code: "Twitter", 
 				title: "UI_FOOTER_MENU_SOCIAL_TWITTER", 
+				image: "aprth/img/twitter.png",
 				link: "http://www.twitter.com",				
 				authAccess: false
 			},
 			{
 				code: "Instagram", 
 				title: "UI_FOOTER_MENU_SOCIAL_INSTAGRAM", 
+				image: "aprth/img/Instagram.png",
 				link: "http://www.instagram.com",				
 				authAccess: false
 			},
 			{
 				code: "GooglePlus", 
 				title: "UI_FOOTER_MENU_SOCIAL_GOOGLEPLUS", 
+				image: "aprth/img/Google-plus.png",
 				link: "http://plus.google.com",				
 				authAccess: false
 			}

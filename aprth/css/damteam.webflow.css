@@ -220,12 +220,6 @@ p {
   margin-bottom: 0px;
   font-size: 95%;
 }
-.u-sect-page-footer {
-  position:relative;
-  display: block;
-  background-color: #81f0ec;
-  z-index:1000;
-}
 .u-img-slider {
   width: 100%;
   min-height: 420px;
@@ -464,38 +458,40 @@ p {
 .empty {
   height: 100%;
 }
+.u-sect-page-footer {
+  position:relative;
+  display: block;
+  background-color: #C0DEDE;
+  z-index:1000;
+}
 .u-block-footer-social {
   padding: 4px 10px 14px;
-  background-color: #00baf2;
+  background-color: #C0DEDE;
+  text-align: center;
+}
+.u-block-footer-social .w-row {
+	padding-left: 100px;
 }
 .u-lnk-footer2 {
   position: relative;
   display: block;
   margin-right: auto;
   margin-bottom: 6px;
-  color: #1f536b;
-  font-size: 12px;
   line-height: 14px;
-  font-weight: 500;
   text-decoration: none;
+  color:#42565A;
 }
 .u-lnk-footer2:hover {
   text-decoration: underline;
+  color: #607275;
 }
 .u-lnk-footer-social {
   margin-top: 10px;
   margin-right: 6px;
-  margin-left: 6px;
+  margin-left: 26px;
   padding: 2px 4px;
-  border: 1px solid #cae650;
-  font-family:'PT Sans', sans-serif;
-  color: #e1ff59;
-  font-size: 12px;
   text-decoration: none;
-}
-.u-lnk-footer-social:hover {
-  background-color: #cae650;
-  color: #1f536b;
+  width:36px;
 }
 .u-sect-card-map {
   display: block;
@@ -698,6 +694,9 @@ textarea.u-form-area-v {
 }
 .u-block-footer-logo {
   margin-top: 10px;
+}
+.u-block-footer-logo .u-t-comptitle {
+	Zcolor: #f2f5f5;
 }
 .u-t-copyright {
   margin-left: 16px;
@@ -918,8 +917,8 @@ h1.search-result {
   margin-right: 6px;
   margin-left: 6px;
   padding-top: 4px;
-  border: 1px solid #e1ff59;
-  color: #e1ff59;
+  border: 1px solid #1f536b;
+  color: #1f536b;
   text-align: center;
   text-decoration: none;
 }
@@ -933,6 +932,7 @@ h1.search-result {
   color: #1f536b;
   text-align: center;
   text-decoration: none;
+  border: 1px solid #e1ff59;
 }
 .u-lnk-lang.current:hover {
   text-decoration: underline;
@@ -1339,8 +1339,14 @@ html.w-mod-js *[data-ix="hide-on-load"] {
     padding-left: 6px;
   }
   .u-lnk-footer-social {
-    display: block;
+    display: inline-block;
   }
+  .u-lnk-footer-social .w-row {
+    padding-left:0px;
+  }
+  .u-lnk-footer-social {
+  	margin-left:2px;
+  }  
   .u-img-author-sm.sm {
     width: 62px;
     height: 62px;
@@ -1377,6 +1383,9 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   .u-btn.filter  span {
   	display:none;
   }
+	.u-block-lnk {
+		padding-left: 8px;  
+	}
 }
 
 /* --------- added ----------*/
