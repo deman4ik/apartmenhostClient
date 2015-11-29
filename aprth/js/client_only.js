@@ -1,4 +1,5 @@
-function fixFooter(){
+﻿function fixFooter(){
+	return;
 	var windowHeight = $(window).height();
 	var bodyHeight = $(".u-sect-main").height();
 	// A.K. только если это не мобильный
@@ -13,5 +14,5 @@ function fixFooter(){
 	}
 }   
 
-$(".u-sect-main").resize(function(){fixFooter();});
-$(window).resize(function(){fixFooter();});
+//$(".u-sect-main").resize(function(){fixFooter();});
+//$(window).resize(function(){fixFooter();});

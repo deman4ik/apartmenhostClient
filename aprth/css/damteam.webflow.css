@@ -1012,7 +1012,7 @@ h1.search-result {
 }
 .u-sect-main {
   height: auto; 
-  min-height: 500px;
+  min-height: 525px;
 }
 html.w-mod-js *[data-ix="hide-on-load"] {
   display: none;
@@ -1500,4 +1500,27 @@ textarea.w-input {
 .hightLight {
     color: #e65e5e;
 }
-
+@media (min-height:600px) {
+  .u-sect-main {
+    min-height: 525px;
+  }		
+}
+@media (min-height:640px) {
+  .u-sect-main {
+    min-height: 605px;
+  }		
+}
+@media (min-height:768px) {
+  .u-sect-main {
+    min-height: 752px;
+  }		
+}
+@media (min-height:960px) {
+  .u-sect-main {
+    min-height: 864px;
+  }	
+@media (min-height:1024px) {
+  .u-sect-main {
+    min-height: 950px;
+  }		
+}
