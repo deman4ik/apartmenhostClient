@@ -467,10 +467,11 @@ p {
 .u-block-footer-social {
   padding: 4px 10px 14px;
   background-color: #C0DEDE;
-  text-align: center;
+  text-align: left;
 }
 .u-block-footer-social .w-row {
-	padding-left: 100px;
+	padding-left: 33.33333333%;
+	margin-left: -33px;
 }
 .u-lnk-footer2 {
   position: relative;
