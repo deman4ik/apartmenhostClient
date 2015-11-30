@@ -89,6 +89,13 @@ var menus = [
 		menuName: "FOOTER_MENU_SOCIAL",
 		items: [
 			{
+				code: "VK", 
+				title: "UI_FOOTER_MENU_SOCIAL_VK", 
+				image: "aprth/img/vkontakte.png",
+				link: "http://www.vkontakte.com",				
+				authAccess: false
+			},		
+			{
 				code: "FaceBook", 
 				title: "UI_FOOTER_MENU_SOCIAL_FACEBOOK", 
 				image: "aprth/img/facebook.png",
