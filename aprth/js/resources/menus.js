@@ -92,7 +92,7 @@ var menus = [
 				code: "VK", 
 				title: "UI_FOOTER_MENU_SOCIAL_VK", 
 				image: "aprth/img/vkontakte.png",
-				link: "http://www.vkontakte.com",				
+				link: "http://www.vk.com",				
 				authAccess: false
 			},		
 			{
