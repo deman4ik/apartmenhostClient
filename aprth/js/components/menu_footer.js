@@ -15,9 +15,19 @@ var FooterMainMenu = React.createClass({
 			menuReady: false
 		}
 	},
+	//оповещение родителя о нажатии на пункт меню
+	notifyParentMenuItemClick: function (menuItem) {
+		if((this.props.onMenuItemClick)&&(Utils.isFunction(this.props.onMenuItemClick))) {
+			this.props.onMenuItemClick(menuItem);
+		}
+	},
 	//обработка нажатия на пункт меню
-	onFooterMenuClick: function (menuItem) {		
-		this.context.router.transitionTo(menuItem.link, menuItem.linkParams, menuItem.linkQuery);
+	onFooterMenuClick: function (menuItem) {
+		if(menuItem.link == "NOTIFY_PARENT") {
+			this.notifyParentMenuItemClick(menuItem);
+		} else {
+			this.context.router.transitionTo(menuItem.link, menuItem.linkParams, menuItem.linkQuery);
+		}		
 	},
 	//инициализация компонента при подключении к страничке
 	componentDidMount: function () {

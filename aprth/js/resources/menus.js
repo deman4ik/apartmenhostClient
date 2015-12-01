@@ -76,9 +76,9 @@ var menus = [
 			{
 				code: "Contacts", 
 				title: "UI_FOOTER_MENU_CONTACT", 
-				link: "articles", 
+				link: "NOTIFY_PARENT", 
 				linkParams: {},
-				linkQuery: {filter: {name: "CONTACTS"}, title: "UI_FOOTER_MENU_CONTACT", convertTitle: true}, 
+				linkQuery: {}, 
 				authAccess: false, 
 				col: 2
 			}

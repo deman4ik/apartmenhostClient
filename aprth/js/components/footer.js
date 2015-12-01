@@ -2,12 +2,24 @@
 	Подвал страниц
 */
 var Footer = React.createClass({
+	//оповещение родителя о нажатии на пункт меню
+	notifyParentMenuItemClick: function (menuItem) {
+		if((this.props.onMenuItemClick)&&(Utils.isFunction(this.props.onMenuItemClick))) {
+			this.props.onMenuItemClick(menuItem);
+		}
+	},
+	//обработка нажатия на пункт меню
+	handleMenuItemClick: function (menuItem) {
+		this.notifyParentMenuItemClick(menuItem);
+	},
 	//генерация представления подвала
 	render: function () {
 		//основное меню подвала
-		var menuFooter = <FooterMainMenu session={this.props.session} language={this.props.language}/>
+		var menuFooter =	<FooterMainMenu session={this.props.session} 
+								language={this.props.language}
+								onMenuItemClick={this.handleMenuItemClick}/>
 		//меню социальных сервисов подвала
-		var menuFooterSocial = <FooterSocialMenu language={this.props.language}/>			
+		var menuFooterSocial = <FooterSocialMenu language={this.props.language}/>
 		//меню языков подвала
 		var menuFooterLanguage;
 		if(this.props.languageEnabled)

@@ -53,6 +53,10 @@ var App = React.createClass({
 				title: "", //заголовок
 				text: "" //текст
 			},
+			//состояние диалога обратной связи
+			displayContactUs: false,
+			//форма обратной связи
+			contactUsForm: {}
 		};
 	},
 	//инициализация объекта описывающего поведение системы после входа/выхода
@@ -65,6 +69,58 @@ var App = React.createClass({
 				prms: {}
 			}
 		}
+	},
+	//сборка формы обратной связи
+	buildСontactUsForm: function () {
+		var formTmp = formFactory.buildForm({
+			language: this.state.language,
+			title: Utils.getStrResource({lang: this.state.language, code: "UI_TITLE_CONTACT"})
+		});
+		var nameItemTmp = formFactory.buildFormItem({
+			language: this.state.language,
+			label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_FIRST_NAME"}),
+			name: "userName",
+			dataType: formFactory.itemDataType.STR,
+			inputType: formFactory.itemInputType.MANUAL,
+			required: true,
+			value: ""
+		});
+		var textItemTmp = formFactory.buildFormItem({
+			language: this.state.language,
+			label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_MESSAGE"}),
+			name: "messageText",
+			dataType: formFactory.itemDataType.STR,
+			inputType: formFactory.itemInputType.TEXT,
+			required: true,
+			value: ""
+		});
+		var mailItemTmp = formFactory.buildFormItem({
+			language: this.state.language,
+			label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_MAIL"}),
+			name: "userMail",
+			dataType: formFactory.itemDataType.STR,
+			inputType: formFactory.itemInputType.MANUAL,
+			required: true,
+			value: ""
+		});
+		if(!this.state.session.loggedIn) formFactory.appedFormItem(formTmp, nameItemTmp);
+		formFactory.appedFormItem(formTmp, textItemTmp);
+		if(!this.state.session.loggedIn) formFactory.appedFormItem(formTmp, mailItemTmp);
+		this.setState({contactUsForm: formTmp});
+	},
+	//отправка формы обратной связи
+	onContactUsFormOK: function (values) {
+		console.log(values);
+		if(_.find(values, {name: "userName"}))console.log(_.find(values, {name: "userName"}).value);
+		console.log(_.find(values, {name: "messageText"}).value);
+		if(_.find(values, {name: "userMail"}))console.log(_.find(values, {name: "userMail"}).value);
+		this.setState({displayContactUs: false}, this.buildСontactUsForm);
+		this.showDialogMessage(Utils.getStrResource({lang: this.state.language, code: "CLNT_COMMON_SUCCESS"}), 
+			Utils.getStrResource({lang: this.state.language, code: "CLNT_FEEDBACK_SENT"}));
+	},
+	//отмена отправки формы обратной связи
+	onContactUsFormCancel: function () {
+		this.setState({displayContactUs: false}, this.buildСontactUsForm);
 	},
 	//отработка действия после входа/выхода
 	processAfterAuth: function () {
@@ -86,7 +142,7 @@ var App = React.createClass({
 	},
 	//установка языка приложения
 	setLanguage: function (language) {
-		this.setState({language: language});
+		this.setState({language: language}, this.buildСontactUsForm);
 	},
 	//отображение индикатора процесса
 	showLoader: function (title, text) {
@@ -155,6 +211,7 @@ var App = React.createClass({
 			}, 
 			function () {				
 				Utils.saveObjectState("sessionState", this.state.session);
+				this.buildСontactUsForm();
 				this.processAfterAuth();
 			}
 		);
@@ -178,6 +235,7 @@ var App = React.createClass({
 			function () {
 				Utils.deleteObjectState("sessionState");
 				Utils.deleteObjectState("filterParams");
+				this.buildСontactUsForm();
 				this.processAfterAuth();
 			}
 		);
@@ -192,6 +250,12 @@ var App = React.createClass({
 	//смена размеров окна
 	handleResize: function () {
 		fixFooter();
+	},
+	//выбор пункта меню в футере
+	handleFooterItemClick: function (menuItem) {
+		if(menuItem.code = "Contacts") {
+			this.setState({displayContactUs: true});
+		}
 	},
 	//изменение профиля пользователя
 	handleProfileChange: function (newProfile) {		
@@ -213,13 +277,16 @@ var App = React.createClass({
 				language: config.languageDefault,
 				languageEnabled: config.languagesEnabled,
 				appReady: true
-			});
+			}, Utils.bind(function() {this.buildСontactUsForm();}, this));
 		} else {
 			this.setState({language: config.languageDefault,
 				languageEnabled: config.languagesEnabled,
 				appReady: true
-			});
-		}
+			}, Utils.bind(function() {this.buildСontactUsForm();}, this));
+		}		
+	},
+	//обновление свойств компонента
+	componentWillReceiveProps: function (newProps) {				
 	},
 	//завершение перерисовки состояния
 	componentDidUpdate: function (prevProps, prevState) {
@@ -244,6 +311,15 @@ var App = React.createClass({
 													defaultUser={config.demoUser}
 													defaultPassword={config.demoPassword}
 													language={this.state.language}/>;
+		//форма жалобы
+		var contactForm;
+		if(this.state.displayContactUs) {
+			contactForm =	<FormBuilder form={this.state.contactUsForm} 
+					onOK={this.onContactUsFormOK} 
+					onChancel={this.onContactUsFormCancel} 
+					onShowError={this.showDialogError}
+					language={this.state.language}/>
+		}
 		//навигация
 		var navBar;
 		navBar =	<NavBar session={this.state.session}
@@ -257,7 +333,8 @@ var App = React.createClass({
 		footer =	<Footer session={this.state.session} 
 						language={this.state.language}
 						languageEnabled={this.state.languageEnabled}
-						onLangugeChange={this.handleLanguageChange}/>
+						onLangugeChange={this.handleLanguageChange}
+						onMenuItemClick={this.handleFooterItemClick}/>
 		//общее содержимое
 		var content;
 		if(this.state.appReady) {
@@ -266,6 +343,7 @@ var App = React.createClass({
 							{message}
 							{logInForm}
 							{navBar}
+							{contactForm}
 							<RouteHandler session={this.state.session}
 								onLogIn={this.handleLogIn}
 								onDisplayProgress={this.showLoader}
