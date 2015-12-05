@@ -70,8 +70,49 @@ var App = React.createClass({
 			}
 		}
 	},
+	//обработка результата отправки обратной связи
+	handleSendContactUsResult: function (resp) {
+		this.hideLoader();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.showDialogError(Utils.getStrResource({lang: this.state.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			this.setState({displayContactUs: false}, this.buildСontactUsForm);
+			this.showDialogMessage(Utils.getStrResource({lang: this.state.language, code: "CLNT_COMMON_SUCCESS"}), 
+				Utils.getStrResource({lang: this.state.language, code: "CLNT_FEEDBACK_SENT"}));
+		}
+	},
+	//отправка обратной связи
+	sendContactUs: function (userName, email, text) {
+		this.showLoader();
+		var sendPrms = {
+			language: this.state.language,
+			data: {
+				userName: userName,
+				email: email,
+				type: "FEEDBACK",
+				text: text,
+				answerByEmail: (((email)&&(email != ""))?true:false)
+			}
+		}
+		clnt.feedBack(sendPrms, this.handleSendContactUsResult);
+	},
 	//сборка формы обратной связи
 	buildСontactUsForm: function () {
+		var textItemLabel = Utils.getStrResource({lang: this.state.language, code: "UI_FLD_MESSAGE"});
+		if(this.state.session.loggedIn) {
+			if(this.state.session.sessionInfo) {
+				if((this.state.session.sessionInfo.user.profile.email)&&(this.state.session.sessionInfo.user.profile.firstName)) {
+					textItemLabel = Utils.getStrResource({
+						lang: this.state.language, 
+						code: "UI_FLD_MESSAGE_LI", 
+						values: [
+							this.state.session.sessionInfo.user.profile.firstName,
+							this.state.session.sessionInfo.user.profile.email
+						]
+					});	
+				}
+			}
+		}
 		var formTmp = formFactory.buildForm({
 			language: this.state.language,
 			title: Utils.getStrResource({lang: this.state.language, code: "UI_TITLE_CONTACT"})
@@ -87,7 +128,7 @@ var App = React.createClass({
 		});
 		var textItemTmp = formFactory.buildFormItem({
 			language: this.state.language,
-			label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_MESSAGE"}),
+			label: textItemLabel,
 			name: "messageText",
 			dataType: formFactory.itemDataType.STR,
 			inputType: formFactory.itemInputType.TEXT,
@@ -100,7 +141,7 @@ var App = React.createClass({
 			name: "userMail",
 			dataType: formFactory.itemDataType.STR,
 			inputType: formFactory.itemInputType.MANUAL,
-			required: true,
+			required: false,
 			value: ""
 		});
 		if(!this.state.session.loggedIn) formFactory.appedFormItem(formTmp, nameItemTmp);
@@ -110,13 +151,24 @@ var App = React.createClass({
 	},
 	//отправка формы обратной связи
 	onContactUsFormOK: function (values) {
-		console.log(values);
-		if(_.find(values, {name: "userName"}))console.log(_.find(values, {name: "userName"}).value);
-		console.log(_.find(values, {name: "messageText"}).value);
-		if(_.find(values, {name: "userMail"}))console.log(_.find(values, {name: "userMail"}).value);
-		this.setState({displayContactUs: false}, this.buildСontactUsForm);
-		this.showDialogMessage(Utils.getStrResource({lang: this.state.language, code: "CLNT_COMMON_SUCCESS"}), 
-			Utils.getStrResource({lang: this.state.language, code: "CLNT_FEEDBACK_SENT"}));
+		var userName = "";
+		var email = "";
+		var text = "";
+		if(_.find(values, {name: "userName"})) {
+			userName = _.find(values, {name: "userName"}).value;
+		} else {
+			if(this.state.session.loggedIn)
+				userName = this.state.session.sessionInfo.user.profile.firstName;
+		}
+		if(_.find(values, {name: "userMail"})) {
+			email = _.find(values, {name: "userMail"}).value;
+		} else {
+			if(this.state.session.loggedIn)
+				email = this.state.session.sessionInfo.user.profile.email;
+		}
+		if(_.find(values, {name: "messageText"})) 
+			text = _.find(values, {name: "messageText"}).value;
+		this.sendContactUs(userName, email, text);
 	},
 	//отмена отправки формы обратной связи
 	onContactUsFormCancel: function () {

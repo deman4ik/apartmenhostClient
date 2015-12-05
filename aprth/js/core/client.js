@@ -36,7 +36,8 @@ var Client = function (clientConfig) {
 		registerConfirm: "EmailConfirm", //подтверждение регистрации
 		resetPassword: "PasswordReset", //запрос на сброс пароля
 		changePassword: "PasswordChange", //смена пароля
-		article: "Article" //статьи
+		article: "Article", //статьи
+		feedBack: "Feedback" //обратная связь и жалобы
 	}
 	//коды стандартных ответов сервера
 	var serverStdErrCodes = {
@@ -498,7 +499,7 @@ var Client = function (clientConfig) {
 					break;
 				}
 				//работа со статьями
-				case(serverActions.article): {					
+				case(serverActions.article): {
 					if(!prms.method) 
 						throw new Error(Utils.getStrResource({
 							lang: prms.language,
@@ -562,6 +563,41 @@ var Client = function (clientConfig) {
 							throw new Error("Метод '" + prms.method + "' для действия '" + prms.action + "' не поддерживается сервером!");
 						}
 					}					
+					break;
+				}
+				//отзывы и жалобы
+				case(serverActions.feedBack): {
+					if(!prms.data)
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));
+					if(!prms.data.userName) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "userName"]
+						}));
+					if(!prms.data.type) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "type"]
+						}));
+					if(!prms.data.text) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "text"]
+						}));
+					if(!("answerByEmail" in prms.data))
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "answerByEmail"]
+						}));					
+					return fillSrvStdReqData(serverActions.feedBack, serverMethods.ins, prms.data);
 					break;
 				}
 				//неизвестное действие
@@ -1497,6 +1533,32 @@ var Client = function (clientConfig) {
 				});
 			} catch (error) {
 				log(["REMOVE ARTICLES ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//добавление жалобы/обратной связи
+		feedBack: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.feedBack,
+						method: serverMethods.ins,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["FEEDBACK ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}

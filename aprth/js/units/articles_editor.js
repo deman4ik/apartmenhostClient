@@ -95,7 +95,6 @@ var AriclesEditor = React.createClass({
 				this.updateArticle(artTmp);
 			}
 		});
-
 	},
 	//на форме добавления/исправления нажали ОТМЕНА
 	onIUFormChancel: function () {
