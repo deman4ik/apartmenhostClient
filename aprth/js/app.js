@@ -98,25 +98,10 @@ var App = React.createClass({
 	},
 	//сборка формы обратной связи
 	buildСontactUsForm: function () {
-		//var textItemLabel = Utils.getStrResource({lang: this.state.language, code: "UI_FLD_MESSAGE"});
 		var formTmp;
 		var nameItemTmp;
 		var mailItemTmp;
 		var textItemTmp;
-		/*if(this.state.session.loggedIn) {
-			if(this.state.session.sessionInfo) {
-				if((this.state.session.sessionInfo.user.profile.email)&&(this.state.session.sessionInfo.user.profile.firstName)) {
-					textItemLabel = Utils.getStrResource({
-						lang: this.state.language, 
-						code: "UI_FLD_MESSAGE_LI", 
-						values: [
-							this.state.session.sessionInfo.user.profile.firstName,
-							this.state.session.sessionInfo.user.profile.email
-						]
-					});	
-				}
-			}
-		}*/
 		formTmp = formFactory.buildForm({
 			language: this.state.language,
 			title: Utils.getStrResource({lang: this.state.language, code: "UI_TITLE_CONTACT"})
@@ -130,7 +115,7 @@ var App = React.createClass({
 			required: true,
 			value: ""
 		});
-		if (this.state.session.loggedIn && this.state.session.sessionInfo) {		
+		if ((this.state.session.loggedIn)&&(this.state.session.sessionInfo)) {
 			nameItemTmp = formFactory.buildFormItem({
 				language: this.state.language,
 				label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_FIRST_NAME"}),
@@ -170,32 +155,21 @@ var App = React.createClass({
 				value: ""
 			});
 		}
-		//if(!this.state.session.loggedIn) 
 		formFactory.appedFormItem(formTmp, nameItemTmp);
 		formFactory.appedFormItem(formTmp, mailItemTmp);
 		formFactory.appedFormItem(formTmp, textItemTmp);
-		//if(!this.state.session.loggedIn) 
 		this.setState({contactUsForm: formTmp});
 	},
 	//отправка формы обратной связи
 	onContactUsFormOK: function (values) {
+		console.log(values);
+		return;
 		var userName = "";
 		var email = "";
 		var text = "";
-		if(_.find(values, {name: "userName"})) {
-			userName = _.find(values, {name: "userName"}).value;
-		} else {
-			if(this.state.session.loggedIn)
-				userName = this.state.session.sessionInfo.user.profile.firstName;
-		}
-		if(_.find(values, {name: "userMail"})) {
-			email = _.find(values, {name: "userMail"}).value;
-		} else {
-			if(this.state.session.loggedIn)
-				email = this.state.session.sessionInfo.user.profile.email;
-		}
-		if(_.find(values, {name: "messageText"})) 
-			text = _.find(values, {name: "messageText"}).value;
+		if(_.find(values, {name: "userName"})) userName = _.find(values, {name: "userName"}).value;
+		if(_.find(values, {name: "userMail"})) email = _.find(values, {name: "userMail"}).value;
+		if(_.find(values, {name: "messageText"})) text = _.find(values, {name: "messageText"}).value;
 		this.sendContactUs(userName, email, text);
 	},
 	//отмена отправки формы обратной связи
