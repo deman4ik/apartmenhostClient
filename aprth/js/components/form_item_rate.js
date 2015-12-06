@@ -49,8 +49,7 @@ var FormItemRate = React.createClass({
 			var cItem = React.addons.classSet;
 			var classesItem = cItem({
 				"form-group": true,
-				"has-error": (("valid" in this.state.item)&&(!this.state.item.valid)),
-				"has-success": ((this.state.item.required)&&((("valid" in this.state.item)&&(this.state.item.valid))))
+				"has-error": (("valid" in this.state.item)&&(!this.state.item.valid))
 			});
 			//собираем элемент
 			item =	<div className={classesItem}>

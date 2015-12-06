@@ -74,16 +74,15 @@ var FormItemInput = React.createClass({
 			var cItem = React.addons.classSet;
 			var classesItem = cItem({
 				"form-group": true,
-				"has-error": (("valid" in this.state.item)&&(!this.state.item.valid)) /*,
-				"has-success": ((this.state.item.required)&&((("valid" in this.state.item)&&(this.state.item.valid))))*/
+				"has-error": (("valid" in this.state.item)&&(!this.state.item.valid))
 			});
 			var classesInput = cItem({
 				"w-input": true,
 				"u-form-field": true,
-				"hidden": (this.state.item.inputType==formFactory.itemInputType.LBL)
+				"hidden": (this.state.item.inputType == formFactory.itemInputType.LBL)
 			});
 			var itemLabelType;
-			if (this.state.item.inputType==formFactory.itemInputType.LBL) {
+			if (this.state.item.inputType == formFactory.itemInputType.LBL) {
 				itemLabelType = <span>{this.state.item.value}</span>
 			}			
 			//собираем элемент
