@@ -278,9 +278,13 @@ var Profile = React.createClass({
 			clnt.addReview(addPrms, this.handleAddReview);
 		}
 	},
+	//переход на страницу объявления
+	goToPost: function (postId) {
+		this.context.router.transitionTo("post", {postId: postId}, {});
+	},
 	//обработка нажатия на карточку объявления
 	handlePostClick: function (post) {
-		this.context.router.transitionTo("post", {postId: post.id}, {});
+		this.goToPost(post.id);
 	},
 	//обработка нажатия на кнопку редактирования карточки объявления
 	handlePostEditClick: function (post) {
@@ -335,6 +339,10 @@ var Profile = React.createClass({
 	//обработка нажатий на ссылки на пользователей
 	handleUserClick: function (userId) {
 		this.context.router.transitionTo("user", {userId: userId});
+	},
+	//обработка нажатия на пост в закладке отзывов
+	handleReviewPostClick: function (item) {
+		this.goToPost(item.reservation.card.id);
 	},
 	//обработка изменения профиля
 	handleProfileChange: function (newProfile) {		
@@ -503,7 +511,7 @@ var Profile = React.createClass({
 														<p className="u-t-light">
 															{Utils.getStrResource({lang: this.props.language, code: "CLNT_CAN_NOT_ADD_REVIEW"})}
 														</p>
-													</div>											
+													</div>
 									}
 								}
 								return (
@@ -613,46 +621,48 @@ var Profile = React.createClass({
 								return (
 									<div className="w-row u-row-underline">
 										<div className="w-col w-col w-col-4 w-col-small-4">
-											<div className="w-row u-row-cardhist">
-												<div className="w-col w-col-6 w-col-stack">
-													<div>
-														<img src={item.reservation.card.apartment.defaultPicture.url}/>
-														<img className="u-img-author-sm sm"
-															src={item.reservation.card.user.picture.small}/>
+											<a href="javascript:void(0);" onClick={this.handleReviewPostClick.bind(this, item)}>
+												<div className="w-row u-row-cardhist">
+													<div className="w-col w-col-6 w-col-stack">
+														<div>
+															<img src={item.reservation.card.apartment.defaultPicture.url}/>
+															<img className="u-img-author-sm sm"
+																src={item.reservation.card.user.picture.small}/>
+														</div>
 													</div>
-												</div>
-												<div className="w-col w-col-6 w-col-stack">
-													<div className="u-block-card-desc">
-														<p>
-															{item.reservation.card.user.firstName + " " + item.reservation.card.user.lastName}
-															<br/>
-															{item.reservation.card.apartment.adress + ", " + Utils.getStrResource({lang: this.props.language, code: item.reservation.card.apartment.type})}
-														</p>
-														<div className="u-t-price price-sm">
-															<strong>
-																{item.reservation.card.priceDay}&nbsp;
-																{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
-																{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"})}
-															</strong>
+													<div className="w-col w-col-6 w-col-stack">
+														<div className="u-block-card-desc">
+															<p>
+																{item.reservation.card.user.firstName + " " + item.reservation.card.user.lastName}
+																<br/>
+																{item.reservation.card.apartment.adress + ", " + Utils.getStrResource({lang: this.props.language, code: item.reservation.card.apartment.type})}
+															</p>
+															<div className="u-t-price price-sm">
+																<strong>
+																	{item.reservation.card.priceDay}&nbsp;
+																	{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
+																	{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"})}
+																</strong>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-											<div className="w-row u-row-cardhist bottom">
-												<div className="w-col w-col-6 w-col-stack u-col-cardhist">
-													<div>
-														<Rater total={5} rating={item.reservation.card.user.rating} ratingCount={item.reservation.card.user.ratingCount}/>
+												<div className="w-row u-row-cardhist bottom">
+													<div className="w-col w-col-6 w-col-stack u-col-cardhist">
+														<div>
+															<Rater total={5} rating={item.reservation.card.user.rating} ratingCount={item.reservation.card.user.ratingCount}/>
+														</div>
+													</div>
+													<div className="w-col w-col-6 w-col-stack u-col-cardhist">
+														<div className="u-t-small date1">
+															{Utils.formatDate({lang: this.props.language, 
+																date: item.reservation.dateFrom}) + " - " + 
+															Utils.formatDate({lang: this.props.language, 
+																date: item.reservation.dateTo})}
+														</div>
 													</div>
 												</div>
-												<div className="w-col w-col-6 w-col-stack u-col-cardhist">
-													<div className="u-t-small date1">
-														{Utils.formatDate({lang: this.props.language, 
-															date: item.reservation.dateFrom}) + " - " + 
-														Utils.formatDate({lang: this.props.language, 
-															date: item.reservation.dateTo})}
-													</div>
-												</div>
-											</div>
+											</a>
 										</div>
 										{reviewToMe}
 										{myReview}
@@ -673,8 +683,9 @@ var Profile = React.createClass({
 					case(ProfileReviewsTabs[2]): {
 						if(this.state.orders.count > 0) {
 							var tabItems = this.state.orders.list.map(function (item, i) {
+								console.log(item);
 								var arrow;
-								if(item.type == ProfileOrdersTypes.owner) {
+								if(item.type != ProfileOrdersTypes.owner) {
 									arrow = <span className="glyphicon u-request-direct glyphicon-arrow-right"></span>
 								} else {
 									arrow = <span className="glyphicon u-request-direct glyphicon-arrow-left my"></span>
@@ -718,6 +729,13 @@ var Profile = React.createClass({
 								return (
 									<div className="w-row u-row-underline">
 										<div className="w-col w-col-1 u-col-query">
+											<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.card.user.id)}>
+												<div className="u-block-author-reviewlst">
+													<img className="u-img-author-m" src={item.card.user.picture.large}/>
+												</div>
+											</a>
+										</div>
+										<div className="w-col w-col-1 u-col-query">
 											{arrow}
 										</div>
 										<div className="w-col w-col-1 u-col-query">
@@ -739,7 +757,7 @@ var Profile = React.createClass({
 												Utils.formatDate({lang: this.props.language, 
 													date: item.dateTo})}
 										</div>
-										<div className="w-col w-col-5 w-clearfix u-col-query u-t-center">
+										<div className="w-col w-col-4 w-clearfix u-col-query u-t-center">
 											{orderState}
 										</div>
 									</div>										

@@ -1285,7 +1285,8 @@ var Client = function (clientConfig) {
 							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
 							resp.MESSAGE.map(function (item, i) {
 								if(item.card) {
-									if(item.card.apartment) Utils.setApartmentDefaultPicture(item.card.apartment);									
+									if(item.card.apartment) Utils.setApartmentDefaultPicture(item.card.apartment);
+									if(item.card.user) Utils.setProfileDefaultPicture(item.card.user);
 								}
 								if(item.user) Utils.setProfileDefaultPicture(item.user);
 							}, this);

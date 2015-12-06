@@ -217,6 +217,7 @@ var Utils = {
 	setProfileDefaultPicture: function (user) {
 		if((!user.picture)||(!user.picture.url)) {
 			user.picture = {};
+			user.picture.large = config.defaultProfilePictureUrl;
 			user.picture.url = config.defaultProfilePictureUrl;
 			user.picture.mid = config.defaultProfilePictureUrl;
 			user.picture.default = true;
