@@ -162,8 +162,6 @@ var App = React.createClass({
 	},
 	//отправка формы обратной связи
 	onContactUsFormOK: function (values) {
-		console.log(values);
-		return;
 		var userName = "";
 		var email = "";
 		var text = "";
