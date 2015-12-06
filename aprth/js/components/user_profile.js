@@ -1,6 +1,13 @@
 /*
 	Профиль пользователя
 */
+//состояние подтвержденности телефона профиля
+var ProfilePhoneState = {
+	unConfirmed: "UNCONF",
+	confirmPending: "PENDING",
+	confirmed: "CONF"
+}
+//класс профиля
 var UserProfile = React.createClass({
 	//состояние профиля
 	getInitialState: function () {
@@ -12,8 +19,40 @@ var UserProfile = React.createClass({
 			notifyParentProfileChanged: false, //флаг необходимости оповещения родителя о смене профиля пользователя
 			modeEdit: false, //режим редактирования профиля	
 			displayChPwd: false, //флаг отображения формы смены пароля
-			chPwdForm: {}, //форма смены пароля
+			displayPhoneConf: false, //флаг отображения формы подтверждения телефона
+			phoneConfForm: {}, //форма подтверждения телефона
+			chPwdForm: {} //форма смены пароля
 		}
+	},
+	//сборка формы подтверждения телефона
+	buildPhoneConfForm: function (props) {
+		var formTmp = formFactory.buildForm({
+			language: props.language,
+			title: Utils.getStrResource({lang: props.language, code: "UI_TITLE_CONF_PHONE"})
+		});
+		var codeItemTmp = formFactory.buildFormItem({
+			language: props.language,
+			label: Utils.getStrResource({lang: props.language, code: "UI_FLD_CONF_CODE"}),
+			name: "confCode",
+			dataType: formFactory.itemDataType.NUMB,
+			inputType: formFactory.itemInputType.MANUAL,
+			required: true,
+			value: ""
+		});
+		formFactory.appedFormItem(formTmp, codeItemTmp);
+		this.setState({phoneConfForm: formTmp});
+	},
+	//отправка подтверждения телефона
+	onPhoneConfFormOK: function (values) {		
+		console.log(values);
+		var tmpProf = {};
+		_.extend(tmpProf, this.state.profile);
+		tmpProf.phoneStatus = ProfilePhoneState.confirmed;
+		this.setState({displayPhoneConf: false, profile: tmpProf}, function() {this.buildPhoneConfForm(this.props);});
+	},
+	//отмена подтверждения телефона
+	onPhoneConfFormChancel: function () {
+		this.setState({displayPhoneConf: false}, function() {this.buildPhoneConfForm(this.props);});
 	},
 	//сборка формы смены пароля
 	buildChPwdForm: function (props) {
@@ -124,7 +163,8 @@ var UserProfile = React.createClass({
 		this.props.onHideProgress();
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
-		} else {		
+		} else {
+			resp.MESSAGE.phoneStatus = ProfilePhoneState.unConfirmed;
 			this.setState({profile: resp.MESSAGE, profileTmp: resp.MESSAGE, profileReady: true});
 			if(this.state.notifyParentProfileChanged) {
 				this.setState({notifyParentProfileChanged: false}, this.notifyParentProfileChanged);
@@ -219,12 +259,14 @@ var UserProfile = React.createClass({
 	},	
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
+		this.buildPhoneConfForm(this.props);
 		this.buildChPwdForm(this.props);
 		this.setState({notifyParentProfileLoaded: true}, this.loadProfile);
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
-		if(newProps.language != this.props.language) {			
+		if(newProps.language != this.props.language) {
+			this.buildPhoneConfForm(newProps);		
 			this.buildChPwdForm(newProps);
 		}
 		if(newProps.profileId != this.props.profileId) {
@@ -269,7 +311,21 @@ var UserProfile = React.createClass({
 			session: this.props.session.sessionInfo
 		}
 		clnt.updateProfile(updPrms, this.handleProfileUpdateResult);
-	},		
+	},
+	//обработка нажатия на подтверждение телефона
+	handlePhoneConfClick: function () {
+		if(this.state.profile.phoneStatus == ProfilePhoneState.unConfirmed) {
+			var tmpProf = {};
+			_.extend(tmpProf, this.state.profile);
+			tmpProf.phoneStatus = ProfilePhoneState.confirmPending;
+			this.setState({profile: tmpProf});
+			this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
+				Utils.getStrResource({lang: this.props.language, code: "CLNT_PHONE_CONF_SENT"}));			
+		}
+		if(this.state.profile.phoneStatus == ProfilePhoneState.confirmPending) {
+			this.setState({displayPhoneConf: true})
+		}
+	},
 	//генерация представления профиля
 	render: function () {
 		//содержимое профиля
@@ -280,10 +336,19 @@ var UserProfile = React.createClass({
 			var chPwdForm;
 			if(this.state.displayChPwd) {
 				chPwdForm =	<FormBuilder form={this.state.chPwdForm} 
-					onOK={this.onChPwdFormOK} 
-					onChancel={this.onChPwdFormChancel} 
-					onShowError={this.props.onShowError}
-					language={this.props.language}/>
+								onOK={this.onChPwdFormOK} 
+								onChancel={this.onChPwdFormChancel} 
+								onShowError={this.props.onShowError}
+								language={this.props.language}/>
+			}
+			//форма ввода кода подтверждения
+			var phoneConfForm;
+			if(this.state.displayPhoneConf) {
+				phoneConfForm =	<FormBuilder form={this.state.phoneConfForm} 
+									onOK={this.onPhoneConfFormOK} 
+									onChancel={this.onPhoneConfFormChancel} 
+									onShowError={this.props.onShowError}
+									language={this.props.language}/>
 			}
 			//аватар
 			var userPictureEditor;
@@ -396,7 +461,21 @@ var UserProfile = React.createClass({
 									onChange={this.handleFormItemChange}/>
 							</div>
 			} else {
-				userPhone = <div><strong>{this.state.profile.phone}</strong></div>
+				var phoneState;
+				if(this.state.profile.phoneStatus == ProfilePhoneState.unConfirmed) {
+					phoneState = 	<a className="u-t-right u-lnk-norm" href="javascript:void(0);" onClick={this.handlePhoneConfClick}>
+										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_PHONE_CONFIRM"})}
+									</a>
+				}
+				if(this.state.profile.phoneStatus == ProfilePhoneState.confirmPending) {
+					phoneState =	<a className="u-t-right u-lnk-norm" href="javascript:void(0);" onClick={this.handlePhoneConfClick}>
+										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_PHONE_ENTER_CODE"})}
+									</a>
+				}
+				if(this.state.profile.phoneStatus == ProfilePhoneState.confirmed) {
+					phoneState = <span>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PHONE_CONFIRMED"})}</span>
+				}
+				userPhone = <div><strong>{this.state.profile.phone}</strong>&nbsp;{phoneState}</div>
 			}
 			//о себе
 			var userDesc;
@@ -440,6 +519,7 @@ var UserProfile = React.createClass({
 			//финальная сборка содержимого
 			content =	<div>
 							{chPwdForm}
+							{phoneConfForm}
 							<div className="u-block-underline h3">
 								<h3>{Utils.getStrResource({lang: this.props.language, code: userProfileTitleCode})}</h3>
 							</div>

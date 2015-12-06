@@ -32,8 +32,8 @@ var Profile = React.createClass({
 			advertsCount: 0, //счетчик объявлений профиля
 			advertsLoaded: false, //флаг загруженности объявлений профиля
 			confirmDeletePost: false, //флаг отображения подтверждения удаления объявления
-			displayAddReview: false, //флаг отображения формы добавления отзыва			
-			addReviewForm: {}, //форма добавления отзыва			
+			displayAddReview: false, //флаг отображения формы добавления отзыва
+			addReviewForm: {}, //форма добавления отзыва
 			currentReviewItem: {}, //элемент, на который оставляем отзыв
 			reviewsIn: { //меня бронировали
 				loaded: false, //список загружен
