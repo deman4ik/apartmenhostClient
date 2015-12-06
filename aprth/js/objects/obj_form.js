@@ -14,7 +14,8 @@ var FormFactory = function () {
 		TEXT: "text", //ручной ввод в текстовое многострочное поле
 		DICT: "dict", //выбор из словаря
 		RATE: "rate", //ввод через указание рейтинга
-		PWD: "password" //пароль
+		PWD: "password", //пароль
+		LBL: "label" // просто надпись
 	}
 	//конвертация серверного типа данных в клиентский
 	var convertDataTypeToClient = function (serverDataType) {

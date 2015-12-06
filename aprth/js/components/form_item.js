@@ -80,6 +80,11 @@ var FormItem = React.createClass({
 											isPassword={true}/>
 							break;
 						}
+						case(formFactory.itemInputType.LBL): {
+							content =	<FormItemInput item={this.state.item} 
+											language={this.props.language}/>
+							break;
+						}						
 						default: {
 						}
 					}

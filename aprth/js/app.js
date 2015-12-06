@@ -98,8 +98,12 @@ var App = React.createClass({
 	},
 	//сборка формы обратной связи
 	buildСontactUsForm: function () {
-		var textItemLabel = Utils.getStrResource({lang: this.state.language, code: "UI_FLD_MESSAGE"});
-		if(this.state.session.loggedIn) {
+		//var textItemLabel = Utils.getStrResource({lang: this.state.language, code: "UI_FLD_MESSAGE"});
+		var formTmp;
+		var nameItemTmp;
+		var mailItemTmp;
+		var textItemTmp;
+		/*if(this.state.session.loggedIn) {
 			if(this.state.session.sessionInfo) {
 				if((this.state.session.sessionInfo.user.profile.email)&&(this.state.session.sessionInfo.user.profile.firstName)) {
 					textItemLabel = Utils.getStrResource({
@@ -112,41 +116,65 @@ var App = React.createClass({
 					});	
 				}
 			}
-		}
-		var formTmp = formFactory.buildForm({
+		}*/
+		formTmp = formFactory.buildForm({
 			language: this.state.language,
 			title: Utils.getStrResource({lang: this.state.language, code: "UI_TITLE_CONTACT"})
 		});
-		var nameItemTmp = formFactory.buildFormItem({
+		textItemTmp = formFactory.buildFormItem({
 			language: this.state.language,
-			label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_FIRST_NAME"}),
-			name: "userName",
-			dataType: formFactory.itemDataType.STR,
-			inputType: formFactory.itemInputType.MANUAL,
-			required: true,
-			value: ""
-		});
-		var textItemTmp = formFactory.buildFormItem({
-			language: this.state.language,
-			label: textItemLabel,
+			label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_MESSAGE"}),
 			name: "messageText",
 			dataType: formFactory.itemDataType.STR,
 			inputType: formFactory.itemInputType.TEXT,
 			required: true,
 			value: ""
 		});
-		var mailItemTmp = formFactory.buildFormItem({
-			language: this.state.language,
-			label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_MAIL"}),
-			name: "userMail",
-			dataType: formFactory.itemDataType.STR,
-			inputType: formFactory.itemInputType.MANUAL,
-			required: false,
-			value: ""
-		});
-		if(!this.state.session.loggedIn) formFactory.appedFormItem(formTmp, nameItemTmp);
+		if (this.state.session.loggedIn && this.state.session.sessionInfo) {		
+			nameItemTmp = formFactory.buildFormItem({
+				language: this.state.language,
+				label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_FIRST_NAME"}),
+				name: "userName",
+				dataType: formFactory.itemDataType.STR,
+				inputType: formFactory.itemInputType.LBL,
+				required: true,
+				value: this.state.session.sessionInfo.user.profile.firstName
+			});		
+			mailItemTmp = formFactory.buildFormItem({
+				language: this.state.language,
+				label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_MAIL"}),
+				name: "userMail",
+				dataType: formFactory.itemDataType.STR,
+				inputType: formFactory.itemInputType.LBL,
+				required: false,
+				value: this.state.session.sessionInfo.user.profile.email
+			});
+		}
+		else {
+			nameItemTmp = formFactory.buildFormItem({
+				language: this.state.language,
+				label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_FIRST_NAME"}),
+				name: "userName",
+				dataType: formFactory.itemDataType.STR,
+				inputType: formFactory.itemInputType.MANUAL,
+				required: true,
+				value: ""
+			});		
+			mailItemTmp = formFactory.buildFormItem({
+				language: this.state.language,
+				label: Utils.getStrResource({lang: this.state.language, code: "UI_FLD_MAIL"}),
+				name: "userMail",
+				dataType: formFactory.itemDataType.STR,
+				inputType: formFactory.itemInputType.MANUAL,
+				required: false,
+				value: ""
+			});
+		}
+		//if(!this.state.session.loggedIn) 
+		formFactory.appedFormItem(formTmp, nameItemTmp);
+		formFactory.appedFormItem(formTmp, mailItemTmp);
 		formFactory.appedFormItem(formTmp, textItemTmp);
-		if(!this.state.session.loggedIn) formFactory.appedFormItem(formTmp, mailItemTmp);
+		//if(!this.state.session.loggedIn) 
 		this.setState({contactUsForm: formTmp});
 	},
 	//отправка формы обратной связи

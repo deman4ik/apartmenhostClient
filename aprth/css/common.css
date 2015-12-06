@@ -163,6 +163,8 @@
 	background-color: #EEE;
 }
 
+.form-horizontal .control-label {padding-top:0;}
+
 /*datepicker*/
 .table-condensed>tbody>tr>td, 
 .table-condensed>tbody>tr>th {

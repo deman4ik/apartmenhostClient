@@ -58,7 +58,7 @@ var FormItemInput = React.createClass({
 						case(formFactory.itemDataType.DATE): {
 							inputDataType = "date";
 							break;
-						}
+						}			
 						default: {
 							inputDataType = "text";
 						}
@@ -74,20 +74,30 @@ var FormItemInput = React.createClass({
 			var cItem = React.addons.classSet;
 			var classesItem = cItem({
 				"form-group": true,
-				"has-error": (("valid" in this.state.item)&&(!this.state.item.valid)),
-				"has-success": ((this.state.item.required)&&((("valid" in this.state.item)&&(this.state.item.valid))))
+				"has-error": (("valid" in this.state.item)&&(!this.state.item.valid)) /*,
+				"has-success": ((this.state.item.required)&&((("valid" in this.state.item)&&(this.state.item.valid))))*/
 			});
+			var classesInput = cItem({
+				"w-input": true,
+				"u-form-field": true,
+				"hidden": (this.state.item.inputType==formFactory.itemInputType.LBL)
+			});
+			var itemLabelType;
+			if (this.state.item.inputType==formFactory.itemInputType.LBL) {
+				itemLabelType = <span>{this.state.item.value}</span>
+			}			
 			//собираем элемент
 			item =	<div className={classesItem}>
 						<label for={this.state.item.name} className="control-label hidden-xs hidden-sm col-md-4 col-lg-4">{req}{this.state.item.label}</label>
 						<div className="col-xs-offset-0 col-xs-12 col-sm-offset-0 col-sm-12 col-md-8 col-lg-8">
 							<input type={inputDataType}
 								value={this.state.item.value}
-								className="form-control"
+								className={classesInput}
 								id={this.state.item.name}
 								placeholder={this.state.item.label}
 								ref={this.state.item.name}
 								onChange={this.handleChange}/>
+							{itemLabelType}
 						</div>
 					</div>
 		} else {
@@ -95,7 +105,7 @@ var FormItemInput = React.createClass({
 		}
 		//представление поля ввода
 		return (
-			<div>
+			<div name="form_item_input">
 				{item}
 			</div>
 		);		
