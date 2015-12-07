@@ -192,10 +192,10 @@ var Utils = {
 			large: config.defaultPictureUrl,
 			mid: config.defaultPictureUrl,
 			name: "default",
-			small: config.defaultPictureUrl,
+			small: "http://res.cloudinary.com/apartmenthost/image/upload/c_fill,h_225,w_370/v1449434392/def_photo_zjwrwr.png",
 			url: config.defaultPictureUrl,
 			xlarge: config.defaultPictureUrl,
-			xsmall: config.defaultPictureUrl
+			xsmall: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_128,w_128/v1449434392/def_photo_zjwrwr.png", 
 		}
 		if(apartment.pictures) {
 			if(apartment.pictures.length == 0) {

@@ -111,13 +111,15 @@ var Posts = React.createClass({
 								linkQ += ((linkQ == "")?"":"&") + "priceCat=" + this.state.filterClnt.sex;
 							}							
 							link += (linkQ == "")?"":"?" + linkQ;
+							console.log(item);
 							var content = "<div>" +
-								"<b>" + Utils.getStrResource({lang: this.props.language, code: item.apartment.type}) + "</b><br>" + 
-								item.user.lastName + " " + item.user.firstName + "<br>" +								
+								"<b>" + Utils.getStrResource({lang: this.props.language, code: item.apartment.type}) + "</b><br/>" + 
+								"<a href='" + link + "'>" +
+								"<img src='" + _.find(item.apartment.pictures, {default: true}).xsmall + "'/><br/>" +
+								item.user.lastName + " " + item.user.firstName + "<br/>" +								
 								item.priceDay + " " + Utils.getStrResource({lang: this.props.language, code: "CURRENCY"}) + "/" +
-								Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"}) + "<br>" +
-								item.description + "<br>" +
-								"<b><a href='" + link + "'>>>></a></b>" +
+								Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"}) + 
+								"</a>" +
 								"</div>";							 
 							markers.push({
 								latitude: item.apartment.latitude,

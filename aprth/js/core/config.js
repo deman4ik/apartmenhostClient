@@ -23,7 +23,7 @@ var config = {
 	//язык интерфейса по умолчанию
 	languageDefault: "RU",
 	//картинка по-умолчанию для карточек
-	defaultPictureUrl: "aprth/img/def_photo.png",
+	defaultPictureUrl: "http://res.cloudinary.com/apartmenthost/image/upload/v1449434392/def_photo_zjwrwr.png",
 	//аватар по-умолчанию
 	defaultProfilePictureUrl: "aprth/img/def_ava.png",
 	//масштаб карты по умолчанию
