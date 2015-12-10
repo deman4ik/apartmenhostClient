@@ -539,9 +539,6 @@ var Profile = React.createClass({
 												{tabHeader}
 												{tabItems}
 											</div>
-						} else {
-							tmpTabContent = <InLineMessage type={Utils.getMessageTypeErr()}
-												message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_DATA"})}/>
 						}
 						break;
 					}
@@ -673,10 +670,7 @@ var Profile = React.createClass({
 												{tabHeader}
 												{tabItems}
 											</div>
-						} else {
-							tmpTabContent = <InLineMessage type={Utils.getMessageTypeErr()}
-												message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_DATA"})}/>
-						}							
+						}					
 						break;
 					}
 					//запросы на бронирование
@@ -691,6 +685,9 @@ var Profile = React.createClass({
 									arrow = <span className="glyphicon u-request-direct glyphicon-arrow-left my"></span>
 								}
 								var orderState;
+								var userLeft;
+								var userRight;
+								var userRightInfo;
 								if(item.type == ProfileOrdersTypes.owner) {
 									if((item.status == ProfileOrdersStates.accepted)||(item.status == ProfileOrdersStates.declined)) {
 										orderState = <span>
@@ -707,6 +704,16 @@ var Profile = React.createClass({
 															</a>
 														</span>											
 									}
+									userLeft = 
+												<div className="u-block-author-reviewlst">
+													<img className="u-img-author-m" src={item.card.user.picture.mid}/>
+												</div>
+									userRight = <a className="u-lnk-small" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.user.id)}>
+												<div className="u-block-author-reviewlst">
+													<img className="u-img-author-m" src={item.user.picture.mid}/>
+													<div>{item.user.firstName + " " + item.user.lastName}</div>		
+												</div>
+											</a>
 								} else {
 									if(item.status == ProfileOrdersStates.accepted) {
 										orderState = <span>
@@ -725,32 +732,31 @@ var Profile = React.createClass({
 													 		</span>
 										}
 									}
-								}
-								return (
-									<div className="w-row u-row-underline">
-										<div className="w-col w-col-1 u-col-query">
-											<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.card.user.id)}>
+									userLeft = 
 												<div className="u-block-author-reviewlst">
-													<img className="u-img-author-m" src={item.card.user.picture.large}/>
+													<img className="u-img-author-m" src={item.user.picture.mid}/>
 												</div>
-											</a>
+									userRight = <a className="u-lnk-small" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.card.user.id)}>
+												<div className="u-block-author-reviewlst">
+													<img className="u-img-author-m" src={item.card.user.picture.mid}/>
+													<div>{item.card.user.firstName + " " + item.card.user.lastName}</div>		
+												</div>
+											</a>												
+								}
+								return (															
+									<div className="w-row u-row-underline">
+										<div className="w-col w-col-2 u-col-query u-t-center">
+										  {Utils.formatDate({lang: this.props.language, date: item.createdAt})}
+										</div>											
+										<div className="w-col w-col-1 u-col-query">
+											{userLeft}
 										</div>
 										<div className="w-col w-col-1 u-col-query">
 											{arrow}
 										</div>
 										<div className="w-col w-col-1 u-col-query">
-											<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.user.id)}>
-												<div className="u-block-author-reviewlst">
-													<img className="u-img-author-m" src={item.user.picture.large}/>
-												</div>
-											</a>
-										</div>
-										<div className="w-col w-col-2 u-col-query u-t-center">
-											<a className="u-lnk-norm" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.user.id)}>
-												<div>{item.user.firstName + " " + item.user.lastName}</div>												
-											</a>
-											<Rater total={5} rating={item.user.rating}/>
-										</div>										
+											{userRight}
+										</div>								
 										<div className="w-col w-col-3 u-col-query u-t-center">
 												{Utils.formatDate({lang: this.props.language, 
 													date: item.dateFrom}) + " - " + 
@@ -764,17 +770,29 @@ var Profile = React.createClass({
 								);
 							}, this);
 							tmpTabContent = <div>
-												{tabItems}
-											</div>
-						} else {
-							tmpTabContent = <InLineMessage type={Utils.getMessageTypeErr()}
-												message={Utils.getStrResource({lang: this.props.language, code: "UI_NO_DATA"})}/>
-						}							
+																<div className="w-row w-hidden-small w-hidden-tiny u-row-underline header">
+																	<div className="w-col w-col-2 u-t-center">
+																		<p><strong>Дата запроса</strong></p>
+																	</div>
+																	<div className="w-col w-col-3 u-t-center">
+																	</div>
+																	<div className="w-col w-col-3 u-t-center">
+																		<p><strong>Интервал бронирования</strong></p>
+																	</div>
+																	<div className="w-col w-col-4 u-t-center">
+																		<p><strong>Состояние запроса</strong></p>
+																	</div>	
+																</div>	
+																{tabItems}
+															</div>
+						} 					
 						break;
 					}
 					default: {}
 				}
-				activeReviewsTabContent = <div className="w-tab-content u-tab-cont1">{tmpTabContent}</div>
+				activeReviewsTabContent = <div className="w-tab-content u-tab-cont1">
+																		{tmpTabContent}
+																	</div>
 			}
 			//непосредственно профиль с объявлениями отзывами и запросами
 			content =	<section className="w-container">
