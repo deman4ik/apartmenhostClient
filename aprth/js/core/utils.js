@@ -189,13 +189,13 @@ var Utils = {
 		var defPict = {
 			default: true,
 			id: "default",
-			large: config.defaultPictureUrl,
-			mid: config.defaultPictureUrl,
+			large: "http://res.cloudinary.com/apartmenthost/image/upload/c_fill,h_225,w_370/v1449434392/def_photo_zjwrwr.png",
+			mid: "http://res.cloudinary.com/apartmenthost/image/upload/c_fill,h_225,w_370/v1449434392/def_photo_zjwrwr.png",
 			name: "default",
-			small: "http://res.cloudinary.com/apartmenthost/image/upload/c_fill,h_225,w_370/v1449434392/def_photo_zjwrwr.png",
-			url: config.defaultPictureUrl,
-			xlarge: config.defaultPictureUrl,
-			xsmall: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_128,w_128/v1449434392/def_photo_zjwrwr.png", 
+			small: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_190,w_190/v1449434392/def_photo_zjwrwr.png",
+			url: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_128,w_128/v1449434392/def_photo_zjwrwr.png",
+			xlarge: "http://res.cloudinary.com/apartmenthost/image/upload/c_fill,h_225,w_370/v1449434392/def_photo_zjwrwr.png",
+			xsmall: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_143,w_143/v1449434392/def_photo_zjwrwr.png", 
 		}
 		if(apartment.pictures) {
 			if(apartment.pictures.length == 0) {
@@ -217,9 +217,10 @@ var Utils = {
 	setProfileDefaultPicture: function (user) {
 		if((!user.picture)||(!user.picture.url)) {
 			user.picture = {};
-			user.picture.large = config.defaultProfilePictureUrl;
-			user.picture.url = config.defaultProfilePictureUrl;
-			user.picture.mid = config.defaultProfilePictureUrl;
+			user.picture.large = "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_76,w_76/v1449434389/def_ava_yta7tp.png";
+			user.picture.url = "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_76,w_76/v1449434389/def_ava_yta7tp.png";
+			user.picture.mid = "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_62,w_62/v1449434389/def_ava_yta7tp.png";
+			user.picture.small = "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_34,w_34/v1449434389/def_ava_yta7tp.png";
 			user.picture.default = true;
 		}
 	},
