@@ -23,9 +23,17 @@ var config = {
 	//язык интерфейса по умолчанию
 	languageDefault: "RU",
 	//картинка по-умолчанию для карточек
-	defaultPictureUrl: "http://res.cloudinary.com/apartmenthost/image/upload/v1449434392/def_photo_zjwrwr.png",
+	defaultPictureUrl: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_128,w_128/v1449434392/def_photo_zjwrwr.png",
+	defaultPictureLarge: "http://res.cloudinary.com/apartmenthost/image/upload/c_fill,h_225,w_370/v1449434392/def_photo_zjwrwr.png",
+	defaultPictureMid: "http://res.cloudinary.com/apartmenthost/image/upload/c_fill,h_225,w_370/v1449434392/def_photo_zjwrwr.png",
+	defaultPictureSmall: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_190,w_190/v1449434392/def_photo_zjwrwr.png",
+	defaultPictureXlarge: "http://res.cloudinary.com/apartmenthost/image/upload/c_fill,h_225,w_370/v1449434392/def_photo_zjwrwr.png",
+	defaultPictureXsmall: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_143,w_143/v1449434392/def_photo_zjwrwr.png", 
 	//аватар по-умолчанию
-	defaultProfilePictureUrl: "aprth/img/def_ava.png",
+	defaultProfilePictureUrl: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_76,w_76/v1449434389/def_ava_yta7tp.png",
+	defaultProfilePictureLarge: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_76,w_76/v1449434389/def_ava_yta7tp.png",
+	defaultProfilePictureMid: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_62,w_62/v1449434389/def_ava_yta7tp.png",
+	defaultProfilePictureSmall: "http://res.cloudinary.com/apartmenthost/image/upload/c_thumb,h_34,w_34/v1449434389/def_ava_yta7tp.png",
 	//масштаб карты по умолчанию
 	defaultMapZoom: 15,
 	//масштаб карты отображения адреса в объявлении

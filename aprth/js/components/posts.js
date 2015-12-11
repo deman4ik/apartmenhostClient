@@ -111,7 +111,6 @@ var Posts = React.createClass({
 								linkQ += ((linkQ == "")?"":"&") + "priceCat=" + this.state.filterClnt.sex;
 							}							
 							link += (linkQ == "")?"":"?" + linkQ;
-							console.log(item);
 							var content = "<div>" +
 								"<b>" + Utils.getStrResource({lang: this.props.language, code: item.apartment.type}) + "</b><br/>" + 
 								"<a href='" + link + "'>" +

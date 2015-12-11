@@ -704,16 +704,15 @@ var Profile = React.createClass({
 															</a>
 														</span>											
 									}
-									userLeft = 
-												<div className="u-block-author-reviewlst">
+									userLeft =	<div className="u-block-author-reviewlst">
 													<img className="u-img-author-m" src={item.card.user.picture.mid}/>
 												</div>
 									userRight = <a className="u-lnk-small" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.user.id)}>
-												<div className="u-block-author-reviewlst">
-													<img className="u-img-author-m" src={item.user.picture.mid}/>
-													<div>{item.user.firstName + " " + item.user.lastName}</div>		
-												</div>
-											</a>
+													<div className="u-block-author-reviewlst">
+														<img className="u-img-author-m" src={item.user.picture.mid}/>
+														<div>{item.user.firstName + " " + item.user.lastName}</div>		
+													</div>
+												</a>
 								} else {
 									if(item.status == ProfileOrdersStates.accepted) {
 										orderState = <span>
@@ -732,16 +731,15 @@ var Profile = React.createClass({
 													 		</span>
 										}
 									}
-									userLeft = 
-												<div className="u-block-author-reviewlst">
+									userLeft =	<div className="u-block-author-reviewlst">
 													<img className="u-img-author-m" src={item.user.picture.mid}/>
 												</div>
 									userRight = <a className="u-lnk-small" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.card.user.id)}>
-												<div className="u-block-author-reviewlst">
-													<img className="u-img-author-m" src={item.card.user.picture.mid}/>
-													<div>{item.card.user.firstName + " " + item.card.user.lastName}</div>		
-												</div>
-											</a>												
+													<div className="u-block-author-reviewlst">
+														<img className="u-img-author-m" src={item.card.user.picture.mid}/>
+														<div>{item.card.user.firstName + " " + item.card.user.lastName}</div>		
+													</div>
+												</a>
 								}
 								return (															
 									<div className="w-row u-row-underline">
@@ -770,29 +768,29 @@ var Profile = React.createClass({
 								);
 							}, this);
 							tmpTabContent = <div>
-																<div className="w-row w-hidden-small w-hidden-tiny u-row-underline header">
-																	<div className="w-col w-col-2 u-t-center">
-																		<p><strong>Дата запроса</strong></p>
-																	</div>
-																	<div className="w-col w-col-3 u-t-center">
-																	</div>
-																	<div className="w-col w-col-3 u-t-center">
-																		<p><strong>Интервал бронирования</strong></p>
-																	</div>
-																	<div className="w-col w-col-4 u-t-center">
-																		<p><strong>Состояние запроса</strong></p>
-																	</div>	
-																</div>	
-																{tabItems}
-															</div>
+												<div className="w-row w-hidden-small w-hidden-tiny u-row-underline header">
+													<div className="w-col w-col-2 u-t-center">
+														<p><strong>Дата запроса</strong></p>
+													</div>
+													<div className="w-col w-col-3 u-t-center">
+													</div>
+													<div className="w-col w-col-3 u-t-center">
+														<p><strong>Интервал бронирования</strong></p>
+													</div>
+													<div className="w-col w-col-4 u-t-center">
+														<p><strong>Состояние запроса</strong></p>
+													</div>	
+												</div>	
+												{tabItems}
+											</div>
 						} 					
 						break;
 					}
 					default: {}
 				}
-				activeReviewsTabContent = <div className="w-tab-content u-tab-cont1">
-																		{tmpTabContent}
-																	</div>
+				activeReviewsTabContent =	<div className="w-tab-content u-tab-cont1">
+												{tmpTabContent}
+											</div>
 			}
 			//непосредственно профиль с объявлениями отзывами и запросами
 			content =	<section className="w-container">
