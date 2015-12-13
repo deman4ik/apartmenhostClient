@@ -117,7 +117,7 @@ var ModifyPost = React.createClass({
 				this.setState({
 					priceCatsList: tmpPriceCatsList,
 					post: {
-						phone: this.props.session.sessionInfo.user.profile.phone,
+						phone: resp.MESSAGE[0].user.phone,
 						priceCat: "",
 						priceCatVal: 0,
 						priceCats: resp.MESSAGE[0].genders,

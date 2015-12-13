@@ -51,7 +51,8 @@ var Profile = React.createClass({
 				list: [] //список запросов
 			},
 			activeReviewsTab: ProfileReviewsTabs[0], //активная закладка отзывов/запросов
-			deletingPostItemId: "" //удаляемое объявление
+			deletingPostItemId: "", //удаляемое объявление
+			ordersTypeFilter: "" //значение фильтра по типам в закладке "Запросы"
 		}
 	},
 	//оповещение родитлея о смене профиля
@@ -356,6 +357,10 @@ var Profile = React.createClass({
 	//обработка загрузки профиля
 	handleProfileLoad: function (newProfile) {
 		if(!this.state.profileLoaded) this.setState({profileLoaded: true, advertsLoaded: false}, this.loadProfilePosts);
+	},
+	//обработка изменения фильтра типа запросов
+	handleOrdersTypeFilterChange: function (value) {
+		this.setState({ordersTypeFilter: value});
 	},
 	//обновление компонента
 	componentDidUpdate: function () {
@@ -677,7 +682,6 @@ var Profile = React.createClass({
 					case(ProfileReviewsTabs[2]): {
 						if(this.state.orders.count > 0) {
 							var tabItems = this.state.orders.list.map(function (item, i) {
-								console.log(item);
 								var arrow;
 								if(item.type != ProfileOrdersTypes.owner) {
 									arrow = <span className="glyphicon u-request-direct glyphicon-arrow-right"></span>
@@ -741,44 +745,62 @@ var Profile = React.createClass({
 													</div>
 												</a>
 								}
-								return (															
-									<div className="w-row u-row-underline">
-										<div className="w-col w-col-2 u-col-query u-t-center">
-										  {Utils.formatDate({lang: this.props.language, date: item.createdAt})}
-										</div>											
-										<div className="w-col w-col-1 u-col-query">
-											{userLeft}
+								if((this.state.ordersTypeFilter == "")||(item.type == this.state.ordersTypeFilter))
+									return (															
+										<div className="w-row u-row-underline">
+											<div className="w-col w-col-2 u-col-query u-t-center">
+											  {Utils.formatDate({lang: this.props.language, date: item.createdAt})}
+											</div>											
+											<div className="w-col w-col-1 u-col-query">
+												{userLeft}
+											</div>
+											<div className="w-col w-col-1 u-col-query">
+												{arrow}
+											</div>
+											<div className="w-col w-col-1 u-col-query">
+												{userRight}
+											</div>								
+											<div className="w-col w-col-3 u-col-query u-t-center">
+													{Utils.formatDate({lang: this.props.language, 
+														date: item.dateFrom}) + " - " + 
+													Utils.formatDate({lang: this.props.language, 
+														date: item.dateTo})}
+											</div>
+											<div className="w-col w-col-4 w-clearfix u-col-query u-t-center">
+												{orderState}
+											</div>
 										</div>
-										<div className="w-col w-col-1 u-col-query">
-											{arrow}
-										</div>
-										<div className="w-col w-col-1 u-col-query">
-											{userRight}
-										</div>								
-										<div className="w-col w-col-3 u-col-query u-t-center">
-												{Utils.formatDate({lang: this.props.language, 
-													date: item.dateFrom}) + " - " + 
-												Utils.formatDate({lang: this.props.language, 
-													date: item.dateTo})}
-										</div>
-										<div className="w-col w-col-4 w-clearfix u-col-query u-t-center">
-											{orderState}
-										</div>
-									</div>										
-								);
+									);
 							}, this);
 							tmpTabContent = <div>
+												<br/>
+												<OptionsSelector view={OptionsSelectorView.SELECT}
+													appendEmptyOption={true}
+													emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_ORDER_TYPE"}))}
+													options={optionsFactory.buildOptions({
+														language: this.props.language, 
+														id: "ordersTypes",
+														options: ordersTypes})}
+													language={this.props.language}
+													defaultOptionsState={this.state.ordersTypeFilter}
+													onOptionChanged={this.handleOrdersTypeFilterChange}/>
 												<div className="w-row w-hidden-small w-hidden-tiny u-row-underline header">
 													<div className="w-col w-col-2 u-t-center">
-														<p><strong>Дата запроса</strong></p>
+														<p><strong>
+															{Utils.getStrResource({lang: this.props.language, code: "UI_TBL_HDR_ORDERS_ORDER_DATE"})}															
+														</strong></p>
 													</div>
 													<div className="w-col w-col-3 u-t-center">
 													</div>
 													<div className="w-col w-col-3 u-t-center">
-														<p><strong>Интервал бронирования</strong></p>
+														<p><strong>
+															{Utils.getStrResource({lang: this.props.language, code: "UI_TBL_HDR_ORDERS_ORDER_PERIOD"})}															
+														</strong></p>
 													</div>
 													<div className="w-col w-col-4 u-t-center">
-														<p><strong>Состояние запроса</strong></p>
+														<p><strong>
+															{Utils.getStrResource({lang: this.props.language, code: "UI_TBL_HDR_ORDERS_ORDER_STATE"})}															
+														</strong></p>
 													</div>	
 												</div>	
 												{tabItems}

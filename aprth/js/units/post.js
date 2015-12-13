@@ -27,6 +27,28 @@ var Post = React.createClass({
 			language: props.language,
 			title: Utils.getStrResource({lang: props.language, code: "UI_TITLE_COMPLAINT"})
 		});
+		var nameItemTmp;
+		if(props.session.loggedIn) {
+			nameItemTmp = formFactory.buildFormItem({
+				language: props.language,
+				label: Utils.getStrResource({lang: props.language, code: "UI_FLD_FIRST_NAME"}),
+				name: "userName",
+				dataType: formFactory.itemDataType.STR,
+				inputType: formFactory.itemInputType.LBL,
+				required: true,
+				value: props.session.sessionInfo.user.profile.firstName
+			});
+		} else {
+			nameItemTmp = formFactory.buildFormItem({
+				language: props.language,
+				label: Utils.getStrResource({lang: props.language, code: "UI_FLD_FIRST_NAME"}),
+				name: "userName",
+				dataType: formFactory.itemDataType.STR,
+				inputType: formFactory.itemInputType.MANUAL,
+				required: true,
+				value: ""
+			});
+		}
 		var textItemTmp = formFactory.buildFormItem({
 			language: props.language,
 			label: Utils.getStrResource({lang: props.language, code: "UI_FLD_COMPLAINT_TEXT"}),
@@ -36,6 +58,7 @@ var Post = React.createClass({
 			required: true,
 			value: ""
 		});
+		formFactory.appedFormItem(formTmp, nameItemTmp);
 		formFactory.appedFormItem(formTmp, textItemTmp);
 		this.setState({sendComplaintForm: formTmp});
 	},
@@ -75,14 +98,47 @@ var Post = React.createClass({
 	},
 	//отправка жалобы
 	onComplaintFormOK: function (values) {
-		this.setState({displaySendComplaint: false}, function() {this.buildComplaintForm(this.props);});
-		this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
-			Utils.getStrResource({lang: this.props.language, code: "CLNT_COMPLAINT_ADDED"}));
+		if(
+			(_.find(values, {name: "userName"}))&&
+			(_.find(values, {name: "complaintText"})) 
+		) {
+			var userName = _.find(values, {name: "userName"}).value;
+			var text = _.find(values, {name: "complaintText"}).value;
+			this.sendComplaint(userName, text);
+		}		
 	},
 	//отмена отправки жалобы
 	onComplaintFormChancel: function () {
 		this.setState({displaySendComplaint: false}, function() {this.buildComplaintForm(this.props);});
-	}, 
+	},
+	//обработка результата отправки жалобы
+	handleSendComplaint: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			this.setState({displaySendComplaint: false}, function() {this.buildComplaintForm(this.props);});
+			this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
+				Utils.getStrResource({lang: this.props.language, code: "CLNT_COMPLAINT_ADDED"}));
+		}
+	},
+	//отправка жалобы
+	sendComplaint: function (userName, text) {
+		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+		var sendPrms = {
+			language: this.props.language,
+			session: this.props.session.sessionInfo,
+			data: {
+				userName: userName,
+				abuserId: this.state.post.user.id,
+				userId: this.props.session.sessionInfo.user.profile.id,
+				type: "ABUSE",
+				text: text,
+				answerByEmail: false
+			}
+		}
+		clnt.feedBack(sendPrms, this.handleSendComplaint);
+	},
 	//обработка загруженных данных объявления
 	handleLoadPostResult: function (resp) {
 		this.props.onHideProgress();
@@ -133,6 +189,7 @@ var Post = React.createClass({
 	},
 	//выполнение добавления жалобы
 	makeComplaint: function () {
+		this.buildComplaintForm(this.props);
 		this.setState({displaySendComplaint: true});
 	},
 	//обработка смены категории цены

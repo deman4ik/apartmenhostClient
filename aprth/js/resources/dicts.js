@@ -29,3 +29,8 @@ var postObjType = [
 	"POT_HOUSE",
 	"POT_HOTEL_ROOM"
 ];
+//типы запросов на бронирование
+var ordersTypes = [
+	"DVAL_OWNER",
+	"DVAL_RENTER"
+];

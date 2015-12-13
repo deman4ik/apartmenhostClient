@@ -44,11 +44,8 @@ var UserProfile = React.createClass({
 	},
 	//отправка подтверждения телефона
 	onPhoneConfFormOK: function (values) {		
-		console.log(values);
-		var tmpProf = {};
-		_.extend(tmpProf, this.state.profile);
-		tmpProf.phoneStatus = ProfilePhoneState.confirmed;
-		this.setState({displayPhoneConf: false, profile: tmpProf}, function() {this.buildPhoneConfForm(this.props);});
+		if(_.find(values, {name: "confCode"}))
+			this.sendPhoneConfirmCode(_.find(values, {name: "confCode"}).value);		
 	},
 	//отмена подтверждения телефона
 	onPhoneConfFormChancel: function () {
@@ -164,7 +161,6 @@ var UserProfile = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			resp.MESSAGE.phoneStatus = ProfilePhoneState.unConfirmed;
 			this.setState({profile: resp.MESSAGE, profileTmp: resp.MESSAGE, profileReady: true});
 			if(this.state.notifyParentProfileChanged) {
 				this.setState({notifyParentProfileChanged: false}, this.notifyParentProfileChanged);
@@ -235,6 +231,32 @@ var UserProfile = React.createClass({
 			this.setState({notifyParentProfileChanged: true}, this.loadProfile);
 		}
 	},
+	//обработка результата отправки запроса на подтверждение телефона
+	handleSendPhoneConfirmRequestResult: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			var tmpProf = {};
+			_.extend(tmpProf, this.state.profile);
+			tmpProf.phoneStatus = ProfilePhoneState.confirmPending;
+			this.setState({profile: tmpProf});
+			this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
+				Utils.getStrResource({lang: this.props.language, code: "CLNT_PHONE_CONF_SENT"}));
+		}
+	},
+	//обработка результата отправки кода на подтверждение телефона
+	handleSendPhoneConfirmCodeResult: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			var tmpProf = {};
+			_.extend(tmpProf, this.state.profile);
+			tmpProf.phoneStatus = ProfilePhoneState.confirmed;
+			this.setState({displayPhoneConf: false, profile: tmpProf}, function() {this.buildPhoneConfForm(this.props);});			
+		}
+	},
 	//обработка нажатия на удаления изображения пользователя
 	handleDeleteProfilePicture: function () {
 		if(this.props.session.loggedIn) {
@@ -256,7 +278,26 @@ var UserProfile = React.createClass({
 			session: this.props.session.sessionInfo
 		}
 		clnt.getProfile(getPrms, this.handleLoadProfileResult);
-	},	
+	},
+	//отправка запроса на подтверждение телефона
+	sendPhoneConfirmRequest: function () {
+		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+		var sendPrms = {
+			language: this.props.language, 
+			session: this.props.session.sessionInfo
+		}
+		clnt.phoneConfirmRequest(sendPrms, this.handleSendPhoneConfirmRequestResult);
+	},
+	//отправка кода подтверждение телефона
+	sendPhoneConfirmCode: function (code) {
+		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+		var sendPrms = {
+			language: this.props.language, 
+			session: this.props.session.sessionInfo,
+			data: {code: code}
+		}
+		clnt.phoneConfirm(sendPrms, this.handleSendPhoneConfirmCodeResult);
+	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
 		this.buildPhoneConfForm(this.props);
@@ -314,14 +355,11 @@ var UserProfile = React.createClass({
 	},
 	//обработка нажатия на подтверждение телефона
 	handlePhoneConfClick: function () {
+		//если ещё не подтвержден
 		if(this.state.profile.phoneStatus == ProfilePhoneState.unConfirmed) {
-			var tmpProf = {};
-			_.extend(tmpProf, this.state.profile);
-			tmpProf.phoneStatus = ProfilePhoneState.confirmPending;
-			this.setState({profile: tmpProf});
-			this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
-				Utils.getStrResource({lang: this.props.language, code: "CLNT_PHONE_CONF_SENT"}));			
+			this.sendPhoneConfirmRequest();			
 		}
+		//если подтверждение уже отправлено
 		if(this.state.profile.phoneStatus == ProfilePhoneState.confirmPending) {
 			this.setState({displayPhoneConf: true})
 		}

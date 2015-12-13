@@ -37,7 +37,9 @@ var Client = function (clientConfig) {
 		resetPassword: "PasswordReset", //запрос на сброс пароля
 		changePassword: "PasswordChange", //смена пароля
 		article: "Article", //статьи
-		feedBack: "Feedback" //обратная связь и жалобы
+		feedBack: "Feedback", //обратная связь и жалобы
+		phoneConfirmRequest: "Phone/ConfirmRequest", //запрос подтверждения телефона
+		phoneConfirm: "Phone/Confirm" //подтверждение телефона
 	}
 	//коды стандартных ответов сервера
 	var serverStdErrCodes = {
@@ -600,6 +602,28 @@ var Client = function (clientConfig) {
 					return fillSrvStdReqData(serverActions.feedBack, serverMethods.ins, prms.data);
 					break;
 				}
+				//запрос подтверждения телефона
+				case(serverActions.phoneConfirmRequest): {
+					return fillSrvStdReqData(serverActions.phoneConfirmRequest, serverMethods.ins, "");
+					break;
+				}
+				//подтверждение телефона
+				case(serverActions.phoneConfirm): {
+					if(!prms.data)
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));
+					if(!prms.data.code) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "code"]
+						}));
+					return fillSrvStdReqData(serverActions.phoneConfirm, serverMethods.ins, prms.data);
+					break;
+				}				
 				//неизвестное действие
 				default: {
 					throw new Error("Действие '" + prms.action + "' не поддерживается сервером!");
@@ -1560,6 +1584,59 @@ var Client = function (clientConfig) {
 				});
 			} catch (error) {
 				log(["FEEDBACK ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//запрос подтверждения телефона
+		phoneConfirmRequest: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.phoneConfirmRequest,
+						method: serverMethods.ins
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["PHONE CONFIRM REQUEST ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//отправка кода подтверждения телефона
+		phoneConfirm: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.phoneConfirm,
+						method: serverMethods.ins,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["PHONE CONFIRM ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}

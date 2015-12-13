@@ -55,6 +55,9 @@ var langs = [
 		UI_TBL_HDR_PROFILE_REVIEW_POST: "Объявление",
 		UI_TBL_HDR_PROFILE_REVIEW_TO_ME: "Меня оценили",
 		UI_TBL_HDR_PROFILE_REVIEW_FROM_ME: "Я оценил",
+		UI_TBL_HDR_ORDERS_ORDER_DATE: "Дата запроса",
+		UI_TBL_HDR_ORDERS_ORDER_PERIOD: "Интервал бронирования",
+		UI_TBL_HDR_ORDERS_ORDER_STATE: "Состояние запроса",
 		UI_BTN_OK: "ОК",
 		UI_BTN_CHANCEL: "Отмена",
 		UI_BTN_REG_CONFIRM: "Подтвердить",
@@ -188,6 +191,7 @@ var langs = [
 		MD_ITM_COHABITATIONTYPE: "Тип проживания",
 		MD_ITM_APARTMENTTYPE: "Тип жилья",
 		MD_ITM_PET_TYPE: "Вид питомца",
+		MD_ITM_ORDER_TYPE: "Тип запроса",
 		//ресурсы для описания списков - пол пользователя
 		PG_MALE: "Мужской",
 		PG_FEMALE: "Женский",
@@ -214,6 +218,9 @@ var langs = [
 		DVAL_ACCEPTED: "Подтверждено",
 		DVAL_DECLINED: "Отклонено",
 		DVAL_PENDING: "Ожидает подтверждения...",
+		//ресурсы для описания списков - типы запросов на бронирование
+		DVAL_OWNER: "Мне",
+		DVAL_RENTER: "От меня",
 		//ресурсы для серверных сообщений об ошибках и информации
 		SRV_EXCEPTION: "Ошибка сервера!",
 		SRV_COMMON_ERROR: "Ошибка сервера!",
@@ -243,6 +250,7 @@ var langs = [
 		SRV_FAVORITE_WRONG_USER: "Вы не можете добавить свое объявление в избранное!",
 		SRV_PROFILE_ERR_UPDATE_PHONE: "У вас уже есть объявление - изменение подтвержденного телефона невозможно (сначала удалите объявление)!",
 		SRV_CARD_PHONE_UNCONF: "Вы не можете добавить объявление пока не подтвердили свой телефон!",
+		SRV_USER_PHONE_CONFIRM_REQUESTED: "Вы уже запрашивали подтверждение - ожидайте SMS!",
 		FirstName: "Имя",
 		LastName: "Фамилия",
 		Gender: "Пол",
@@ -365,6 +373,9 @@ var langs = [
 		UI_TBL_HDR_PROFILE_REVIEW_POST: "Advert",
 		UI_TBL_HDR_PROFILE_REVIEW_TO_ME: "Review for me",
 		UI_TBL_HDR_PROFILE_REVIEW_FROM_ME: "My review",
+		UI_TBL_HDR_ORDERS_ORDER_DATE: "Date",
+		UI_TBL_HDR_ORDERS_ORDER_PERIOD: "Period",
+		UI_TBL_HDR_ORDERS_ORDER_STATE: "State",
 		UI_BTN_OK: "OK",
 		UI_BTN_CHANCEL: "Chancel",
 		UI_BTN_REG_CONFIRM: "Confirm",
@@ -497,6 +508,7 @@ var langs = [
 		MD_ITM_COHABITATIONTYPE: "Cohabitation type",
 		MD_ITM_APARTMENTTYPE: "Apartment type",
 		MD_ITM_PET_TYPE: "Pet",
+		MD_ITM_ORDER_TYPE: "Order type",
 		//ресурсы для описания списков - пол пользователя
 		PG_MALE: "Male",
 		PG_FEMALE: "Female",
@@ -523,6 +535,9 @@ var langs = [
 		DVAL_ACCEPTED: "Accepted",
 		DVAL_DECLINED: "Declined",
 		DVAL_PENDING: "Pending...",
+		//ресурсы для описания списков - типы запросов на бронирование
+		DVAL_OWNER: "To me",
+		DVAL_RENTER: "From me",
 		//ресурсы для серверных сообщений об ошибках и информации
 		SRV_EXCEPTION: "Server error!",
 		SRV_COMMON_ERROR: "Server error!",
@@ -552,6 +567,7 @@ var langs = [
 		SRV_FAVORITE_WRONG_USER: "You can't favorite your own ad!",
 		SRV_PROFILE_ERR_UPDATE_PHONE: "Can't update confirmed phone - you have advert card (remove it first)!",
 		SRV_CARD_PHONE_UNCONF: "You can't add card - confirm your phone first!",
+		SRV_USER_PHONE_CONFIRM_REQUESTED: "You are already send confirmation request. Wait for SMS please!",
 		FirstName: "First name",
 		LastName: "Last name",
 		Gender: "Gender",
