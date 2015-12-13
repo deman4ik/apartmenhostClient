@@ -314,7 +314,6 @@ var App = React.createClass({
 		if(this.state.session.loggedIn) {			
 			var tmp = {};
 			_.extend(tmp, this.state.session);
-			_.extend(tmp.sessionInfo, newProfile);
 			_.extend(tmp.sessionInfo.user.profile, newProfile);
 			this.setState({session: tmp}, Utils.bind(function () {Utils.saveObjectState("sessionState", this.state.session);}, this));
 		}		

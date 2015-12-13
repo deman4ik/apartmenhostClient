@@ -293,7 +293,11 @@ var Profile = React.createClass({
 	},
 	//обработка нажатия на кнопку создания объявления
 	handleAddPostClick: function () {
-		this.context.router.transitionTo("modifypost", {mode: ModifyPostModes.ADD});
+		if(this.props.session.sessionInfo.user.profile.phoneStatus == ProfilePhoneState.confirmed)
+			this.context.router.transitionTo("modifypost", {mode: ModifyPostModes.ADD});
+		else
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
+				Utils.getStrResource({lang: this.props.language, code: "SRV_CARD_PHONE_UNCONF"}));
 	},
 	//обработка нажатия на кнопку удаления объявления
 	handleDeletePostClick: function (postId) {

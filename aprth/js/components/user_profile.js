@@ -251,10 +251,10 @@ var UserProfile = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			var tmpProf = {};
-			_.extend(tmpProf, this.state.profile);
-			tmpProf.phoneStatus = ProfilePhoneState.confirmed;
-			this.setState({displayPhoneConf: false, profile: tmpProf}, function() {this.buildPhoneConfForm(this.props);});			
+			this.setState({displayPhoneConf: false, notifyParentProfileChanged: true}, function() {
+				this.buildPhoneConfForm(this.props);
+				this.loadProfile();
+			});			
 		}
 	},
 	//обработка нажатия на удаления изображения пользователя
