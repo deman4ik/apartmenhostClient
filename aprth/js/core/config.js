@@ -5,7 +5,7 @@ var config = {
 	//адрес сервера
 	serverAppUrl: "https://petforaweekservice.azure-mobile.net/",
 	//ключ сервера
-	serverAppKey: "YeaFjqZnWdMNwsNoTdVnCNNTgPkQiB51",
+	serverAppKey: "WKsVSboerZAjHgVnoczlziKGkeoRvn91",
 	//ключ для Google APIs
 	googleAppKey: "AIzaSyB9kvb4U_99FmLMZwlbQzf6AWuM9CDz0hs",
 	//широта центра карты по-умолчанию
