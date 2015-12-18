@@ -484,7 +484,7 @@ var ModifyPost = React.createClass({
 		var classesDateInput = cDateInput({
 			"w-input": true,
 			"u-form-field": true,
-			"rel": true
+			"rel2": true
 		});
 		//категории цен жилья
 		var genders;
@@ -694,7 +694,7 @@ var ModifyPost = React.createClass({
 													<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_UNAVAILABLE"})}:</label>
 													<div className="u-t-small">{Utils.getStrResource({lang: this.props.language, code: "UI_NOTE_UNAVAILABLE"})}</div>
 												</div>
-												<div className="w-col w-col-9">
+												<div className="w-col w-col-9 u-col-has-dates">
 													{dates}
 													<Calendar name="dFrom" 
 														placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}

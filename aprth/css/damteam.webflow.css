@@ -634,8 +634,9 @@ textarea.u-form-area-v {
 .u-form-field.rel2 {
   position: relative;
   display: inline-block;
-  width:auto;
-  margin-right: 20px;
+}
+.u-col-has-dates .u-datepicker-holder.has-icon {
+  margin-right:20px;
 }
 .u-form-field.rel.dtcard {
   width: 130px;
