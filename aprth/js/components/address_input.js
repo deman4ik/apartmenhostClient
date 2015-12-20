@@ -41,10 +41,11 @@ var AddressInput = React.createClass({
 	},
 	//отработка ручного изменения адреса
 	handleChange: function (e) {
-		this.setState({address: e.target.value, latitude: "", longitude: ""}, this.notifyParent);
+		this.setState({address: e.target.value, latitude: "", longitude: ""});
 	},
 	//отработка потери фокуса
-	handleBlur: function () {		
+	handleBlur: function () {
+		this.notifyParent();
 	},
 	//оповещение родителя о смене состояния адреса
 	notifyParent: function () {

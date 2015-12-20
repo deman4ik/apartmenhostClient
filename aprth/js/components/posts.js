@@ -44,6 +44,8 @@ var Posts = React.createClass({
 			filterIsSet: false, //флаг установленности фильтра			
 			filterClnt: getPostsFilter(), //текущее состояние фильтра
 			filter: {}, //текущее состояние фильтра	(для сервера)
+			mapZoom: config.searchMapZoom, //масштаб карты по умолчанию
+			mapZoomReset: false, //признак сброса масштаба карты к значению по умолчанию
 			mapBounds: { //текущее состояние карты (границы)
 				latitude: "", //широта центра области карты
 				longitude: "", //долгота центра области карты
@@ -243,6 +245,7 @@ var Posts = React.createClass({
 	//поиск и фильтрация
 	findAndFilter: function () {
 		if(this.state.filterIsSet) {
+			this.setState({mapZoomReset: false});
 			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 			var getPrms = {
 				language: this.props.language, 
@@ -278,7 +281,7 @@ var Posts = React.createClass({
 		});		
 	},
 	//смена параметров фильтра
-	onFilterChange: function (filter) {		
+	onFilterChange: function (filter) {
 		var recalcSA = false;
 		var tmp = {};
 		_.extend(tmp, this.state.filterClnt);
@@ -303,8 +306,8 @@ var Posts = React.createClass({
 	},
 	//нажатие на поиск
 	onFind: function (find) {
-		this.setState({filterIsSet: true}, Utils.bind(function () {			
-			this.onFindChange(find, this.findAndFilter);
+		this.setState({filterIsSet: true, mapZoomReset: true}, Utils.bind(function () {			
+			this.onFindChange(find);
 		}, this));
 	},
 	//нажатие на очистку поиска
@@ -464,7 +467,8 @@ var Posts = React.createClass({
 										address={this.state.filterClnt.address}
 										dFrom={this.state.filterClnt.dFrom}
 										dTo={this.state.filterClnt.dTo}
-										sex={this.state.filterClnt.sex}										
+										sex={this.state.filterClnt.sex}
+										onShowError={this.props.onShowError}
 										onFind={this.onFind}
 										onFindClear={this.onFindClear}/>
 				//форма фильтра
@@ -489,7 +493,8 @@ var Posts = React.createClass({
 							address={this.state.filterClnt.address}
 							markers={this.state.markers}
 							mode={mapModes.modeGroup}
-							zoom={config.searchMapZoom}
+							zoom={this.state.mapZoom}
+							zoomReset={this.state.mapZoomReset}
 							showRadar={(this.state.filterClnt.useRadius == PostsFilterPrms.postFilterUseRadius)?true:false}
 							onSearchRadarRadiusChange={this.handleMapRadarRadiusChanged}
 							onSearchRadarPlaceChange={this.handleMapRadarPlaceChanged}
