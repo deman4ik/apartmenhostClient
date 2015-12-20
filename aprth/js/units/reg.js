@@ -36,7 +36,7 @@ var EULAView = React.createClass({
 								<form className="form-horizontal" role="form">
 									<div className="panel-default">
 										<div className="panel-body">
-											<div style={{overflowX: "hidden", overflowY: "scroll", maxHeight: "300px"}}
+											<div className="u-col-howto eula"
 												id="EULAContent">
 											</div>											
 										</div>

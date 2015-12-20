@@ -1120,6 +1120,11 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   font-weight: 400;
   vertical-align: text-top;
 }
+.u-col-howto.eula {
+  overflow-x:hidden;
+  overflow-y:scroll;
+  max-height: 480px;
+}
 .u-t-h1-land2 {
   padding-top: 4px;
   padding-bottom: 4px;
