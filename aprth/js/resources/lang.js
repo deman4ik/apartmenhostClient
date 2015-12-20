@@ -178,6 +178,7 @@ var langs = [
 		UI_NOTE_RESET_PASS: "Введите код полученный по e-mail и новый пароль, затем нажмите \"%1$s\" для сброса пароля Вашей учетной записи",
 		UI_NOTE_USER: "Введите Ваш e-mail, в дальнейшем Вы будете использовать его для входа",
 		UI_NOTE_PHOTO: "Нажмите на фото, чтобы сделать его основным",
+		UI_NOTE_PASS: "Не мнее 8-ми символов",
 		//ресурсы для метаописания объектов - фиксированные поля
 		MD_ITM_ID: "Идентификатор",
 		MD_ITM_NAME: "Наименование",
@@ -496,6 +497,7 @@ var langs = [
 		UI_NOTE_REG_CODE: "Enter code from e-mail and press \"%1$s\" to activate your account",
 		UI_NOTE_RESET_PASS: "Enter code from e-mail and new password, then press \"%1$s\" to reset your account password",
 		UI_NOTE_USER: "Enter your e-mail, you should use it to log in later",
+		UI_NOTE_PASS: "Minimum 8 characters length",
 		//ресурсы для метаописания объектов - фиксированные поля
 		MD_ITM_ID: "Object identifier",
 		MD_ITM_NAME: "Name",

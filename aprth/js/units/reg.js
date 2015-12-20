@@ -1,6 +1,62 @@
 /*
 	Регистрация
 */
+//класс диалога просмотра соглашения об использовании
+var EULAView = React.createClass({
+	//оповещение родителя о закрытии
+	notifyParentClose: function () {
+		if((this.props.onClose)&&(Utils.isFunction(this.props.onClose))) {
+				this.props.onClose();
+		}		
+	},
+	//нажатие на кнопку закрытия
+	handleCloseClick: function () {
+		this.notifyParentClose();
+	},
+	//форммирование содержимого соглашения
+	createEULAContent: function (text) {
+		$("#EULAContent").html(text);
+	},
+	//инициализация при подключении компонента к странице
+	componentDidMount: function () {
+		this.createEULAContent(this.props.text);
+	},
+	//генерация представления диалога
+	render: function () {
+		return (
+			<div>
+				<div className="modal show messagebox-wraper">
+					<div className="modal-dialog">
+						<div className="modal-content">
+							<div className="modal-header">
+								<h4 className="modal-title">{this.props.title}</h4>
+							</div>
+							<div className="modal-body">
+								<br/>
+								<form className="form-horizontal" role="form">
+									<div className="panel-default">
+										<div className="panel-body">
+											<div style={{overflowX: "hidden", overflowY: "scroll", maxHeight: "300px"}}
+												id="EULAContent">
+											</div>											
+										</div>
+									</div>
+								</form>
+							</div>
+							<div className="modal-footer">
+								<button type="button" className="w-button u-btn-primary" onClick={this.handleCloseClick}>
+									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_OK"})}
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="modal-backdrop fade in"></div>
+			</div>
+		);
+	}
+});
+//класс раздела регистрации
 var Register = React.createClass({
 	//переменные окружения
 	contextTypes: {
@@ -18,7 +74,12 @@ var Register = React.createClass({
 			noPassSpecified: false, //флаг отсуствия пароля
 			noPassConfSpecified: false, //флаг отсуствия подтверждения пароля
 			badPassConfSpecified: false, //флаг некорректного подтверждения пароля
-			agreeEULA: "" //флаг согласия пользователя с лицензионным соглашением			
+			agreeEULA: "", //флаг согласия пользователя с лицензионным соглашением
+			showEULA: false, //флаг отображения лицензионного соглашения
+			EULA: { //лицензионное соглашение
+				title: "", //заголовок
+				text: "" //содержимое
+			}			
 		}
 	},
 	//обработка результата регистрации
@@ -58,6 +119,34 @@ var Register = React.createClass({
 			);
 		}			
 	},
+	//обработка результатов получения статей заглавной страницы
+	handleGetTermsOfUseResult: function (resp) {		
+		this.props.onHideProgress();
+		var tmpEULA = {
+			title: "",
+			text: ""
+		};
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.setState({EULA: tmpEULA, showEULA: false});
+		} else {
+			if((resp.MESSAGE)&&(Array.isArray(resp.MESSAGE))&&(resp.MESSAGE.length > 0)) {
+				tmpEULA.title = resp.MESSAGE[0].title;
+				tmpEULA.text = resp.MESSAGE[0].text;
+				this.setState({EULA: tmpEULA, showEULA: true});
+			} else {
+				this.setState({EULA: tmpEULA, showEULA: false});
+			}
+		}
+	},
+	//загрузка данных статьи об условиях использования
+	getTermsOfUse: function () {		
+		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+		var getPrms = {
+			language: this.props.language, 
+			filter: {name: "TERMS_OF_USE"}
+		}
+		clnt.getArticles(getPrms, this.handleGetTermsOfUseResult);		
+	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
 	},
@@ -87,14 +176,15 @@ var Register = React.createClass({
 				(this.state.mail)&&
 				(this.state.password)&&
 				(this.state.passwordConf)&&
-				(this.state.password == this.state.passwordConf)
+				(this.state.password == this.state.passwordConf)&&
+				(this.state.password.length >= 8)
 			) {
 				this.setState(tmpState, this.register);
 			} else {
 				if(!this.state.name) tmpState.noNameSpecified = true;
 				if(!this.state.mail) tmpState.noMailSpecified = true;
-				if(!this.state.password) tmpState.noPassSpecified = true;
-				if(!this.state.passwordConf) tmpState.noPassConfSpecified = true;
+				if((!this.state.password)||(this.state.password.length < 8)) tmpState.noPassSpecified = true;
+				if((!this.state.passwordConf)||(this.state.passwordConf.length < 8)) tmpState.noPassConfSpecified = true;
 				if(this.state.password != this.state.passwordConf) tmpState.badPassConfSpecified = true;
 				this.setState(tmpState);
 			}
@@ -122,9 +212,14 @@ var Register = React.createClass({
 	handleAgreeChecked: function (status) {
 		this.setState({agreeEULA: status});
 	},
-	//обработка надатия на чтение EULA
+	//обработка нажатия на чтение EULA
 	handleReadAgreementClick: function () {
-		this.context.router.transitionTo("articles", {}, {filter: {name: "TERMS_OF_USE"}, title: "UI_FOOTER_MENU_TERMSUSE", convertTitle: true});
+		this.getTermsOfUse();
+		//this.context.router.transitionTo("articles", {}, {filter: {name: "TERMS_OF_USE"}, title: "UI_FOOTER_MENU_TERMSUSE", convertTitle: true});
+	},
+	//обработка нажатия на закрытие EULA
+	handleCloseAgreementClick: function () {
+		this.setState({showEULA: false});
 	},
 	//генерация представления формы регистрации
 	render: function () {
@@ -153,7 +248,35 @@ var Register = React.createClass({
 			"u-form-field": true,
 			"has-error": ((this.state.noPassConfSpecified)||(this.state.badPassConfSpecified))
 		});
+		//соглашение об использовании
+		var agreement;
+		if(this.state.showEULA) {
+			agreement = <EULAView language={this.props.language}
+							title={this.state.EULA.title} 
+							text={this.state.EULA.text} 
+							onClose={this.handleCloseAgreementClick}/>
+		}
 		var content =	<div>
+							{agreement}
+							<div className="w-row">
+								<div className="w-col w-col-3">
+									<label className="u-form-label n1">
+										{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_MAIL"})}:
+										<div className="u-t-small">
+											{Utils.getStrResource({lang: this.props.language, code: "UI_NOTE_USER"})}
+										</div>
+									</label>									
+								</div>
+								<div className="w-col w-col-9">
+									<input className={classesMailInput}
+										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_MAIL"})}
+										type="text" 
+										ref="mail" 
+										id="mail"
+										value={this.state.mail}
+										onChange={this.handleFormItemChange}/>
+								</div>
+							</div>
 							<div className="w-row">
 								<div className="w-col w-col-3">
 									<label className="u-form-label n1">
@@ -169,30 +292,16 @@ var Register = React.createClass({
 										value={this.state.name}
 										onChange={this.handleFormItemChange}/>
 								</div>
-							</div>
-							<div className="w-row">
-								<div className="w-col w-col-3">
-									<label className="u-form-label n1">
-										{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_MAIL"})}:
-									</label>
-									<div className="u-t-small">
-										{Utils.getStrResource({lang: this.props.language, code: "UI_NOTE_USER"})}
-									</div>
-								</div>
-								<div className="w-col w-col-9">
-									<input className={classesMailInput}
-										placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_MAIL"})}
-										type="text" 
-										ref="mail" 
-										id="mail"
-										value={this.state.mail}
-										onChange={this.handleFormItemChange}/>
-								</div>
-							</div>
+							</div>							
 							<div className="u-block-spacer2"></div>
 							<div className="w-row">
 								<div className="w-col w-col-3">
-									<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_NEW_PASS"})}:</label>									
+									<label className="u-form-label n1">
+										{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_NEW_PASS"})}:
+										<div className="u-t-small">
+											{Utils.getStrResource({lang: this.props.language, code: "UI_NOTE_PASS"})}
+										</div>
+									</label>																	
 								</div>
 								<div className="w-col w-col-9">
 									<input className={classesPassInput}
@@ -202,7 +311,7 @@ var Register = React.createClass({
 										id="password"
 										value={this.state.password}
 										onChange={this.handleFormItemChange}/>
-								</div>
+								</div>								
 							</div>
 							<div className="w-row">
 								<div className="w-col w-col-3">
