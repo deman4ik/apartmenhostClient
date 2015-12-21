@@ -755,13 +755,13 @@ var Profile = React.createClass({
 											<div className="w-col w-col-2 u-col-query u-t-center">
 											  {Utils.formatDate({lang: this.props.language, date: item.createdAt})}
 											</div>											
-											<div className="w-col w-col-1 u-col-query">
+											<div className="w-col w-col-1 u-col-query w-col-tiny-5">
 												{userLeft}
 											</div>
-											<div className="w-col w-col-1 u-col-query">
+											<div className="w-col w-col-1 u-col-query w-col-tiny-3">
 												{arrow}
 											</div>
-											<div className="w-col w-col-1 u-col-query">
+											<div className="w-col w-col-1 u-col-query w-col-tiny-4">
 												{userRight}
 											</div>								
 											<div className="w-col w-col-3 u-col-query u-t-center">

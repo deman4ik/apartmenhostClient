@@ -635,7 +635,9 @@ textarea.u-form-area-v {
   position: relative;
   display: inline-block;
   width:auto;
-  margin-right: 20px;
+}
+.u-col-has-dates .u-datepicker-holder.has-icon {
+  margin-right:20px;
 }
 .u-form-field.rel.dtcard {
   width: 130px;
@@ -1117,6 +1119,11 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   color:#4ac2c9; 
   font-weight: 400;
   vertical-align: text-top;
+}
+.u-col-howto.eula {
+  overflow-x:hidden;
+  overflow-y:scroll;
+  max-height: 480px;
 }
 .u-t-h1-land2 {
   padding-top: 4px;

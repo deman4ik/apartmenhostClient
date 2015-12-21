@@ -15,7 +15,8 @@ var PostsFindForm = React.createClass({
 				address: "", //адрес жилья		
 				dFrom: "", //дата начала периода бронирования
 				dTo: "", //дата коночания периода бронирования
-				sex: "" //пол постояльца
+				sex: "", //пол постояльца
+				canSearch: true //признак возможности поиска
 			}
 		};
 	},
@@ -27,8 +28,30 @@ var PostsFindForm = React.createClass({
 	},
 	//оповещение родителя о необходимости поиска
 	notifyParentFind: function () {
+		var tmp = {};
+		_.extend(tmp, this.state.find);
 		if((this.props.onFind)&&(Utils.isFunction(this.props.onFind))) {
-			this.props.onFind(this.state.find);
+			if((tmp.address)&&(tmp.latitude)&&(tmp.longitude)) {
+				this.props.onFind(tmp);				
+			} else {
+				if((tmp.address)&&((!tmp.latitude)||(!tmp.longitude))) {
+					var geocoder = new google.maps.Geocoder();
+					geocoder.geocode({"address": tmp.address}, Utils.bind(function (results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+							tmp.latitude = results[0].geometry.location.lat();
+							tmp.longitude = results[0].geometry.location.lng();
+							this.setState({find: tmp});							
+						} else {
+							this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
+								Utils.getStrResource({lang: this.props.language, code: "CLNT_UNKNOWN_ADDRESS"}));
+						}
+						this.props.onFind(tmp);						
+					}, this));
+				} else {
+					this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
+						Utils.getStrResource({lang: this.props.language, code: "CLNT_UNKNOWN_ADDRESS"}));
+				}
+			}
 		}
 	},
 	//оповещение родителя о необходимости сброка параметров поиска

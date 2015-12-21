@@ -21,8 +21,16 @@ var Map = React.createClass({
 			radius: 0, //радиус поиска
 			centerIsSet: false, //признак указания центра карты
 			showRadar: false, //признак отображения радара (режим группового отображения объектов)
-			showMarkers: true //признак отображения маркеров
+			showMarkers: true, //признак отображения маркеров
+			notifyZoomChange: true, //признак оповещения родителей о смене масштаба карты
+			notifyMapCenterChange: false //признак оповещения родителей о смене центра карты
 		};
+	},
+	//сброс масштаба карты
+	resetMapZoom: function () {
+		this.setState({notifyZoomChange: false, notifyMapCenterChange: true}, function () {
+			this.state.map.setZoom((this.props.zoom)?this.props.zoom:config.defaultMapZoom);			
+		});		
 	},
 	//установка маркера и центра карты
 	setMapCenterAndMarkers: function () {
@@ -117,7 +125,7 @@ var Map = React.createClass({
 						}
 					}, this));
 				}, this),
-				this.setMapToDefaultPoint()
+				this.setMapToDefaultPoint
 			);
 		} else {
 			this.setMapToDefaultPoint();
@@ -216,7 +224,15 @@ var Map = React.createClass({
 	},
 	//обработка смены масштаба карты
 	handleMapZoomChanged: function () {
-		this.notifyParentMapBoundsChnage();
+		if(this.state.notifyZoomChange) 
+			this.notifyParentMapBoundsChnage();
+		else
+			this.setState({notifyZoomChange: true});
+	},
+	//обработка смены центра карты
+	handleMapCenterChanged: function () {
+		if(this.state.notifyMapCenterChange)
+			this.setState({notifyMapCenterChange: false}, this.notifyParentMapBoundsChnage);
 	},
 	//зачистка маркеров на карте
 	removeMarkers: function () {		
@@ -261,6 +277,7 @@ var Map = React.createClass({
 		google.maps.event.addListenerOnce(mapTmp, "idle", Utils.bind(function () {this.handleMapDragEnd();}, this));
 		google.maps.event.addListener(mapTmp, "dragend", Utils.bind(function () {this.handleMapDragEnd();}, this));
 		google.maps.event.addListener(mapTmp, "zoom_changed", Utils.bind(function () {this.handleMapZoomChanged();}, this));
+		google.maps.event.addListener(mapTmp, "center_changed", Utils.bind(function () {this.handleMapCenterChanged();}, this));
 		this.setState({map: mapTmp}, function () {this.initState(this.props);});
 	},
 	//завершение генерации/обновления представления
@@ -269,6 +286,7 @@ var Map = React.createClass({
 	//обновление параметров
 	componentWillReceiveProps: function (newProps) {
 		if(!$.isEmptyObject(this.state.map)) {
+			if((newProps.zoomReset)&&(newProps.zoomReset != this.props.zoomReset)) this.resetMapZoom();
 			if(
 				(newProps.latitude != this.props.latitude)||
 				(newProps.longitude != this.props.longitude)||
@@ -276,7 +294,7 @@ var Map = React.createClass({
 				(newProps.address != this.props.address)||
 				(Utils.serialize(newProps.markers) != Utils.serialize(this.props.markers))||
 				(newProps.showRadar != this.props.showRadar)
-			) this.initState(newProps);
+			) this.initState(newProps);			
 		}
 	},
 	//генерация представления
