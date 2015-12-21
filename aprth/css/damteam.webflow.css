@@ -53,7 +53,7 @@ h6 {
 }
 p {
   display: inline;
-  height: 100px;
+  height: inherit;  
   font-size: 14px;
 }
 .u-btn {
@@ -1105,8 +1105,8 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 	font-weight: 400;  
 }
 .u-col-howto p {
-    display: inherit;
-    height: inherit;
+    display: block;
+    height: auto;
     padding-top: 4pt;
 }
 .u-col-howto p.card-footer {
@@ -1123,7 +1123,7 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 .u-col-howto.eula {
   overflow-x:hidden;
   overflow-y:scroll;
-  max-height: 480px;
+  max-height: 460px;
 }
 .u-t-h1-land2 {
   padding-top: 4px;
@@ -1324,7 +1324,6 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 @media (max-width: 479px) {
   p {
     display: inline;
-    height: 130px;
   }
   .u-img-slider {
     height: 234px;
@@ -1394,6 +1393,9 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 	.u-block-lnk {
 		padding-left: 8px;  
 	}
+  .u-col-howto.eula {
+    height: 370px;
+  }  
 }
 
 /* --------- added ----------*/

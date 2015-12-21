@@ -29,10 +29,10 @@ var EULAView = React.createClass({
 					<div className="modal-dialog">
 						<div className="modal-content">
 							<div className="modal-header">
+							  <button type="button" className="close" onClick={this.handleCloseClick}>×</button>		
 								<h4 className="modal-title">{this.props.title}</h4>
 							</div>
 							<div className="modal-body">
-								<br/>
 								<form className="form-horizontal" role="form">
 									<div className="panel-default">
 										<div className="panel-body">
@@ -45,7 +45,7 @@ var EULAView = React.createClass({
 							</div>
 							<div className="modal-footer">
 								<button type="button" className="w-button u-btn-primary" onClick={this.handleCloseClick}>
-									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_OK"})}
+									{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CLOSE"})}
 								</button>
 							</div>
 						</div>
