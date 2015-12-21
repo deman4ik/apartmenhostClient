@@ -772,7 +772,7 @@ var ModifyPost = React.createClass({
 												onClick={this.handleModifyPostClick}/>
 											<input className="w-button u-btn-regular"
 												type="button"
-												value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CLOSE"})}
+												value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_CHANCEL"})}
 												onClick={this.handleChancelModifyPostClick}/>											
 										</form>						
 									</div>
