@@ -92,35 +92,21 @@ var menus = [
 				code: "VK", 
 				title: "UI_FOOTER_MENU_SOCIAL_VK", 
 				image: "aprth/img/vkontakte.png",
-				link: "http://www.vk.com",				
+				link: "https://vk.com/club108035370",				
 				authAccess: false
 			},		
 			{
 				code: "FaceBook", 
 				title: "UI_FOOTER_MENU_SOCIAL_FACEBOOK", 
 				image: "aprth/img/facebook.png",
-				link: "http://www.fb.com",				
+				link: "https://www.facebook.com/groups/814164982039762/",				
 				authAccess: false
 			},
 			{
-				code: "Twitter", 
-				title: "UI_FOOTER_MENU_SOCIAL_TWITTER", 
-				image: "aprth/img/twitter.png",
-				link: "http://www.twitter.com",				
-				authAccess: false
-			},
-			{
-				code: "Instagram", 
-				title: "UI_FOOTER_MENU_SOCIAL_INSTAGRAM", 
-				image: "aprth/img/Instagram.png",
-				link: "http://www.instagram.com",				
-				authAccess: false
-			},
-			{
-				code: "GooglePlus", 
-				title: "UI_FOOTER_MENU_SOCIAL_GOOGLEPLUS", 
-				image: "aprth/img/Google-plus.png",
-				link: "http://plus.google.com",				
+				code: "Odnoklassniki", 
+				title: "UI_FOOTER_MENU_SOCIAL_ODNOKLASSNIKI", 
+				image: "aprth/img/ok.png",
+				link: "http://www.ok.ru/group/52771912679636",				
 				authAccess: false
 			}
 		]
