@@ -104,7 +104,7 @@ var menus = [
 			},
 			{
 				code: "Odnoklassniki", 
-				title: "UI_FOOTER_MENU_SOCIAL_ODNOKLASSNIKI", 
+				title: "UI_FOOTER_MENU_SOCIAL_OK", 
 				image: "aprth/img/ok.png",
 				link: "http://www.ok.ru/group/52771912679636",				
 				authAccess: false
