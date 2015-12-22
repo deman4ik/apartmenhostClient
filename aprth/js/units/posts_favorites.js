@@ -9,7 +9,7 @@ var PostsFavorites = React.createClass({
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
-		fixFooter();
+		Utils.fixFooter();
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {

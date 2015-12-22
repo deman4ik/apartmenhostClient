@@ -286,7 +286,7 @@ var Post = React.createClass({
 	},
 	//завершение генерации/обновления представления компонента
 	componentDidUpdate: function (prevProps, prevState) {
-		fixFooter();
+		Utils.fixFooter();
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {

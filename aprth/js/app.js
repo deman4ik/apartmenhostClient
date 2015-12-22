@@ -203,7 +203,7 @@ var App = React.createClass({
 	//сокрытие индикатора процесса
 	hideLoader: function () {
 		this.setState({loading: false});
-		fixFooter();
+		Utils.fixFooter();
 	},
 	//отображение диалога сообщения
 	showDialogMessage: function (title, text) {
@@ -301,7 +301,7 @@ var App = React.createClass({
 	},
 	//смена размеров окна
 	handleResize: function () {
-		fixFooter();
+		Utils.fixFooter();
 	},
 	//выбор пункта меню в футере
 	handleFooterItemClick: function (menuItem) {
