@@ -26,6 +26,7 @@ var Client = function (clientConfig) {
 		acceptDeclineReservation: "Reservation/AcceptDecline", //подтверждение/отклонение резерва
 		reservation: "Reservation", //запросы на бронирование
 		userProfile: "Profile", //работа с профилем пользователя
+		userProfileEmail: "Profile/Email", //установка e-mail профиля
 		review: "Review", //работа с отзывами
 		uploadApartmentPicture: "Picture/Upload/Apartment", //работа с картинками - загрузка картинки недвижимости
 		removeApartmentPicture: "Picture/Delete/Apartment", //работа с картинками - удаление картинки недвижимости
@@ -172,6 +173,22 @@ var Client = function (clientConfig) {
 						}
 					}
 					break;
+				}
+				//
+				case (serverActions.userProfileEmail): {
+					if(!prms.data) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));
+					if(!prms.data.email) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "email"]
+						}));
+					return fillSrvStdReqData(serverActions.userProfileEmail, serverMethods.ins, prms.data.email);
 				}
 				//работа с объявлениями пользователя
 				case (serverActions.userAdvert): {
@@ -801,11 +818,17 @@ var Client = function (clientConfig) {
 							if(!profTmp) {
 								callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOTFOUND"})));
 							} else {
-								if((!("emailConfirmed" in profTmp))||(!profTmp.emailConfirmed)) {
-									callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOT_CONFIRMED"})));
-								} else {											
-									connectionData.user.profile = profTmp;								
+								connectionData.user.profile = profTmp;
+								connectionData.askForEmail = false;
+								if(("emailConfirmed" in profTmp)&&("email" in profTmp)&&(!profTmp.email)&&(!profTmp.emailConfirmed)) {
+									connectionData.askForEmail = true;
 									callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, connectionData));
+								} else {
+									if((!("emailConfirmed" in profTmp))||(!profTmp.emailConfirmed)) {
+										callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOT_CONFIRMED"})));
+									} else {										
+										callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, connectionData));
+									}
 								}
 							}
 						}
@@ -1138,6 +1161,33 @@ var Client = function (clientConfig) {
 				});
 			} catch (error) {
 				log(["UPDATE PROFILE ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//установка адреса e-mail для профиля
+		setProfileMail: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					session: prms.session,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.userProfileEmail,
+						method: serverMethods.ins,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["SET PROFILE MAIL ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}

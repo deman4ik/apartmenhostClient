@@ -9,12 +9,56 @@ var LogInForm = React.createClass({
 	//состояние
 	getInitialState: function () {
 		return {
-			confirmResetPassword: false //признак восстановления пароля
+			confirmResetPassword: false, //признак восстановления пароля
+			sessionInfo: {}, //информация о сесси и пользователе
+			askMailForm: {}, //форма запроса e-mail
+			displayAskMail: false //флаг отображения формы запроса e-mail
 		};
+	},
+	//сборка формы жалобы
+	buildAskeMailForm: function (props) {
+		var formTmp = formFactory.buildForm({
+			language: props.language,
+			title: Utils.getStrResource({lang: props.language, code: "UI_TITLE_SET_EMAIL"})
+		});
+		var mailItemTmp;		
+		mailItemTmp = formFactory.buildFormItem({
+			language: props.language,
+			label: Utils.getStrResource({lang: props.language, code: "UI_FLD_MAIL"}),
+			name: "userMail",
+			dataType: formFactory.itemDataType.STR,
+			inputType: formFactory.itemInputType.MANUAL,
+			required: true
+		});
+		formFactory.appedFormItem(formTmp, mailItemTmp);		
+		this.setState({askMailForm: formTmp});
+	},
+	//ввод e-mail
+	onAskMailFormOK: function (values) {
+		if(_.find(values, {name: "userMail"})) {
+			var userMail = _.find(values, {name: "userMail"}).value;			
+			this.setProfileMail(userMail);
+		}		
+	},
+	//отмена запроса e-mail
+	onAskMailFormChancel: function () {
+		this.setState({displayAskMail: false});
+	},
+	//обработка результата отправки e-mail аккаунта
+	handleSetProfileMail: function (resp) {
+		this.props.onHideProgress();
+		if(resp.STATE == clnt.respStates.ERR) {
+			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
+		} else {
+			this.setState({displayAskMail: false}, function() {
+				this.buildAskeMailForm(this.props);
+				this.context.router.transitionTo("confirm", null, {userId: this.state.sessionInfo.user.profile.id});
+			});			
+		}
 	},
 	//обработка результата входа
 	handleLogIn: function (result) {
-		this.props.onHideProgress();
+		this.props.onHideProgress();		
 		if(result.TYPE == clnt.respTypes.STD) {
 			this.props.onShowError(Utils.getStrResource({
 					lang: this.props.language, 
@@ -22,9 +66,25 @@ var LogInForm = React.createClass({
 				result.MESSAGE
 			);
 		} else {
-			this.props.onLogInOk(result.MESSAGE);
+			this.setState({sessionInfo: result.MESSAGE}, Utils.bind(function () {
+				if(("askForEmail" in this.state.sessionInfo)&&(this.state.sessionInfo.askForEmail)) {
+					this.setState({displayAskMail: true});
+				} else {
+					this.props.onLogInOk(this.state.sessionInfo);
+				}
+			}, this));			
 		}		
-	},	
+	},
+	//отправка адреса e-mail для аккаунта
+	setProfileMail: function (mail) {
+		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+		var setPrms = {
+			language: this.props.language,
+			session: this.state.sessionInfo,
+			data: {email: mail}
+		}
+		clnt.setProfileMail(setPrms, this.handleSetProfileMail);
+	},
 	//обработка результата сброса пароля
 	handleResetPassword: function (result) {
 		this.props.onHideProgress();
@@ -142,6 +202,7 @@ var LogInForm = React.createClass({
 	//инициализация при старте приложения
 	componentDidMount: function () {
 		this.bindKeyDown();
+		this.buildAskeMailForm(this.props);
 	},
 	//отключение компонента от страницы
 	componentWillUnmount: function() {
@@ -158,12 +219,22 @@ var LogInForm = React.createClass({
 										onOk={this.doResetPassword}
 										onCancel={this.doNotResetPassword}/>
 		}
+		//запрос e-mail		
+		var askMailForm;
+		if(this.state.displayAskMail) {
+			askMailForm =	<FormBuilder form={this.state.askMailForm} 
+								onOK={this.onAskMailFormOK} 
+								onChancel={this.onAskMailFormChancel} 
+								onShowError={this.props.onShowError}
+								language={this.props.language}/>
+		}
 		//генерация представления
 		return (
 			<div>
 				<div className="modal show messagebox-wraper" id="loginBox">					
 					<div className="modal-dialog login-form">
 						{confResetPasswordDlg}
+						{askMailForm}
 						<div className="modal-content">
 							<div className="modal-header">
 								<button type="button" className="close" onClick={this.handleCloseClick}>×</button>	
