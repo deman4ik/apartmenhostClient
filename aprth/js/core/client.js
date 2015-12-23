@@ -174,7 +174,7 @@ var Client = function (clientConfig) {
 					}
 					break;
 				}
-				//
+				//работа с профилем пользователя - установка E-Mail
 				case (serverActions.userProfileEmail): {
 					if(!prms.data) 
 						throw new Error(Utils.getStrResource({
