@@ -51,20 +51,24 @@ var LogInForm = React.createClass({
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
 			this.setState({displayAskMail: false}, function() {
-				this.buildAskeMailForm(this.props);
+				this.props.onLogInCancel();
 				this.context.router.transitionTo("confirm", null, {userId: this.state.sessionInfo.user.profile.id});
 			});			
 		}
 	},
 	//обработка результата входа
 	handleLogIn: function (result) {
-		this.props.onHideProgress();		
+		this.props.onHideProgress();
 		if(result.TYPE == clnt.respTypes.STD) {
 			this.props.onShowError(Utils.getStrResource({
 					lang: this.props.language, 
 					code: "CLNT_LOGIN_ERR"}), 
 				result.MESSAGE
 			);
+			if(result.MESSAGE == Utils.getStrResource({lang: this.props.language, code: "SRV_USER_NOT_CONFIRMED"})) {
+				this.props.onLogInCancel();
+				this.context.router.transitionTo("confirm", null, {userId: result.userId});
+			}
 		} else {
 			this.setState({sessionInfo: result.MESSAGE}, Utils.bind(function () {
 				if(("askForEmail" in this.state.sessionInfo)&&(this.state.sessionInfo.askForEmail)) {

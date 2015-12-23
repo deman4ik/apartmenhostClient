@@ -188,7 +188,7 @@ var Client = function (clientConfig) {
 							code: "CLNT_NO_ELEM",
 							values: ["ServerRequest", "email"]
 						}));
-					return fillSrvStdReqData(serverActions.userProfileEmail, serverMethods.ins, prms.data.email);
+					return fillSrvStdReqData(serverActions.userProfileEmail, serverMethods.ins, prms.data);
 				}
 				//работа с объявлениями пользователя
 				case (serverActions.userAdvert): {
@@ -825,7 +825,9 @@ var Client = function (clientConfig) {
 									callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, connectionData));
 								} else {
 									if((!("emailConfirmed" in profTmp))||(!profTmp.emailConfirmed)) {
-										callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOT_CONFIRMED"})));
+										var tmpResp = fillSrvStdRespData(respTypes.STD, respStates.ERR, Utils.getStrResource({lang: prms.language, code: "SRV_USER_NOT_CONFIRMED"}));
+										tmpResp.userId = profTmp.id;
+										callBack(tmpResp);
 									} else {										
 										callBack(fillSrvStdRespData(respTypes.DATA, respStates.OK, connectionData));
 									}
