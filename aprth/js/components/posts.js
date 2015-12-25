@@ -442,11 +442,11 @@ var Posts = React.createClass({
 			//прочие режимы
 			default: {}
 		};
-		fixFooter();
+		Utils.fixFooter();
 	},
 	//завершение генерации/обновления представления компонента
 	componentDidUpdate: function (prevProps, prevState) {
-		fixFooter();		
+		Utils.fixFooter();		
 		$(".nano").nanoScroller();
 	},
 	//обновление свойств компонента

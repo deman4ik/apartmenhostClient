@@ -147,7 +147,12 @@ var ResetPassConfirm = React.createClass({
 							<div className="u-block-spacer2"></div>
 							<div className="w-row">
 								<div className="w-col w-col-3">
-									<label className="u-form-label n1">{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_NEW_PASS"})}:</label>									
+									<label className="u-form-label n1">
+										{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_NEW_PASS"})}:
+										<div className="u-t-small">
+											{Utils.getStrResource({lang: this.props.language, code: "UI_NOTE_PASS"})}
+										</div>
+									</label>
 								</div>
 								<div className="w-col w-col-9">
 									<input className={classesPassInput}

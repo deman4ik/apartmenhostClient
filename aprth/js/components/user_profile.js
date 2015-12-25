@@ -500,18 +500,20 @@ var UserProfile = React.createClass({
 							</div>
 			} else {
 				var phoneState;
-				if(this.state.profile.phoneStatus == ProfilePhoneState.unConfirmed) {
-					phoneState = 	<a className="u-t-right u-lnk-norm" href="javascript:void(0);" onClick={this.handlePhoneConfClick}>
-										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_PHONE_CONFIRM"})}
-									</a>
-				}
-				if(this.state.profile.phoneStatus == ProfilePhoneState.confirmPending) {
-					phoneState =	<a className="u-t-right u-lnk-norm" href="javascript:void(0);" onClick={this.handlePhoneConfClick}>
-										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_PHONE_ENTER_CODE"})}
-									</a>
-				}
-				if(this.state.profile.phoneStatus == ProfilePhoneState.confirmed) {
-					phoneState = <span>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PHONE_CONFIRMED"})}</span>
+				if(this.state.profile.phone) {
+					if(this.state.profile.phoneStatus == ProfilePhoneState.unConfirmed) {
+						phoneState = 	<a className="u-t-right u-lnk-norm" href="javascript:void(0);" onClick={this.handlePhoneConfClick}>
+											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_PHONE_CONFIRM"})}
+										</a>
+					}
+					if(this.state.profile.phoneStatus == ProfilePhoneState.confirmPending) {
+						phoneState =	<a className="u-t-right u-lnk-norm" href="javascript:void(0);" onClick={this.handlePhoneConfClick}>
+											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_PHONE_ENTER_CODE"})}
+										</a>
+					}
+					if(this.state.profile.phoneStatus == ProfilePhoneState.confirmed) {
+						phoneState = <span>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PHONE_CONFIRMED"})}</span>
+					}
 				}
 				userPhone = <div><strong>{this.state.profile.phone}</strong>&nbsp;{phoneState}</div>
 			}

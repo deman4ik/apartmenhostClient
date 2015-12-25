@@ -3,7 +3,7 @@
 */
 var DefaultPage = React.createClass({
 	componentDidUpdate: function () {
-		fixFooter();		
+		Utils.fixFooter();		
 	},	
 	//генерация представления страницы по-умолчанию
 	render: function () {

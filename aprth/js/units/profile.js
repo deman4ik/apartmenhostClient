@@ -368,7 +368,7 @@ var Profile = React.createClass({
 	},
 	//обновление компонента
 	componentDidUpdate: function () {
-		fixFooter();		
+		Utils.fixFooter();		
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {

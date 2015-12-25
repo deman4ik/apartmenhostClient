@@ -227,7 +227,22 @@ var Utils = {
 	//формирование текста для пустой (невыбранной) опции в select
 	makeEmptyOptionLabel: function (label) {
 		return "- " + label + " -";
-	}	
+	},
+	//корректировка вёрстки подвала страниц
+	fixFooter: function () {
+		return;
+		var windowHeight = $(window).height();
+		var bodyHeight = $(".u-sect-main").height();
+		if ( $(window).width() > 991 && bodyHeight + $(".u-sect-page-footer").outerHeight(true) < windowHeight && !$(".u-sect-hero")) {
+			$(".u-sect-page-footer").css("position", "absolute");
+			$(".u-sect-page-footer").css("left", 0);
+			$(".u-sect-page-footer").css("right", 0);
+			$(".u-sect-page-footer").css("bottom", 0); 
+		}
+		else {
+			$(".u-sect-page-footer").css("position", "relative");
+		}
+	}
 }
 
 //расширение для дат - конвертация в формат ГГГГ-ММ-ДД
