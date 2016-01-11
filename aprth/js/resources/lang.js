@@ -19,7 +19,7 @@ var langs = [
 	{
 		//код языка
 		lang: "RU",
-		display: true,
+		display: false,
 		//валюта для языка
 		CURRENCY: "руб",
 		//код языка каленаря и формат даты
@@ -341,7 +341,7 @@ var langs = [
 	{
 		//код языка
 		lang: "EN",
-		display: true,
+		display: false,
 		//валюта для языка
 		CURRENCY: "USD",
 		//код языка каленаря и формат даты
