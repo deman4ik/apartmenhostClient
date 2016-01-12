@@ -225,9 +225,8 @@ var Post = React.createClass({
 		else
 			this.props.onLogIn({
 				actionType: AppAfterAuthActionTypes.CALLBACK, 
-				actionPrms: {callBack: this.makeBooking}
-			});				
-		
+				actionPrms: {callBack: Utils.bind(function () {this.setState({showPhone: true});}, this)}
+			});			
 	},
 	//получение ответа о смене статуса в избранном
 	handleFavorChange: function (resp) {

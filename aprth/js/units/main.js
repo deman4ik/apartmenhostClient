@@ -96,9 +96,11 @@ var Main = React.createClass({
 	},
 	//нажатие на поиск
 	onFind: function (find) {
-		Utils.deleteObjectState("filterParams");
-		Utils.saveObjectState("filterParams", find);
-		this.context.router.transitionTo("search", {}, {});
+		if((find.latitude)&&(find.longitude)) {
+			Utils.deleteObjectState("filterParams");
+			Utils.saveObjectState("filterParams", find);
+			this.context.router.transitionTo("search", {}, {});
+		}
 	},
 	//нажатие на очистку поиска
 	onFindClear: function () {
@@ -130,7 +132,7 @@ var Main = React.createClass({
 	},
 	//генерация представления главной страницы
 	render: function () {
-		var postsFindForm =	<PostsFindForm language={this.props.language} onFind={this.onFind}/>		
+		var postsFindForm =	<PostsFindForm language={this.props.language} onFind={this.onFind} onShowError={this.props.onShowError}/>		
 		//статьи заглавной страницы
 		var topics;
 		if(this.state.topicsLoaded) {

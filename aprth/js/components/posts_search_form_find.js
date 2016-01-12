@@ -121,8 +121,10 @@ var PostsFindForm = React.createClass({
 					if (status == google.maps.GeocoderStatus.OK) {
 						tmp.latitude = results[0].geometry.location.lat();
 						tmp.longitude = results[0].geometry.location.lng();
-					}
-					this.setState({find: tmp}, this.notifyParentFind);			
+						this.setState({find: tmp}, this.notifyParentFind);
+					} else {
+						this.setState({noAddressFilterSpecified: true});
+					}					
 				}, this));			
 			} else {
 				this.setState({find: tmp}, this.notifyParentFind);			

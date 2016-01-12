@@ -245,14 +245,17 @@ var Posts = React.createClass({
 	//поиск и фильтрация
 	findAndFilter: function () {
 		if(this.state.filterIsSet) {
-			this.setState({mapZoomReset: false});
-			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
-			var getPrms = {
-				language: this.props.language, 
-				filter: this.buildSrvAdvertsFilter(), 
-				session: this.props.session.sessionInfo
-			}			
-			clnt.getAdverts(getPrms, this.handleSearchResult);
+			var srvFilter = this.buildSrvAdvertsFilter();
+			if((srvFilter.swLat)&&(srvFilter.swLong)&&(srvFilter.neLat)&&(srvFilter.neLong)) {
+				this.setState({mapZoomReset: false});
+				this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));			
+				var getPrms = {
+					language: this.props.language, 
+					filter: srvFilter, 
+					session: this.props.session.sessionInfo
+				}
+				clnt.getAdverts(getPrms, this.handleSearchResult);
+			}
 		}
 	},	
 	//смена параметров поиска
