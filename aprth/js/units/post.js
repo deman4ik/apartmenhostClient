@@ -402,7 +402,7 @@ var Post = React.createClass({
 							{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SHOW_PHONE"})}
 						</a>
 			} else {
-				phone = <div><strong>{this.state.post.user.phone}</strong></div>
+				phone = <div><strong>{"+" + this.state.post.user.phone}</strong></div>
 			}
 			//картинки
 			var galery;

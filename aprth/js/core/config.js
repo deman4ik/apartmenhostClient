@@ -53,5 +53,7 @@ var config = {
 	//цвет заливки радара
 	radarBgColor: "#00ccc5",
 	//максимальное количество картинок на объявление
-	postMaxPictures: 20
+	postMaxPictures: 20,
+	//префикс кода страны телефонного номера по умолчанию
+	defaultPhonePrefix: "7"
 }

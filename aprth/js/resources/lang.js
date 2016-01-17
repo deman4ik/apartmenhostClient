@@ -22,6 +22,9 @@ var langs = [
 		display: true,
 		//валюта для языка
 		CURRENCY: "руб",
+		//названия стран в этом языке
+		RUSSIA: "Россия",
+		US: "США",
 		//код языка каленаря и формат даты
 		CALENDAR: "ru",
 		DATE_FORMAT: "dd.mm.yyyy",
@@ -316,6 +319,8 @@ var langs = [
 		CLNT_EULA_NOTE: "Перед регистрацией ознакомьтесь с условиями использования и подтвердите Ваше согласие с ними... Нажмите здесь для ознакомления с условиями использования...",
 		CLNT_FEEDBACK_SENT: "Сообщение отправлено!",
 		CLNT_PHONE_CONF_SENT: "Запрос на подтверждение отправлен - ожидайте SMS!",
+		CLNT_NO_PHONE_PREFIX: "Не указан код страны для телефона!",
+		CLNT_BAD_PHONE: "Номер телефона указан не корректно! Должен быть %1$s разрядным числом!",
 		//загрузчик картинок
 		IUPLDR_SOURCES_LOCAL_TITLE: "Файлы",
 		IUPLDR_SOURCES_LOCAL_DROP_FILE: "Перетащите файл с картинкой сюда",
@@ -344,6 +349,9 @@ var langs = [
 		display: true,
 		//валюта для языка
 		CURRENCY: "USD",
+		//названия стран в этом языке
+		RUSSIA: "Russia",
+		US: "USA",
 		//код языка каленаря и формат даты
 		CALENDAR: "en",
 		DATE_FORMAT: "mm/dd/yyyy",
@@ -637,6 +645,8 @@ var langs = [
 		CLNT_EULA_NOTE: "You shuld read terms of use and confirm your agreement to register... Click here to read it...",
 		CLNT_FEEDBACK_SENT: "Message sent!",
 		CLNT_PHONE_CONF_SENT: "Request sent - wait for SMS!",
+		CLNT_NO_PHONE_PREFIX: "Select country phone prefix!",
+		CLNT_BAD_PHONE: "Phone number is incorrect! Should be number of \"%1$s\" digits!",
 		//загрузчик картинок
 		IUPLDR_SOURCES_LOCAL_TITLE: "Files",
 		IUPLDR_SOURCES_LOCAL_DROP_FILE: "Move image here",
