@@ -225,9 +225,8 @@ var Post = React.createClass({
 		else
 			this.props.onLogIn({
 				actionType: AppAfterAuthActionTypes.CALLBACK, 
-				actionPrms: {callBack: this.makeBooking}
-			});				
-		
+				actionPrms: {callBack: Utils.bind(function () {this.setState({showPhone: true});}, this)}
+			});			
 	},
 	//получение ответа о смене статуса в избранном
 	handleFavorChange: function (resp) {
@@ -403,7 +402,7 @@ var Post = React.createClass({
 							{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_SHOW_PHONE"})}
 						</a>
 			} else {
-				phone = <div><strong>{this.state.post.user.phone}</strong></div>
+				phone = <div><strong>{"+" + this.state.post.user.phone}</strong></div>
 			}
 			//картинки
 			var galery;

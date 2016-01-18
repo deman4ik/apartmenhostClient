@@ -35,6 +35,11 @@ var Utils = {
 	isNumber: function (numb) {
 		return !isNaN(numb);
 	},
+	//проверка на число регулярным выражением
+	isNumberRe: function (numb) {
+		var re = new RegExp(/^\d+$/);
+		return re.test(numb);
+	},
 	//проверка на функцию
 	isFunction: function (fnc) {
 		if(!fnc) return false;

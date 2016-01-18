@@ -21,8 +21,33 @@ var UserProfile = React.createClass({
 			displayChPwd: false, //флаг отображения формы смены пароля
 			displayPhoneConf: false, //флаг отображения формы подтверждения телефона
 			phoneConfForm: {}, //форма подтверждения телефона
-			chPwdForm: {} //форма смены пароля
+			chPwdForm: {}, //форма смены пароля
+			phoneCodes: [], //телефонные коды стран
 		}
+	},
+	//сборка телефонных кодов стран
+	buildPhoneCodes: function (props) {
+		var pCtmp = [];
+		pCtmp = phoneCodes.map(function(item, i) {
+			return {
+				label: Utils.getStrResource({lang: props.language, code: item.countryCode}) + " (+" + item.phoneCode + ")",
+				code: item.phoneCode
+			}
+		});
+		this.setState({phoneCodes: pCtmp});
+	},
+	//сборка буфера для редактирования профиля
+	buildProfileTmp: function (profile) {
+		var profileTmp = {};
+		_.extend(profileTmp, profile);
+		if(profile.phone) {
+			profileTmp.phonePrefix = profileTmp.phone.substring(0, 1);
+			profileTmp.phone = profileTmp.phone.substring(1);
+		} else {
+			profileTmp.phonePrefix = config.defaultPhonePrefix;
+		}
+		console.log(profileTmp);
+		return profileTmp;
 	},
 	//сборка формы подтверждения телефона
 	buildPhoneConfForm: function (props) {
@@ -161,7 +186,8 @@ var UserProfile = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			this.setState({profile: resp.MESSAGE, profileTmp: resp.MESSAGE, profileReady: true});
+			var profileTmp = this.buildProfileTmp(resp.MESSAGE);
+			this.setState({profile: resp.MESSAGE, profileTmp: profileTmp, profileReady: true});
 			if(this.state.notifyParentProfileChanged) {
 				this.setState({notifyParentProfileChanged: false}, this.notifyParentProfileChanged);
 			}
@@ -302,6 +328,7 @@ var UserProfile = React.createClass({
 	componentDidMount: function () {
 		this.buildPhoneConfForm(this.props);
 		this.buildChPwdForm(this.props);
+		this.buildPhoneCodes(this.props);
 		this.setState({notifyParentProfileLoaded: true}, this.loadProfile);
 	},
 	//обновление свойств компонента
@@ -309,6 +336,7 @@ var UserProfile = React.createClass({
 		if(newProps.language != this.props.language) {
 			this.buildPhoneConfForm(newProps);		
 			this.buildChPwdForm(newProps);
+			this.buildPhoneCodes(newProps);
 		}
 		if(newProps.profileId != this.props.profileId) {
 			this.setState({notifyParentProfileLoaded: true}, this.loadProfile);
@@ -327,8 +355,7 @@ var UserProfile = React.createClass({
 	},
 	//обработка нажатия на кнопку редактирования
 	handleEditClick: function () {
-		var tmp = {};
-		_.extend(tmp, this.state.profile);
+		var tmp = this.buildProfileTmp(this.state.profile);
 		this.setState({profileTmp: tmp, modeEdit: true});
 	},
 	//обработка нажатия на кнопку отмены редактирования
@@ -337,6 +364,27 @@ var UserProfile = React.createClass({
 	},
 	//обработка нажатия на кнопку изменения профиля
 	handleOKEditClick: function () {
+		if(this.state.profileTmp.phone) {
+			if(!this.state.profileTmp.phonePrefix) {
+				this.props.onShowError(
+					Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
+					Utils.getStrResource({lang: this.props.language, code: "CLNT_NO_PHONE_PREFIX"})
+				);
+				return;
+			}
+			var phoneConf = _.findWhere(phoneCodes, {phoneCode: this.state.profileTmp.phonePrefix})
+			if(
+				(!Utils.isNumber(this.state.profileTmp.phone))||
+				(!Utils.isNumberRe(this.state.profileTmp.phone))||
+				(this.state.profileTmp.phone.length != phoneConf.phoneLength)
+			) {
+				this.props.onShowError(
+					Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
+					Utils.getStrResource({lang: this.props.language, code: "CLNT_BAD_PHONE", values: [phoneConf.phoneLength]})
+				);
+				return;
+			}
+		}
 		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
 		var updPrms = {
 			language: this.props.language, 
@@ -346,7 +394,7 @@ var UserProfile = React.createClass({
 				firstName: this.state.profileTmp.firstName,
 				lastName: this.state.profileTmp.lastName,
 				gender: this.state.profileTmp.gender,
-				phone: this.state.profileTmp.phone,
+				phone: ((this.state.profileTmp.phone)?this.state.profileTmp.phonePrefix + this.state.profileTmp.phone:null),
 				description: this.state.profileTmp.description
 			},
 			session: this.props.session.sessionInfo
@@ -489,8 +537,21 @@ var UserProfile = React.createClass({
 			//телефон
 			var userPhone;
 			if(this.state.modeEdit) {
-				userPhone =	<div>
-								<input className="w-input u-form-field"
+				userPhone =	<div style={{display: "flex"}}>
+								<OptionsSelector classes={"w-select u-form-field rel"}
+										view={OptionsSelectorView.SELECT}
+										options={optionsFactory.buildOptions({
+													language: this.props.language, 
+													id: "phonePrefix",
+													labels: _.pluck(this.state.phoneCodes, "label"),
+													options: _.pluck(this.state.phoneCodes, "code")})}
+										language={this.props.language}
+										defaultOptionsState={this.state.profileTmp.phonePrefix}
+										appendEmptyOption={false}
+										onOptionChanged={Utils.bind(function (value) {
+											this.handleFormItemChange({target: {id: "phonePrefix", value: value}})}, this)
+										}/>
+								<input className="w-input u-form-field rel"
 									type="text"
 									ref="phone"
 									id="phone"
@@ -515,7 +576,7 @@ var UserProfile = React.createClass({
 						phoneState = <span>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PHONE_CONFIRMED"})}</span>
 					}
 				}
-				userPhone = <div><strong>{this.state.profile.phone}</strong>&nbsp;{phoneState}</div>
+				userPhone = <div><strong>{((this.state.profile.phone)?("+" + this.state.profile.phone):"")}</strong>&nbsp;{phoneState}</div>
 			}
 			//о себе
 			var userDesc;
