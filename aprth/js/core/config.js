@@ -19,7 +19,7 @@ var config = {
 	//пароль демонстрационного пользователя
 	demoPassword: "",
 	//доступность смены языка интерфейса
-	languagesEnabled:false,
+	languagesEnabled: true,
 	//язык интерфейса по умолчанию
 	languageDefault: "RU",
 	//картинка по-умолчанию для карточек
