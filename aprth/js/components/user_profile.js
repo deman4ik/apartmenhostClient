@@ -463,7 +463,8 @@ var UserProfile = React.createClass({
 												onUpLoaded={this.handleUploadProfilePicture}
 												style={ImageUpLoaderStyles.ANCOR}
 												caption={uploadBtnCaption}
-												single={true}/>
+												single={true}
+												preset="obj_ava"/>
 											{delBtn}										
 										</div>
 									</div>
