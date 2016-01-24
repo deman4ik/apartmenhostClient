@@ -316,7 +316,16 @@ var App = React.createClass({
 			_.extend(tmp, this.state.session);
 			_.extend(tmp.sessionInfo.user.profile, newProfile);
 			this.setState({session: tmp}, Utils.bind(function () {Utils.saveObjectState("sessionState", this.state.session);}, this));
-		}		
+		}
+	},
+	//изменение количества объявлений пользователя
+	handleProfileCardsCountChange: function (newCount) {
+		if(this.state.session.loggedIn) {			
+			var tmp = {};
+			_.extend(tmp, this.state.session);
+			tmp.sessionInfo.user.profile.cardCount = newCount;
+			this.setState({session: tmp}, Utils.bind(function () {Utils.saveObjectState("sessionState", this.state.session);}, this));
+		}
 	},
 	//инициализация при старте приложения
 	componentDidMount: function () {
@@ -402,6 +411,7 @@ var App = React.createClass({
 								onShowError={this.showDialogError}
 								onShowMessage={this.showDialogMessage}
 								onProfileChange={this.handleProfileChange}
+								onProfileCardsCountChange={this.handleProfileCardsCountChange}
 								language={this.state.language}/>			
 						</section>
 		}

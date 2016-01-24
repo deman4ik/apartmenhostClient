@@ -266,7 +266,7 @@ var UserProfile = React.createClass({
 			var tmpProf = {};
 			_.extend(tmpProf, this.state.profile);
 			tmpProf.phoneStatus = ProfilePhoneState.confirmPending;
-			this.setState({profile: tmpProf});
+			this.setState({profile: tmpProf}, this.notifyParentProfileChanged);
 			this.props.onShowMessage(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_SUCCESS"}), 
 				Utils.getStrResource({lang: this.props.language, code: "CLNT_PHONE_CONF_SENT"}));
 		}
