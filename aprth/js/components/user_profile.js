@@ -562,7 +562,7 @@ var UserProfile = React.createClass({
 							</div>
 			} else {
 				var phoneState;
-				if(this.state.profile.phone) {
+				if((this.state.profile.phone)&&(this.props.editable)) {
 					if(this.state.profile.phoneStatus == ProfilePhoneState.unConfirmed) {
 						phoneState = 	<a className="u-t-right u-lnk-norm" href="javascript:void(0);" onClick={this.handlePhoneConfClick}>
 											{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_PHONE_CONFIRM"})}
@@ -618,6 +618,28 @@ var UserProfile = React.createClass({
 			//код для заголовка
 			var userProfileTitleCode = "UI_LBL_USER_PROFILE"
 			if(this.props.editable) userProfileTitleCode = "UI_LBL_PROFILE";
+			//блок информации для авторизованных пользователей
+			var authOnlyInfo;
+			if(this.props.session.loggedIn) {
+				authOnlyInfo =	<div>
+									<div className="w-row u-row-descr">												
+										<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
+											<div>{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_MAIL"})}</div>
+										</div>
+										<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
+											{userMail}													
+										</div>
+									</div>
+									<div className="w-row u-row-descr">
+										<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
+											<div>{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PHONE"})}</div>
+										</div>
+										<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
+											{userPhone}
+										</div>
+									</div>
+								</div>
+			}
 			//финальная сборка содержимого
 			content =	<div>
 							{chPwdForm}
@@ -638,22 +660,7 @@ var UserProfile = React.createClass({
 									{userGender}													
 								</div>
 							</div>											
-							<div className="w-row u-row-descr">												
-								<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
-									<div>{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_MAIL"})}</div>
-								</div>
-								<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
-									{userMail}													
-								</div>
-							</div>
-							<div className="w-row u-row-descr">
-								<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
-									<div>{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_PHONE"})}</div>
-								</div>
-								<div className="w-col w-col-8 w-col-small-6 w-col-tiny-6">
-									{userPhone}
-								</div>
-							</div>
+							{authOnlyInfo}
 							<div className="w-row u-row-descr">
 								<div className="w-col w-col-4 w-col-small-6 w-col-tiny-6">
 									<div>{Utils.getStrResource({lang: this.props.language, code: "UI_FLD_ABOUT_ME"})}</div>
