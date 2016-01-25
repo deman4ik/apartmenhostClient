@@ -273,11 +273,16 @@ var App = React.createClass({
 		this.setState({loggingIn: false});
 	},
 	//нажатие на кнопку "Выйти"
-	handleLogOut: function () {		
-		var afterAuthTmp = _.extend(
-			this.initAfterAuth(), 
-			{actionType: AppAfterAuthActionTypes.REDIRECT, actionPrms: {link: "/"}}
-		);
+	handleLogOut: function (prms) {
+		var afterAuthTmp = {};
+		if(prms) {
+			afterAuthTmp = _.extend({}, prms);
+		} else {		
+			afterAuthTmp = _.extend(
+				this.initAfterAuth(), 
+				{actionType: AppAfterAuthActionTypes.REDIRECT, actionPrms: {link: "/"}}
+			);
+		}
 		_.extend(this.state.afterAuth, afterAuthTmp);
 		this.setState(
 			{

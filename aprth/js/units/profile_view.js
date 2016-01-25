@@ -30,15 +30,13 @@ var ProfileView = React.createClass({
 	},
 	//загрузка данных объявлений профиля
 	loadProfilePosts: function () {		
-		if(this.props.session.loggedIn) {
-			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
-			var getAdvertsPrms = {
-				language: this.props.language, 
-				filter: {userId: this.state.userId},
-				session: this.props.session.sessionInfo
-			}
-			clnt.getAdverts(getAdvertsPrms, this.handleLoadProfilePostsResult);
+		this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+		var getAdvertsPrms = {
+			language: this.props.language, 
+			filter: {userId: this.state.userId},
+			session: this.props.session.sessionInfo
 		}
+		clnt.getAdverts(getAdvertsPrms, this.handleLoadProfilePostsResult);		
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {

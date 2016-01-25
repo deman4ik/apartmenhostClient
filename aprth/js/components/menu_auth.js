@@ -2,10 +2,18 @@
 	Меню упрвления сесией
 */
 var AuthMenu = React.createClass({
+	//переменные окружения
+	contextTypes: {
+		router: React.PropTypes.func //ссылка на роутер
+	},
 	//состояние меню
 	getInitialState: function () {
 		return {
 		}
+	},
+	//перерисовка текущего состояния окно браузера
+	reloadWindow: function () {
+		this.context.router.refresh();
 	},
 	//обработка нажатия на "Вход"
 	handleLogIn: function () {
@@ -16,7 +24,10 @@ var AuthMenu = React.createClass({
 			path: "/main",
 			authAccess: false
 		});
-		this.props.onLogIn({actionType: AppAfterAuthActionTypes.REDIRECT, actionPrms: {link: "/"}});
+		this.props.onLogIn({
+			actionType: AppAfterAuthActionTypes.CALLBACK, 
+			actionPrms: {callBack: this.reloadWindow, prms: {}}
+		});
 	},
 	//обработка нажатия на "Выход"
 	handleLogOut: function () {
@@ -27,10 +38,14 @@ var AuthMenu = React.createClass({
 			path: "/main",
 			authAccess: false
 		});
-		this.props.onLogOut();
+		this.props.onLogOut({
+			actionType: AppAfterAuthActionTypes.CALLBACK, 
+			actionPrms: {callBack: this.reloadWindow, prms: {}}
+		});
 	},
 	//инициализация компонента при подключении к страничке
 	componentDidMount: function() {
+		console.log(this.context.router.refresh);
 	},	
 	//генерация представления меню
 	render: function () {
