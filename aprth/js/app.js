@@ -436,7 +436,6 @@ var routes = (
 		<Route name="search" handler={PostsSearch}/>
 		<Route name="favorites" handler={PostsFavorites}/>
 		<Route name="articles" handler={Articles} path="articles"/>
-		<Route name="articles_editor" handler={AriclesEditor} path="articles_editor"/>		
 		<Route name="profile" handler={Profile}/>
 		<Route name="modifypost" handler={ModifyPost} path="modifypost/:mode"/>
 		<Route name="post" handler={Post}  path="posts/:postId"/>
