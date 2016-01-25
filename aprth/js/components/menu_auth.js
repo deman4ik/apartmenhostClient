@@ -44,8 +44,7 @@ var AuthMenu = React.createClass({
 		});
 	},
 	//инициализация компонента при подключении к страничке
-	componentDidMount: function() {
-		console.log(this.context.router.refresh);
+	componentDidMount: function() {		
 	},	
 	//генерация представления меню
 	render: function () {
