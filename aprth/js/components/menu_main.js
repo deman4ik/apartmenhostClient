@@ -16,7 +16,10 @@ var MainMenu = React.createClass({
 	//выполнение добавления объявления
 	makeAddPost: function () {
 		if(this.props.session.loggedIn) {
-			if(this.props.session.sessionInfo.user.profile.cardCount == 0) {
+			if(
+				(this.props.session.sessionInfo.user.profile.cardCount == 0)
+				&&(this.props.session.sessionInfo.user.profile.phoneStatus == ProfilePhoneState.confirmed)
+			) {
 				this.context.router.transitionTo("modifypost", {mode: ModifyPostModes.ADD});
 			} else {
 				this.context.router.transitionTo("profile");

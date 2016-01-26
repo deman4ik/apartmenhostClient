@@ -273,11 +273,16 @@ var App = React.createClass({
 		this.setState({loggingIn: false});
 	},
 	//нажатие на кнопку "Выйти"
-	handleLogOut: function () {		
-		var afterAuthTmp = _.extend(
-			this.initAfterAuth(), 
-			{actionType: AppAfterAuthActionTypes.REDIRECT, actionPrms: {link: "/"}}
-		);
+	handleLogOut: function (prms) {
+		var afterAuthTmp = {};
+		if(prms) {
+			afterAuthTmp = _.extend({}, prms);
+		} else {		
+			afterAuthTmp = _.extend(
+				this.initAfterAuth(), 
+				{actionType: AppAfterAuthActionTypes.REDIRECT, actionPrms: {link: "/"}}
+			);
+		}
 		_.extend(this.state.afterAuth, afterAuthTmp);
 		this.setState(
 			{
@@ -316,7 +321,16 @@ var App = React.createClass({
 			_.extend(tmp, this.state.session);
 			_.extend(tmp.sessionInfo.user.profile, newProfile);
 			this.setState({session: tmp}, Utils.bind(function () {Utils.saveObjectState("sessionState", this.state.session);}, this));
-		}		
+		}
+	},
+	//изменение количества объявлений пользователя
+	handleProfileCardsCountChange: function (newCount) {
+		if(this.state.session.loggedIn) {			
+			var tmp = {};
+			_.extend(tmp, this.state.session);
+			tmp.sessionInfo.user.profile.cardCount = newCount;
+			this.setState({session: tmp}, Utils.bind(function () {Utils.saveObjectState("sessionState", this.state.session);}, this));
+		}
 	},
 	//инициализация при старте приложения
 	componentDidMount: function () {
@@ -402,6 +416,7 @@ var App = React.createClass({
 								onShowError={this.showDialogError}
 								onShowMessage={this.showDialogMessage}
 								onProfileChange={this.handleProfileChange}
+								onProfileCardsCountChange={this.handleProfileCardsCountChange}
 								language={this.state.language}/>			
 						</section>
 		}
@@ -421,7 +436,6 @@ var routes = (
 		<Route name="search" handler={PostsSearch}/>
 		<Route name="favorites" handler={PostsFavorites}/>
 		<Route name="articles" handler={Articles} path="articles"/>
-		<Route name="articles_editor" handler={AriclesEditor} path="articles_editor"/>		
 		<Route name="profile" handler={Profile}/>
 		<Route name="modifypost" handler={ModifyPost} path="modifypost/:mode"/>
 		<Route name="post" handler={Post}  path="posts/:postId"/>

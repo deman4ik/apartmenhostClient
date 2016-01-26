@@ -40,10 +40,5 @@ var phoneCodes = [
 		countryCode: "RUSSIA",
 		phoneCode: "7",
 		phoneLength: 10
-	},
-	{
-		countryCode: "US",
-		phoneCode: "1",
-		phoneLength: 10
 	}
 ];

@@ -53,7 +53,7 @@ var ImageUpLoader = React.createClass({
 		cloudinary.openUploadWidget(
 			{ 
 				cloud_name: config.cloudinaryCloudName, 
-				upload_preset: "obj_pics",
+				upload_preset: (this.props.preset?this.props.preset:"obj_pics"),
 				theme: "white",
 				sources: ["local", "url"],
 				multiple: (this.props.single?false:true),
