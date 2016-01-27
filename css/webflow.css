@@ -158,7 +158,7 @@ label {
   height: 38px;
   padding: 8px 12px;
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.428571429;
   color: #555555;
   vertical-align: middle;
@@ -186,6 +186,7 @@ label {
 .w-select:focus {
   border-color: rgba(82, 168, 236, 0.8);
   outline: 0;
+  font-size:16px;
 }
 .w-input[disabled],
 .w-select[disabled],
