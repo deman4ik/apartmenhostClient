@@ -77,7 +77,7 @@ var ModifyPost = React.createClass({
 					type: this.state.post.apartType,
 					options: this.state.post.options
 				},
-				Name: this.state.post.description,
+				Name: this.state.post.address,
 				dates: this.state.post.dates,
 				description: this.state.post.description,
 				genders: this.state.post.priceCats
@@ -253,10 +253,6 @@ var ModifyPost = React.createClass({
 		}
 		if((!this.state.post.latitude)||(!this.state.post.longitude)) {
 			res = Utils.getStrResource({lang: this.props.language, code: "SRV_APARTMENT_WRONG_GEO"});
-			return res;
-		}
-		if(!this.state.post.description) {
-			res = Utils.getStrResource({lang: this.props.language, code: "SRV_APARTMENT_REQUIRED", values: [Utils.getStrResource({lang: this.props.language, code: "UI_FLD_APARTMENT_DESC"})]});
 			return res;
 		}
 		return res;

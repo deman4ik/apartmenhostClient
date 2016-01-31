@@ -31,27 +31,7 @@ var PostsFindForm = React.createClass({
 		var tmp = {};
 		_.extend(tmp, this.state.find);
 		if((this.props.onFind)&&(Utils.isFunction(this.props.onFind))) {
-			if((tmp.address)&&(tmp.latitude)&&(tmp.longitude)) {
-				this.props.onFind(tmp);				
-			} else {
-				if((tmp.address)&&((!tmp.latitude)||(!tmp.longitude))) {
-					var geocoder = new google.maps.Geocoder();
-					geocoder.geocode({"address": tmp.address}, Utils.bind(function (results, status) {
-						if (status == google.maps.GeocoderStatus.OK) {
-							tmp.latitude = results[0].geometry.location.lat();
-							tmp.longitude = results[0].geometry.location.lng();
-							this.setState({find: tmp});							
-						} else {
-							this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
-								Utils.getStrResource({lang: this.props.language, code: "CLNT_UNKNOWN_ADDRESS"}));
-						}
-						this.props.onFind(tmp);						
-					}, this));
-				} else {
-					this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), 
-						Utils.getStrResource({lang: this.props.language, code: "CLNT_UNKNOWN_ADDRESS"}));
-				}
-			}
+			this.props.onFind(tmp);
 		}
 	},
 	//оповещение родителя о необходимости сброка параметров поиска
@@ -124,6 +104,8 @@ var PostsFindForm = React.createClass({
 						this.setState({find: tmp}, this.notifyParentFind);
 					} else {
 						this.setState({noAddressFilterSpecified: true});
+						this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}),
+							Utils.getStrResource({lang: this.props.language, code: "CLNT_UNKNOWN_ADDRESS"}));
 					}					
 				}, this));			
 			} else {

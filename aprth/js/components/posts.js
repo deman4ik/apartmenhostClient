@@ -117,7 +117,7 @@ var Posts = React.createClass({
 								"<b>" + Utils.getStrResource({lang: this.props.language, code: item.apartment.type}) + "</b><br/>" + 
 								"<a href='" + link + "'>" +
 								"<img src='" + _.find(item.apartment.pictures, {default: true}).xsmall + "'/><br/>" +
-								item.user.lastName + " " + item.user.firstName + "<br/>" +								
+								(item.user.lastName?(item.user.lastName + " "):"") + item.user.firstName + "<br/>" +								
 								item.priceDay + " " + Utils.getStrResource({lang: this.props.language, code: "CURRENCY"}) + "/" +
 								Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"}) + 
 								"</a>" +
@@ -310,7 +310,7 @@ var Posts = React.createClass({
 	//нажатие на поиск
 	onFind: function (find) {
 		this.setState({filterIsSet: true, mapZoomReset: true}, Utils.bind(function () {			
-			this.onFindChange(find);
+			this.onFindChange(find, this.findAndFilter);
 		}, this));
 	},
 	//нажатие на очистку поиска
