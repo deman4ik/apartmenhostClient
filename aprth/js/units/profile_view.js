@@ -120,7 +120,7 @@ var ProfileView = React.createClass({
 									<img className="u-img-author-review" 
 										src={item.fromUser.picture.large} 
 										width="76"/>
-									<div>{item.fromUser.firstName + " " + item.fromUser.lastName}</div>
+									<div>{item.fromUser.firstName} {item.fromUser.lastName}</div>
 								</a>
 							</div>
 						</div>

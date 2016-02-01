@@ -46,7 +46,6 @@ var UserProfile = React.createClass({
 		} else {
 			profileTmp.phonePrefix = config.defaultPhonePrefix;
 		}
-		console.log(profileTmp);
 		return profileTmp;
 	},
 	//сборка формы подтверждения телефона

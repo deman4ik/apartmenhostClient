@@ -537,7 +537,7 @@ var Profile = React.createClass({
 												<img className="u-img-author-review" 
 													src={item.reservation.user.picture.large} 
 													width="76"/>
-												<div>{item.reservation.user.firstName + " " + item.reservation.user.lastName}</div>
+												<div>{item.reservation.user.firstName} {item.reservation.user.lastName}</div>
 												<div className="u-t-small date1">
 													{Utils.formatDate({lang: this.props.language, 
 														date: item.reservation.dateFrom}) + " - " + 
@@ -646,7 +646,7 @@ var Profile = React.createClass({
 													<div className="w-col w-col-6 w-col-stack">
 														<div className="u-block-card-desc">
 															<p>
-																{item.reservation.card.user.firstName + " " + item.reservation.card.user.lastName}
+																{item.reservation.card.user.firstName} {item.reservation.card.user.lastName}
 																<br/>
 																{item.reservation.card.apartment.adress + ", " + Utils.getStrResource({lang: this.props.language, code: item.reservation.card.apartment.type})}
 															</p>
@@ -725,7 +725,7 @@ var Profile = React.createClass({
 									userRight = <a className="u-lnk-small" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.user.id)}>
 													<div className="u-block-author-reviewlst">
 														<img className="u-img-author-m" src={item.user.picture.mid}/>
-														<div>{item.user.firstName + " " + item.user.lastName}</div>		
+														<div>{item.user.firstName} {item.user.lastName}</div>		
 													</div>
 												</a>
 								} else {
@@ -752,7 +752,7 @@ var Profile = React.createClass({
 									userRight = <a className="u-lnk-small" href="javascript:void(0);" onClick={this.handleUserClick.bind(this, item.card.user.id)}>
 													<div className="u-block-author-reviewlst">
 														<img className="u-img-author-m" src={item.card.user.picture.mid}/>
-														<div>{item.card.user.firstName + " " + item.card.user.lastName}</div>		
+														<div>{item.card.user.firstName} {item.card.user.lastName}</div>		
 													</div>
 												</a>
 								}

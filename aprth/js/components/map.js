@@ -301,7 +301,7 @@ var Map = React.createClass({
 	render: function () {
 		//представление
 		return (
-			<div className="w-widget w-widget-map u-block-cardlst-map" ref="mapCanvas"></div>	
+			<div className="u-block-cardlst-map" ref="mapCanvas"></div>	
 		);
 	}
 });

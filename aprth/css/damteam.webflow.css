@@ -598,6 +598,7 @@ textarea.u-form-area-v {
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 0px;
+  padding-right: 0px;
 }
 .u-form-title {
   margin-bottom: 0px;
@@ -768,7 +769,6 @@ h1.search-result {
 .u-block-cardlst-map {
   display: inline-block;
   min-height: 300px;
-  min-width: 420px;
   height:450px;
   width:100%;
 }
@@ -1375,7 +1375,7 @@ html.w-mod-js *[data-ix="hide-on-load"] {
     padding-left: 0px;
   } 
   .u-block-cardlst-map {
-    max-width:479px; 
+    max-width:475px; 
     height:340px;
   }  
   .u-block-cardlst-map.rollup {
