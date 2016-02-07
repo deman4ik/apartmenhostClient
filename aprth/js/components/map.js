@@ -58,12 +58,18 @@ var Map = React.createClass({
 							m.infoWindowOpen = false;
 						}
 						google.maps.event.addListener(m, "click", Utils.bind(function () {
+							if(!$.isEmptyObject(this.state.map.currentMarker)) {
+								this.state.map.currentMarker.infoWindow.close();
+								this.state.map.currentMarker.infoWindowOpen = false;
+							}
 							if(!m.infoWindowOpen) {
 								m.infoWindow.open(this.state.map, m);
 								m.infoWindowOpen = true;
+								this.state.map.currentMarker = m;
 							} else {
 								m.infoWindow.close();
 								m.infoWindowOpen = false;
+								this.state.map.currentMarker = {};
 							}
 						}, this));
 					}

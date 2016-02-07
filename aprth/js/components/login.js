@@ -68,6 +68,8 @@ var LogInForm = React.createClass({
 			if(result.MESSAGE == Utils.getStrResource({lang: this.props.language, code: "SRV_USER_NOT_CONFIRMED"})) {
 				this.props.onLogInCancel();
 				this.context.router.transitionTo("confirm", null, {userId: result.userId});
+			} else {
+				React.findDOMNode(this.refs.password).value = "";
 			}
 		} else {
 			this.setState({sessionInfo: result.MESSAGE}, Utils.bind(function () {

@@ -763,6 +763,26 @@ var Client = function (clientConfig) {
 						userId: clnt.currentUser.userId
 					}
 				}
+				//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+				// НАЧАЛО: УДАЛИТЬ - ЭТО ДЛЯ ОТЛАДКИ ДОСТУПА ЧЕРЕЗ СС
+				//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+				log(["BEGIN DEBUG api/GetUserInfo"]);
+				execServerApi({
+					language: prms.language,
+					session: {
+						user: {
+							userId: connectionData.user.userId
+						},
+						authenticationToken: connectionData.authenticationToken
+					},
+					req: fillSrvStdReqData("User/GetUserInfo", serverMethods.get, ""),
+					callBack: function (stdResp) {
+						log(["DEBUG api/GetUserInfo: ", stdResp, "END DEBUG api/GetUserInfo"]);
+					}
+				});
+				//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+				// КОНЕЦ: УДАЛИТЬ - ЭТО ДЛЯ ОТЛАДКИ ДОСТУПА ЧЕРЕЗ СС
+				//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 				execServerApi({
 					language: prms.language,
 					session: {
