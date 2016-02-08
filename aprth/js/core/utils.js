@@ -284,7 +284,7 @@ Date.prototype.addDays = function(days) {
     return dat;
 };
 
-//расширения для карт - хранение и удаление маркеров
+//расширения для карт - хранение и удаление маркеров, хранение состояния открытых инфо-окон
 google.maps.Map.prototype.markers = new Array();
 google.maps.Map.prototype.getMarkers = function() {
 	return this.markers;
@@ -295,6 +295,7 @@ google.maps.Map.prototype.clearMarkers = function() {
 	}
 	this.markers = new Array();
 };
+google.maps.Map.prototype.currentMarker = {};
 google.maps.Marker.prototype._setMap = google.maps.Marker.prototype.setMap;
 google.maps.Marker.prototype.setMap = function(map) {
 	if (map) {
