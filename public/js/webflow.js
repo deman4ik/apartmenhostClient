@@ -572,7 +572,7 @@ module.exports = function($, _) {
 
   var disconnected = _.debounce(function() {
  //   alert('Oops! This page has improperly configured forms. Please contact your website administrator to fix this issue.');
- // }, 100);
+  }, 100);
 
   // Export module
   return api;
