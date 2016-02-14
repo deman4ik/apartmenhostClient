@@ -4,6 +4,7 @@ var cssnano = require('gulp-cssnano');
 var reactify = require('gulp-reactify');
 var uglify = require('gulp-uglify');
 
+// Компиляция jsx, объединение и минификация файлов aprth/js
 gulp.task('reactify',function(){
 	gulp.src(['src/aprth/js/core/config.js','src/aprth/js/core/utils.js','src/aprth/js/core/client.js',
 		'src/aprth/js/resources/*.js','src/aprth/js/objects/*.js',
@@ -15,9 +16,9 @@ gulp.task('reactify',function(){
 
 });
 
-
+// Минификация css
 gulp.task('mincss',function(){
-	gulp.src('src/aprth/css/*.css')
+	gulp.src('src/aprth/css/damteam.webflow.css')
 	.pipe(cssnano())
 	.pipe(gulp.dest('public/aprth/css'));
 	gulp.src(['src/css/nanoscroller.css','src/css/webflow.css'])
@@ -25,6 +26,7 @@ gulp.task('mincss',function(){
 	.pipe(gulp.dest('public/css'));
 });
 
+// Копирование остальных файлов
 gulp.task('copy',function(){
 	gulp.src(['src/js/*.js',
 			'src/js/bootstrap-datepicker-locales/bootstrap-datepicker.ru.min.js',
@@ -33,6 +35,9 @@ gulp.task('copy',function(){
 
 	gulp.src(['src/css/bootstrap.min.css','src/css/bootstrap-datepicker.min.css'])
 	.pipe(gulp.dest('public/css'));
+
+	gulp.src('src/aprth/css/common.css')
+	.pipe(gulp.dest('public/aprth/css'));
 
 	gulp.src('src/aprth/img/*.*')
 	.pipe(gulp.dest('public/aprth/img'));
@@ -43,8 +48,11 @@ gulp.task('copy',function(){
 	gulp.src('src/index.html')
 	.pipe(gulp.dest('public'));
 });
+
+// Задача по умолчанию, включает последовательное выполнение остальных задач
 gulp.task('default',['reactify','mincss','copy']);
 
+// Задача просмотра изменений в папке src
 gulp.task('watch', function() {
 	gulp.watch('src/**/*.*',['default']);
 })
