@@ -2,7 +2,7 @@
 	Конфигурация клиентского приложения
 */
 var config = {
-	//адрес сервера
+	///адрес сервера
 	serverAppUrl: "https://petforaweek.azure-mobile.net/",
 	//ключ сервера
 	serverAppKey: "PdPJNrFvFKgdcVUaiQDeDgpRXMihiQ87",
@@ -57,4 +57,3 @@ var config = {
 	//префикс кода страны телефонного номера по умолчанию
 	defaultPhonePrefix: "7"
 }
-

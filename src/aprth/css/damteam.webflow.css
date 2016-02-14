@@ -1529,6 +1529,7 @@ textarea.w-input {
   .u-sect-main {
     min-height: 864px;
   }	
+}
 @media (min-height:1024px) {
   .u-sect-main {
     min-height: 950px;

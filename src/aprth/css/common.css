@@ -1,0 +1,320 @@
+.empty-unit {
+	width: 100%;
+	height: 100%;
+	min-height: 550px;
+	background: url('../img/main_bg.jpg') no-repeat center;
+}
+
+.content-center {
+	max-width: 1360px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.inline-message {
+	text-align: center;
+}
+
+.username {
+	padding-left: 38px !important;
+}
+.img-circle {
+	border-radius: 50% !important;
+}
+.has-success .u-form-field {
+	border-color: #3c763d;
+}
+.u-sect-page-cardlst > .u-form-wrapper {
+  box-shadow: none;
+  border-radius: 4px;	
+  border-style: solid;
+  border-width: 1px;
+  border-color: #D5D4D4;
+}
+
+/*dialog bootstrap*/
+.messagebox-wraper {
+  z-index: 1999;
+}
+.modal-dialog {
+	z-index: 2000;
+}
+.modal-backdrop.in {
+    opacity: 0.1;
+    z-index: 1998;
+}
+.modal-content {
+	background-color: #f8f8f8;
+	border-radius: 4px;
+	box-shadow: 0 2px 10px rgba(0,0,0,.2);	
+  -webkit-box-shadow: 0 2px 10px rgba(0,0,0,.2);
+}
+.modal-body {
+	background-color: #FFF;
+	padding:0px 12px 12px 12px;
+}
+.modal-header {
+	color:#00ccc5;
+	padding:10px 12px 8px 12px;
+}
+.modal-footer {
+	padding:12px;
+	font-size: 14px;
+}
+.modal-footer a.u-lnk-norm, .modal-footer span {
+	line-height: 24px;
+}
+.form-group {
+	margin:0;	
+	margin-top: 15px;
+}
+.form-control {
+	border-radius: 2px;
+	box-shadow:none;
+	-webkit-box-shadow: none;
+	transition: border-color ease-in-out .2s;
+  -webkit-transition: border-color ease-in-out .2s;
+  -o-transition: border-color ease-in-out .2s;	
+}
+.form-control:focus {
+  border-color: #0be3dc;
+  outline: 0;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+
+/*dialog login*/
+.modal-dialog.login-form {
+	width:320px;
+}
+
+/*warning - message_conf*/
+.modal-content.warning {
+	color:#DA9E00 !important;
+	background-color: #FFF9EA;
+	border-color: #FFF3D5;
+}
+.modal-content.warning .modal-body {
+	background-color: #FFF9EA;
+}
+.modal-content.warning .modal-header {
+	border-style: none;
+}
+.modal-content.warning .modal-footer {
+	background-color: #FFF;
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius:4px;
+}
+.btn-warning:hover, .btn-warning:focus, .btn-warning.focus, .btn-warning:active, .btn-warning.active, .open > .dropdown-toggle.btn-warning {
+    color: #FFF;
+    background-color: #FFCF51;
+    border-color: #FFCB41;
+}
+.text-warning {	
+	color:#DA9E00 !important;
+}
+
+/*danger, success*/
+.text-success {
+	color: #4e7325;
+}
+.text-danger {
+	color: #E8263D;
+}
+.modal-content.success {
+  color: #4e7325 !important;
+  background-color: #EFFAE4;
+  border-color: #d2e8b8;	
+}
+.modal-content.danger {
+	color: #E8263D !important;
+	background-color: #FFEFEA;
+	border-color: #FACCD1;
+}
+.modal-content.success .modal-body {
+	background-color: #EFFAE4;
+}
+.modal-content.danger .modal-body {
+	background-color: #FFEFEA;
+}
+.modal-content.danger .modal-header, .modal-content.success .modal-header {
+	border-bottom-style: none;
+}
+.modal-content.danger .modal-footer, .modal-content.success .modal-footer {
+	border-top-style: none;
+}
+.panel-body {
+	padding:10px;
+}
+.panel-default {
+	border-style:none;
+}
+
+.label-danger, .badge-danger, .hasnotification-danger {
+	background-color: #ED5466;
+}
+
+.hasnotification {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	text-indent: -999999px;
+	border-radius: 50%;
+	background-color: #EEE;
+}
+
+.form-horizontal .control-label {padding-top:0;}
+
+/*datepicker*/
+.table-condensed>tbody>tr>td, 
+.table-condensed>tbody>tr>th {
+	padding-top:2px; padding-bottom: 0px;
+}
+.table-condensed>thead>tr>td, 
+.table-condensed>thead>tr>th,
+.table-condensed>tfoot>tr>td, 
+.table-condensed>tfoot>tr>th {
+	padding-top:2px; padding-bottom: 2px;
+}
+.datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
+  background-color: #ECF0F1;
+  border-radius: 0px;
+  color:#D0D0D0;
+}
+.datepicker table tr td.active, 
+.datepicker table tr td.active.active, 
+.datepicker table tr td.active:hover, 
+.datepicker table tr td.active.active:hover {
+	color: #FFF;
+  text-shadow: 0 -1px 0 rgba(99, 184, 42, 0.4);
+	background-image: none;
+  background-color: #BBE75D;
+}
+.datepicker table tr td.today, 
+.datepicker table tr td.today:hover {
+	background-image: none;
+	background-color: initial;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;	
+  border-style: solid;
+  border-width: 1px;
+  border-color: #D5D4D4;
+}
+.datepicker table {
+	border-collapse: initial;
+}
+.datepicker table tr td.today:hover:hover, .datepicker table tr td.today:hover {
+	background:#eee;
+}
+.u-datepicker-holder {
+  display: inline-block;
+}
+.u-datepicker-holder > input {
+  min-width: 110px;
+}
+
+/*has icon*/
+.has-icon, .has-icon-left {
+    position: relative;
+    Zfloat: none !important;
+}
+.has-icon .u-form-field {
+    padding-right: 30px;
+}
+.has-icon-left .u-form-field {
+    padding-left: 30px;
+}
+.has-icon .u-form-field-icon {
+    position: absolute;
+    z-index: 5;
+    top:10px;
+    right: 2px;
+    width: 34px;
+    text-align: center;
+    color: #A2A2A2;
+    font-weight: lighter;
+}
+.has-icon-left .u-form-field-icon {
+    position: absolute;
+    z-index: 5;
+    top:10px;
+    left: 10px;
+    width: 34px;
+    text-align: center;
+    color: #A2A2A2;
+    font-weight: lighter;
+}
+.u-row-search .w-col > .has-icon .u-form-field-icon {
+	    right: 0px;
+}
+.has-icon .u-form-field-icon:hover {
+	color:#0be3dc;
+	cursor:pointer;
+}
+
+/*rater*/
+.rater {
+	padding: 5px 5px 5px 0px;
+}
+.rater-item {
+	cursor: default;
+	color: gray;
+	font-size: 20px;
+}
+.rater-count {
+	cursor: default;
+	color: gray;
+	font-size: 17px;
+}
+.rater-item-active {
+	color: #FFB000;
+}
+.rater-item-rw {
+	cursor: pointer;
+}
+.rater-item-rw:hover {
+	color: #FFB000;
+}
+
+a > .rater, a.u-block-card-desc:hover, a.u-block-card-desc .rater .rater-item, a.u-block-card-desc .rater .rater-count {
+	text-decoration: none; 
+	cursor:pointer;
+}
+
+.image-button {
+	cursor:pointer;	
+}
+
+
+/*nano scroller and map*/
+@media (min-width: 991px) {
+	.nano { 
+		max-width: 800px; 
+	  height:480px;
+	}
+	.u-block-cardlst-map {
+	  height:480px;
+	}
+	.nano > .nano-content { padding: 10px; }
+	.nano > .nano-pane > .nano-slider { 
+		background-color: rgba(115, 130, 130, 0.51);
+		z-index: 999;
+	}
+}
+@media (min-width: 1367px) {
+	.nano { 
+		max-width: 800px; 
+	  height:740px;
+	}
+	.u-block-cardlst-map {
+		height:740px;
+	}
+
+}
+/*modal*/
+@media (max-width: 479px) {
+	.modal-dialog.login-form {
+		width:300px;
+	}	
+}
