@@ -573,7 +573,7 @@ var UserProfile = React.createClass({
 										</a>
 					}
 					if(this.state.profile.phoneStatus == ProfilePhoneState.confirmed) {
-						phoneState = <span>{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PHONE_CONFIRMED"})}</span>
+						phoneState = <span className="glyphicon glyphicon-ok u-t-green" title={Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PHONE_CONFIRMED"})}></span>
 					}
 				}
 				userPhone = <div><strong>{((this.state.profile.phone)?("+" + this.state.profile.phone):"")}</strong>&nbsp;{phoneState}</div>

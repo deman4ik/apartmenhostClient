@@ -1185,6 +1185,10 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 	color: #4ac2c9 !important;
 }
 
+.u-t-green {
+  color:#bbd645;
+}
+
 .u-block-fade-bottom {
   height:150px;
   width:100%;
@@ -1344,6 +1348,7 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   }
   .u-lnk-footer2 {
     padding-left: 6px;
+    font-size: 14px;
   }
   .u-lnk-footer-social {
     display: inline-block;
