@@ -51,7 +51,6 @@ var Main = React.createClass({
 	},
 	//обработка результатов получения статей заглавной страницы
 	handleGetTopicsResult: function (resp) {		
-		this.props.onHideProgress();
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.setState({topics: [], topicsLoaded: false});
 		} else {			
@@ -64,7 +63,6 @@ var Main = React.createClass({
 	},
 	//загрузка данных статей заглавной страницы
 	getTopics: function (language) {		
-		this.props.onDisplayProgress(Utils.getStrResource({lang: language, code: "CLNT_COMMON_PROGRESS"}));
 		var getPrms = {
 			language: language, 
 			filter: {name: "HOW_IT_WORKS_TOPIC"}

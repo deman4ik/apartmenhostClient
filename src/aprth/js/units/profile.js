@@ -18,6 +18,37 @@ var ProfileOrdersStates = {
 	declined: "DVAL_DECLINED", //отклонен
 	pending: "DVAL_PENDING" //одидает подтверждения
 }
+//состояние профиля по умолчанию
+var resetProfile = function () {
+	return {
+		profileLoaded: false, //флаг загруженности профиля
+		adverts: [], //объявления профиля
+		advertsCount: 0, //счетчик объявлений профиля
+		advertsLoaded: false, //флаг загруженности объявлений профиля
+		confirmDeletePost: false, //флаг отображения подтверждения удаления объявления
+		displayAddReview: false, //флаг отображения формы добавления отзыва
+		addReviewForm: {}, //форма добавления отзыва
+		currentReviewItem: {}, //элемент, на который оставляем отзыв
+		reviewsIn: { //меня бронировали
+			loaded: false, //список загружен
+			count: 0, //количество отзывов
+			list: [] //список отзывов
+		},
+		reviewsOut: { //я бронировал
+			loaded: false, //список загружен
+			count: 0, //количество отзывов
+			list: [] //список отзывов
+		},
+		orders: { //запросы
+			loaded: false, //список загружен
+			count: 0, //количество запросов
+			list: [] //список запросов
+		},
+		activeReviewsTab: ProfileReviewsTabs[0], //активная закладка отзывов/запросов
+		deletingPostItemId: "", //удаляемое объявление
+		ordersTypeFilter: "" //значение фильтра по типам в закладке "Запросы"
+	}
+}
 //редактор профиля пользователя
 var Profile = React.createClass({
 	//переменные окружения
@@ -26,34 +57,7 @@ var Profile = React.createClass({
 	},	
 	//состояние редактора
 	getInitialState: function () {
-		return {
-			profileLoaded: false, //флаг загруженности профиля
-			adverts: [], //объявления профиля
-			advertsCount: 0, //счетчик объявлений профиля
-			advertsLoaded: false, //флаг загруженности объявлений профиля
-			confirmDeletePost: false, //флаг отображения подтверждения удаления объявления
-			displayAddReview: false, //флаг отображения формы добавления отзыва
-			addReviewForm: {}, //форма добавления отзыва
-			currentReviewItem: {}, //элемент, на который оставляем отзыв
-			reviewsIn: { //меня бронировали
-				loaded: false, //список загружен
-				count: 0, //количество отзывов
-				list: [] //список отзывов
-			},
-			reviewsOut: { //я бронировал
-				loaded: false, //список загружен
-				count: 0, //количество отзывов
-				list: [] //список отзывов
-			},
-			orders: { //запросы
-				loaded: false, //список загружен
-				count: 0, //количество запросов
-				list: [] //список запросов
-			},
-			activeReviewsTab: ProfileReviewsTabs[0], //активная закладка отзывов/запросов
-			deletingPostItemId: "", //удаляемое объявление
-			ordersTypeFilter: "" //значение фильтра по типам в закладке "Запросы"
-		}
+		return resetProfile()
 	},
 	//оповещение родитлея о смене профиля
 	notifyParentProfileChanged: function (newProfile) {
@@ -375,7 +379,7 @@ var Profile = React.createClass({
 	},
 	//обновление компонента
 	componentDidUpdate: function () {
-		Utils.fixFooter();		
+		Utils.fixFooter();				
 	},
 	//инициализация при подключении компонента к странице
 	componentDidMount: function () {
@@ -383,6 +387,9 @@ var Profile = React.createClass({
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
+		if(!newProps.session.loggedIn) {
+			this.setState(resetProfile());
+		}
 		if(newProps.language != this.props.language) {
 			this.buildReviewForm(newProps);
 		}

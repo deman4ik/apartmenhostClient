@@ -28,6 +28,28 @@ var PostsModes = {
 	FAVORITES: "favorites", //режим избранного
 	SEARCH: "search" //режим поиска
 }
+//состояние объявлений по умолчанию
+var resetProsts = function () {
+	return {
+		adverts: [], //список объявлений
+		markers: [], //список маркеров для карты
+		advertsCnt: 0, //количество объявлений
+		advertsReady: false, //флаг доступности списка объявлений для отображения
+		filterIsSet: false, //флаг установленности фильтра			
+		filterClnt: getPostsFilter(), //текущее состояние фильтра
+		filter: {}, //текущее состояние фильтра	(для сервера)
+		mapZoom: config.searchMapZoom, //масштаб карты по умолчанию
+		mapZoomReset: false, //признак сброса масштаба карты к значению по умолчанию
+		mapBounds: { //текущее состояние карты (границы)
+			latitude: "", //широта центра области карты
+			longitude: "", //долгота центра области карты
+			swLat: "", //широта ЮВ угла области карты
+			swLong: "", //долгота ЮВ угла области карты
+			neLat: "", //широта СЗ угла области карты
+			neLong: "", //долгота СЗ угла области карты
+		}
+	}
+}
 //класс объявлений
 var Posts = React.createClass({
 	//переменные окружения
@@ -36,25 +58,7 @@ var Posts = React.createClass({
 	},	
 	//состояние
 	getInitialState: function () {
-		return {
-			adverts: [], //список объявлений
-			markers: [], //список маркеров для карты
-			advertsCnt: 0, //количество объявлений
-			advertsReady: false, //флаг доступности списка объявлений для отображения
-			filterIsSet: false, //флаг установленности фильтра			
-			filterClnt: getPostsFilter(), //текущее состояние фильтра
-			filter: {}, //текущее состояние фильтра	(для сервера)
-			mapZoom: config.searchMapZoom, //масштаб карты по умолчанию
-			mapZoomReset: false, //признак сброса масштаба карты к значению по умолчанию
-			mapBounds: { //текущее состояние карты (границы)
-				latitude: "", //широта центра области карты
-				longitude: "", //долгота центра области карты
-				swLat: "", //широта ЮВ угла области карты
-				swLong: "", //долгота ЮВ угла области карты
-				neLat: "", //широта СЗ угла области карты
-				neLong: "", //долгота СЗ угла области карты
-			}			
-		}
+		return resetProsts()
 	},
 	//расчет "цены за период" объявлений по датам
 	calcAdvertsPricePeriod: function (adverts) {
@@ -243,7 +247,7 @@ var Posts = React.createClass({
 		this.setState({filterClnt: tmp}, callBack);		
 	},
 	//поиск и фильтрация
-	findAndFilter: function () {
+	findAndFilter: function (sessionInfo) {
 		if(this.state.filterIsSet) {
 			var srvFilter = this.buildSrvAdvertsFilter();
 			if((srvFilter.swLat)&&(srvFilter.swLong)&&(srvFilter.neLat)&&(srvFilter.neLong)) {
@@ -252,12 +256,24 @@ var Posts = React.createClass({
 				var getPrms = {
 					language: this.props.language, 
 					filter: srvFilter, 
-					session: this.props.session.sessionInfo
+					session: (sessionInfo)?sessionInfo:this.props.session.sessionInfo
 				}
 				clnt.getAdverts(getPrms, this.handleSearchResult);
 			}
 		}
-	},	
+	},
+	//загрузка избранного
+	loadFavorits: function () {
+		if(this.props.session.loggedIn) {
+			this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
+			var getPrms = {
+				language: this.props.language, 
+				filter: {isFavoritedUserId: this.props.session.sessionInfo.user.profile.id},
+				session: this.props.session.sessionInfo
+			}
+			clnt.getAdverts(getPrms, this.handleSearchResult);
+		}
+	},
 	//смена параметров поиска
 	onFindChange: function (find, callBack) {
 		var recalcSA = false;
@@ -431,15 +447,7 @@ var Posts = React.createClass({
 			}
 			//режим избранного
 			case(PostsModes.FAVORITES): {
-				if(this.props.session.loggedIn) {
-					this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));
-					var getPrms = {
-						language: this.props.language, 
-						filter: {isFavoritedUserId: this.props.session.sessionInfo.user.profile.id},
-						session: this.props.session.sessionInfo
-					}
-					clnt.getAdverts(getPrms, this.handleSearchResult);
-				}
+				this.loadFavorits();				
 				break;
 			}
 			//прочие режимы
@@ -454,6 +462,44 @@ var Posts = React.createClass({
 	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
+		//если произошел выход
+		if((!newProps.session.loggedIn)&&(this.props.session.loggedIn)) {
+			//работаем в зависимости от режима работы
+			switch(this.props.mode) {
+				//режим поиска
+				case(PostsModes.SEARCH): {
+					//выполним повторный поиск если есть что искать
+					this.findAndFilter(newProps.session.sessionInfo);
+					break;
+				}
+				//режим избранного
+				case(PostsModes.FAVORITES): {
+					break;
+				}
+				//прочие режимы
+				default: {}
+			};
+		}
+		//если произошел вход
+		if((newProps.session.loggedIn)&&(!this.props.session.loggedIn)) {
+			//работаем в зависимости от режима работы
+			switch(this.props.mode) {
+				//режим поиска
+				case(PostsModes.SEARCH): {
+					//выполним повторный поиск если есть что искать
+					this.findAndFilter(newProps.session.sessionInfo);
+					break;
+				}
+				//режим избранного
+				case(PostsModes.FAVORITES): {
+					//просто сброс и загрузка списка избранного
+					this.setState(resetProsts(), this.loadFavorits);
+					break;
+				}
+				//прочие режимы
+				default: {}
+			};
+		};
 	},
 	//генерация представления класса
 	render: function () {
