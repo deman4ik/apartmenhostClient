@@ -161,16 +161,16 @@ var Main = React.createClass({
 					<h1 className="u-t-h1-land sub1">
 						{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_MAIN_AND_BE_OK"})}
 					</h1>
+					<div className="content-center u-block-search-main">
+						{postsFindForm}
+					</div>
 					<div className="u-block-land">
 						<a className="w-button u-btn-land"
 							href="javascript:void(0);"
 							onClick={this.onTryButtonClick}>
 							{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_MAIN_TRY_NOW"})}
 						</a>
-					</div>
-					<div className="content-center u-block-search-main">
-						{postsFindForm}
-					</div>
+					</div>					
 				</div>
 				<div className="w-section u-sect-land under">
 					<div className="u-block-spacer"></div>
