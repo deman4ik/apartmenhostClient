@@ -164,7 +164,7 @@ var Main = React.createClass({
 					<div className="content-center u-block-search-main">
 						{postsFindForm}
 					</div>
-					<div className="u-block-land">
+					<div className="u-block-land u-hidden479">
 						<a className="w-button u-btn-land"
 							href="javascript:void(0);"
 							onClick={this.onTryButtonClick}>

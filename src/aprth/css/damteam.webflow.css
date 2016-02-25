@@ -1402,6 +1402,9 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   .u-col-howto.eula {
     height: 370px;
   }  
+  .u-hidden479 {
+    display:none;
+  }
 }
 
 /* --------- added ----------*/
