@@ -120,7 +120,7 @@ var Posts = React.createClass({
 							var content = "<div>" +
 								"<b>" + Utils.getStrResource({lang: this.props.language, code: item.apartment.type}) + "</b><br/>" + 
 								"<a href='" + link + "'>" +
-								"<img src='" + _.find(item.apartment.pictures, {default: true}).xsmall + "'/><br/>" +
+								"<img class=" + 'u-img-author-review' + " src='" + item.user.picture.large + "'/><br/>" +
 								(item.user.lastName?(item.user.lastName + " "):"") + item.user.firstName + "<br/>" +								
 								item.priceDay + " " + Utils.getStrResource({lang: this.props.language, code: "CURRENCY"}) + "/" +
 								Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"}) + 
