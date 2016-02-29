@@ -120,6 +120,7 @@ var PostItem = React.createClass({
 							<div>{this.props.item.apartment.adress}</div>
 							<div className="u-t-price price-sm">
 								<strong>
+									{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_FROM"})}&nbsp;
 									{this.props.item.priceDay}&nbsp;
 									{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
 									{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"})}

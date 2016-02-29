@@ -538,6 +538,7 @@ var Post = React.createClass({
 												<div className="u-block-ownertext">
 													<div className="u-t-price">
 														<strong>
+															{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_FROM"})}&nbsp;
 															{this.state.post.priceDay}&nbsp;
 															{Utils.getStrResource({lang: this.props.language, code: "CURRENCY"})}&nbsp;/&nbsp;
 															{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_PERIOD_DAY"})}
