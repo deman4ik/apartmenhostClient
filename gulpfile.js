@@ -5,8 +5,20 @@ var reactify = require('gulp-reactify');
 var uglify = require('gulp-uglify');
 
 // Компиляция jsx, объединение и минификация файлов aprth/js
-gulp.task('reactify',function(){
-	gulp.src(['src/aprth/js/core/config.js','src/aprth/js/core/utils.js','src/aprth/js/core/client.js',
+gulp.task('reactify_dev',function(){
+	gulp.src(['src/aprth/js/core/config_dev.js','src/aprth/js/core/utils.js','src/aprth/js/core/client.js',
+		'src/aprth/js/resources/*.js','src/aprth/js/objects/*.js',
+		'src/aprth/js/components/*.js','src/aprth/js/units/*.js','src/aprth/js/app.js'])
+	.pipe(reactify())
+	.pipe(concat('main.js'))
+	.pipe(uglify())
+	.pipe(gulp.dest('public/aprth/js'));
+
+});
+
+// Компиляция jsx, объединение и минификация файлов aprth/js
+gulp.task('reactify_prod',function(){
+	gulp.src(['src/aprth/js/core/config_prod.js','src/aprth/js/core/utils.js','src/aprth/js/core/client.js',
 		'src/aprth/js/resources/*.js','src/aprth/js/objects/*.js',
 		'src/aprth/js/components/*.js','src/aprth/js/units/*.js','src/aprth/js/app.js'])
 	.pipe(reactify())
@@ -50,8 +62,9 @@ gulp.task('copy',function(){
 });
 
 // Задача по умолчанию, включает последовательное выполнение остальных задач
-gulp.task('default',['reactify','mincss','copy']);
+gulp.task('default',['reactify_dev','mincss','copy']);
 
+gulp.task('prod',['reactify_prod','mincss','copy']);
 // Задача просмотра изменений в папке src
 gulp.task('watch', function() {
 	gulp.watch('src/**/*.*',['default']);
