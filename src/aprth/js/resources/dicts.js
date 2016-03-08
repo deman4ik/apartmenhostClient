@@ -41,3 +41,17 @@ var phoneCodes = [
 		phoneLength: 10
 	}
 ];
+//дополнительные логические/бинарные признаки в объявлении ситтера
+var extraInfo = [
+	"EXI_MULTIPLE_PETS",
+	"EXI_DELIVERY",
+	"EXI_NON_STERILIZED",
+	"EXI_NON_VACCINATED",
+	"EXI_SPECIAL_FOOD",
+	"EXI_FULL_SURVEY",
+	"EXI_MEDIA_REPORT",
+	"EXI_CONTRACT",
+	"EXI_BUY_FOOD",
+	"EXI_VET_SERVICE",
+	"EXI_VET_PASSPORT"
+];
