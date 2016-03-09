@@ -175,7 +175,7 @@ var langs = [
 		UI_LBL_PROFILE: "Мой профиль",
 		UI_LBL_USER_PROFILE: "Профиль пользователя",
 		UI_LBL_ADVERT: "Моё объявление",
-		UI_LBL_MAIN_MAKE_ACTION: "Найдите зооняню по всей России",
+		UI_LBL_MAIN_MAKE_ACTION: "Найдите зооняню",
 		UI_LBL_MAIN_AND_BE_OK: "Передержка для Вашего питомца на время отпуска или командировки",
 		UI_LBL_MAIN_OR: "или",
 		UI_LBL_MAIN_TRY_ANOTHER_ACTION: "Найди себе новое!",
