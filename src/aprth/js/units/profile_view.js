@@ -25,7 +25,7 @@ var ProfileView = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			this.setState({adverts: resp.MESSAGE, advertsCount: resp.MESSAGE.length, advertsLoaded: true}, this.loadActiveTab);			
+			this.setState({adverts: resp.MESSAGE.cards, advertsCount: resp.MESSAGE.cards.length, advertsLoaded: true}, this.loadActiveTab);
 		}
 	},
 	//загрузка данных объявлений профиля

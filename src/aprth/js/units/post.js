@@ -145,7 +145,7 @@ var Post = React.createClass({
 		if(resp.STATE == clnt.respStates.ERR) {
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
-			var postTmp = this.calcAdvertPricePeriod(resp.MESSAGE[0]);	
+			var postTmp = this.calcAdvertPricePeriod(resp.MESSAGE.cards[0]);	
 			this.setState({post: postTmp, postReady: true});
 		}
 	},
