@@ -98,7 +98,7 @@ var langs = [
 		UI_BTN_MAIN_TRY_NOW: "Как это работает",
 		UI_BTN_PHONE_CONFIRM: "Подтвердить",
 		UI_BTN_PHONE_ENTER_CODE: "Ввести код",
-		UI_BTN_MORE: "Ещё...",
+		UI_BTN_MORE: "Показать ещё объявления...",
 		UI_TITLE_APP: "Petforaweek",
 		UI_TITLE_LOGIN: "Вход",
 		UI_TITLE_ADD_RENT_POST: "Размещение объявления о приеме питомцев",
