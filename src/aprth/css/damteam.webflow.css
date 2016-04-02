@@ -542,13 +542,13 @@ p {
   width: 100%;
   float: right;
   border-radius: 2px;
-  background-color: #cae650;
+  background-color: #ffc000;
   color: white;
   font-weight: 500;
   text-decoration: none;
 }
 .u-btn-primary:hover {
-  background-color: #c2e522;
+  background-color: #cae650;
 }
 .u-btn-primary.left {
   float:left;
