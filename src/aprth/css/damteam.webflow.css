@@ -538,16 +538,17 @@ p {
 .u-btn-primary:visited,
 .u-btn-primary:focus,
 .u-btn-primary:active {
-  padding: 6px 10px;
+  padding: 6px 30px;
+  width: 100%;
   float: right;
   border-radius: 2px;
-  background-color: #00ccc5;
+  background-color: #cae650;
   color: white;
-  font-weight: 400;
+  font-weight: 500;
   text-decoration: none;
 }
 .u-btn-primary:hover {
-  background-color: #00c7c0;
+  background-color: #c2e522;
 }
 .u-btn-primary.left {
   float:left;
@@ -1058,6 +1059,7 @@ html.w-mod-js *[data-ix="hide-on-load"] {
   width: 175px;
   margin-right: auto;
   margin-left: auto;
+  padding: 8px 10px;
   border: 2px none white;
   border-radius: 2px;
   background-color: #00c7c0;

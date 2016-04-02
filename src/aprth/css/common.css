@@ -208,7 +208,7 @@
 	background:#eee;
 }
 .u-datepicker-holder {
-  display: inline-block;
+  display: block;
 }
 .u-datepicker-holder > input {
   min-width: 110px;
