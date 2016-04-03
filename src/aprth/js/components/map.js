@@ -196,7 +196,9 @@ var Map = React.createClass({
 	//оповещение родителя о смене границ карты
 	notifyParentMapBoundsChnage: function () {
 		if((this.props.onMapBoundsChange)&&(Utils.isFunction(this.props.onMapBoundsChange))) {
-			this.props.onMapBoundsChange(this.state.map.getBounds());
+			var newBounds = this.state.map.getBounds();
+			newBounds.zoom = this.state.map.getZoom();
+			this.props.onMapBoundsChange(newBounds);
 		}
 	},
 	//обработка смены радиуса радара

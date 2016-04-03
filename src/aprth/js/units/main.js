@@ -96,6 +96,8 @@ var Main = React.createClass({
 	onFind: function (find) {
 		if((find.latitude)&&(find.longitude)) {
 			Utils.deleteObjectState("filterParams");
+			Utils.deleteObjectState("pagesDisplayed");
+			Utils.deleteObjectState("mapZoom");
 			Utils.saveObjectState("filterParams", find);
 			this.context.router.transitionTo("search", {}, {});
 		}

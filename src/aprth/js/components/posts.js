@@ -50,7 +50,7 @@ var resetProsts = function () {
 			neLong: "", //долгота СЗ угла области карты
 		},
 		page: 1, //текущая страница выдачи
-		showMoreButton: true //признак отображения кнопки догрузки результатов
+		pagesToSkip: null //количество пропускаемых страниц		
 	}
 }
 //класс объявлений
@@ -143,9 +143,7 @@ var Posts = React.createClass({
 						}
 					}, this);
 					//если это поиск, то необходимо расчитать цену за период для каждого объявления
-					this.calcAdvertsPricePeriod(resp.MESSAGE.cards);
-					//спрячим кнопку догрузки, если надо
-					if(resp.MESSAGE.cards.length + this.state.advertsCnt >= resp.MESSAGE.count) this.setState({showMoreButton: false});
+					this.calcAdvertsPricePeriod(resp.MESSAGE.cards);					
 				}
 				//режим избранного
 				case(PostsModes.FAVORITES): {
@@ -266,8 +264,14 @@ var Posts = React.createClass({
 			var srvFilter = this.buildSrvAdvertsFilter();
 			if((srvFilter.swLat)&&(srvFilter.swLong)&&(srvFilter.neLat)&&(srvFilter.neLong)) {
 				this.setState({mapZoomReset: false});
-				srvFilter.limit = config.searchPageSize; 
-				srvFilter.skip = (this.state.page - 1) * config.searchPageSize;
+				if(this.state.pagesToSkip) {
+					srvFilter.limit = this.state.pagesToSkip * config.searchPageSize; 
+					srvFilter.skip = 0;
+					this.setState({page: this.state.pagesToSkip, pagesToSkip: null});					
+				} else {
+					srvFilter.limit = config.searchPageSize; 
+					srvFilter.skip = (this.state.page - 1) * config.searchPageSize;
+				}
 				this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));			
 				var getPrms = {
 					language: this.props.language, 
@@ -330,7 +334,7 @@ var Posts = React.createClass({
 		tmp.priceFrom = filter.priceFrom;
 		tmp.priceTo = filter.priceTo;
 		tmp.price = filter.price;
-		this.setState({filterClnt: tmp, page: 1, showMoreButton: true}, function () {
+		this.setState({filterClnt: tmp, page: 1}, function () {
 			this.saveFilterState();
 			if(recalcSA) {
 				this.recalcSearchArea(this.findAndFilter);
@@ -341,7 +345,7 @@ var Posts = React.createClass({
 	},
 	//нажатие на поиск
 	onFind: function (find) {
-		this.setState({filterIsSet: true, mapZoomReset: true, page: 1, showMoreButton: true}, Utils.bind(function () {			
+		this.setState({filterIsSet: true, mapZoomReset: true, page: 1}, Utils.bind(function () {			
 			this.onFindChange(find, this.findAndFilter);
 		}, this));
 	},
@@ -365,7 +369,7 @@ var Posts = React.createClass({
 		tmp.priceFrom = "";
 		tmp.priceTo = "";
 		tmp.price = "";
-		this.setState({filterClnt: tmp, adverts: [], advertsCnt: 0, advertsReady: false, markers: [], filterIsSet: false, page: 1, showMoreButton: true}, function () {
+		this.setState({filterClnt: tmp, adverts: [], advertsCnt: 0, advertsReady: false, markers: [], filterIsSet: false, page: 1}, function () {
 			this.saveFilterState();
 		});
 	},
@@ -405,7 +409,7 @@ var Posts = React.createClass({
 		var tmp = {};
 		_.extend(tmp, this.state.filterClnt);
 		tmp.radius = radius;		
-		this.setState({filterClnt: tmp, page: 1, showMoreButton: true}, function () {
+		this.setState({filterClnt: tmp, page: 1}, function () {
 			this.saveFilterState();
 			this.recalcSearchArea(this.findAndFilter);
 		});
@@ -417,7 +421,7 @@ var Posts = React.createClass({
 		tmp.latitude = newPlace.center.lat();
 		tmp.longitude = newPlace.center.lng();
 		tmp.address = newPlace.address;
-		this.setState({filterClnt: tmp, page: 1, showMoreButton: true}, function () {
+		this.setState({filterClnt: tmp, page: 1}, function () {
 			this.saveFilterState();
 			this.recalcSearchArea(this.findAndFilter);
 		});		
@@ -441,7 +445,7 @@ var Posts = React.createClass({
 			mbTmp.swLong = newBounds.getSouthWest().lng();
 			mbTmp.neLat = newBounds.getNorthEast().lat();
 			mbTmp.neLong = newBounds.getNorthEast().lng();
-			this.setState({filterClnt: tmp, mapBounds: mbTmp, page: 1, showMoreButton: true}, function () {
+			this.setState({filterClnt: tmp, mapBounds: mbTmp, page: 1, mapZoom: newBounds.zoom}, function () {
 				this.saveFilterState();
 				this.findAndFilter();
 			});
@@ -449,19 +453,32 @@ var Posts = React.createClass({
 	},
 	//обработка нажатия на кнопку догрузки
 	handleMoreClick: function () {
-		var nexPage = this.state.page + 1;
-		this.setState({page: nexPage}, this.findAndFilter);
+		var nextPage = this.state.page + 1;
+		Utils.saveObjectState("pagesDisplayed", nextPage);
+		this.setState({page: nextPage}, this.findAndFilter);
 	},
-	//инициализация при подключении компонента к странице
+	//инициализация при подключении компонента к странице (до)
+	componentWillMount: function () {
+		var pDspl = Utils.loadObjectState("pagesDisplayed");
+		var mZoom = Utils.loadObjectState("mapZoom");
+		this.setState({
+			pagesToSkip: pDspl, 
+			mapZoom: (mZoom||config.searchMapZoom)
+		});
+		Utils.deleteObjectState("pagesDisplayed");
+		Utils.deleteObjectState("mapZoom");
+	},
+	//инициализация при подключении компонента к странице (после)
 	componentDidMount: function () {
 		//инициализируем в зависимости от режима работы
 		switch(this.props.mode) {
 			//режим поиска
 			case(PostsModes.SEARCH): {				
 				$(".nano").nanoScroller();
+				
 				this.loadFilterState(Utils.bind(function () {
 					if(!$.isEmptyObject(this.buildSrvAdvertsFilter())) {
-						this.setState({filterIsSet: true, page: 1, showMoreButton: true}, this.findAndFilter);
+						this.setState({filterIsSet: true, page: 1}, this.findAndFilter);
 					}
 				}, this));
 				break;
@@ -481,6 +498,11 @@ var Posts = React.createClass({
 		Utils.fixFooter();		
 		$(".nano").nanoScroller();
 	},
+	//отключение компонента от страницы
+	componentWillUnmount: function () {
+		Utils.saveObjectState("pagesDisplayed", this.state.page);
+		Utils.saveObjectState("mapZoom", this.state.mapZoom);
+	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
 		//если произошел выход
@@ -490,7 +512,7 @@ var Posts = React.createClass({
 				//режим поиска
 				case(PostsModes.SEARCH): {
 					//выполним повторный поиск если есть что искать
-					this.setState({page: 1, showMoreButton: true}, Utils.bind(function() {
+					this.setState({page: 1}, Utils.bind(function() {
 						this.findAndFilter(newProps.session.sessionInfo);
 					}, this));
 					break;
@@ -583,7 +605,7 @@ var Posts = React.createClass({
 				}
 				//кнопка догрузки результата
 				var loadMoreBtn;
-				if((this.state.showMoreButton)&&(this.state.advertsReady)&&(this.state.advertsCnt > 0)) {					
+				if((this.state.advertsTotalCnt > this.state.advertsCnt)&&(this.state.advertsReady)&&(this.state.advertsCnt > 0)) {					
 					loadMoreBtn =	<a className="u-t-center u-lnk-norm" href="javascript:void(0);" onClick={this.handleMoreClick}>
 										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_MORE"})}
 									</a>
@@ -591,7 +613,7 @@ var Posts = React.createClass({
 				//соберем финальный вид компонента
 				content =	<div className="w-section u-sect-page-cardlst">
 								<div>
-										{postsFindForm}					
+									{postsFindForm}					
 								</div>
 								<div className="w-row">
 									<div className="w-col w-col-7 w-col-stack u-col-cardlst1">
