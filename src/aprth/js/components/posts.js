@@ -606,9 +606,11 @@ var Posts = React.createClass({
 				//кнопка догрузки результата
 				var loadMoreBtn;
 				if((this.state.advertsTotalCnt > this.state.advertsCnt)&&(this.state.advertsReady)&&(this.state.advertsCnt > 0)) {					
-					loadMoreBtn =	<a className="u-t-center u-lnk-norm" href="javascript:void(0);" onClick={this.handleMoreClick}>
-										{Utils.getStrResource({lang: this.props.language, code: "UI_BTN_MORE"})}
-									</a>
+					loadMoreBtn =	<input className="w-button u-btn-primary" 
+					                     type="button" 
+					                     onClick={this.handleMoreClick}
+										           value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_MORE"})}>
+									      </input>
 				}
 				//соберем финальный вид компонента
 				content =	<div className="w-section u-sect-page-cardlst">
@@ -622,6 +624,7 @@ var Posts = React.createClass({
 										  		{postsSearchCounter}
 												{postsFilterForm}		
 												{postsList}
+												<div className="u-block-spacer"></div>
 												{loadMoreBtn}
 											</div>		
 										</div>	

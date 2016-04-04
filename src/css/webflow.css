@@ -425,15 +425,6 @@ textarea.w-select {
 .w-hidden-main {
   display: none !important;
 }
-.w-col-search-1 {
-  width: 41.66666667%;
-}
-.w-col-search-2 {
-  width: 15.66666667%;
-}
-.w-col-search-3 {
-  width: 11.33333333%;
-}
 
 @media screen and (max-width: 991px) {
   .w-container {

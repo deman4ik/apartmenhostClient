@@ -548,7 +548,7 @@ p {
   text-decoration: none;
 }
 .u-btn-primary:hover {
-  background-color: #cae650;
+  background-color: #f7d22c;
 }
 .u-btn-primary.left {
   float:left;
@@ -1170,7 +1170,15 @@ html.w-mod-js *[data-ix="hide-on-load"] {
 .u-block-search-main .u-form-wrapper .u-form-body h3 {
   color: rgba(125, 144, 145, 0);
 }
-
+.u-col-search-1 {
+  width: 41.66666667%;
+}
+.u-col-search-2 {
+  width: 15.66666667%;
+}
+.u-col-search-3 {
+  width: 11.33333333%;
+}
 .u-t-article-topic {
   margin-top: 16px;
   line-height: 22px;
