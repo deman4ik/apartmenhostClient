@@ -606,7 +606,7 @@ var Posts = React.createClass({
 				//кнопка догрузки результата
 				var loadMoreBtn;
 				if((this.state.advertsTotalCnt > this.state.advertsCnt)&&(this.state.advertsReady)&&(this.state.advertsCnt > 0)) {					
-					loadMoreBtn =	<input className="w-button u-btn-primary" 
+					loadMoreBtn =	<input className="w-button u-btn-primary block" 
 					                     type="button" 
 					                     onClick={this.handleMoreClick}
 										           value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_MORE"})}>
