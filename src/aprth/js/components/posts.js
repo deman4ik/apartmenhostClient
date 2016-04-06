@@ -33,7 +33,8 @@ var resetProsts = function () {
 	return {
 		adverts: [], //список объявлений
 		markers: [], //список маркеров для карты
-		advertsCnt: 0, //количество объявлений
+		advertsCnt: 0, //количество отображаемых объявлений
+		advertsTotalCnt: 0, //общее количество найденных объявлений
 		advertsReady: false, //флаг доступности списка объявлений для отображения
 		filterIsSet: false, //флаг установленности фильтра			
 		filterClnt: getPostsFilter(), //текущее состояние фильтра
@@ -47,7 +48,9 @@ var resetProsts = function () {
 			swLong: "", //долгота ЮВ угла области карты
 			neLat: "", //широта СЗ угла области карты
 			neLong: "", //долгота СЗ угла области карты
-		}
+		},
+		page: 1, //текущая страница выдачи
+		pagesToSkip: null //количество пропускаемых страниц		
 	}
 }
 //класс объявлений
@@ -101,12 +104,17 @@ var Posts = React.createClass({
 			this.props.onShowError(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_ERROR"}), resp.MESSAGE);
 		} else {
 			var markers = [];
+			var adverts = [];
+			if(this.state.page > 1) {
+				_.extend(markers, this.state.markers);
+				_.extend(adverts, this.state.adverts);
+			}
 			//обработаем ответ в зависимости от режима
 			switch(this.props.mode) {
 				//режим поиска
 				case(PostsModes.SEARCH): {					
 					//наделаем маркеров для карты
-					resp.MESSAGE.map(function (item, i) {
+					resp.MESSAGE.cards.map(function (item, i) {
 						if((item.apartment.latitude)&&(item.apartment.longitude)) {
 							var link = "#/posts/" + item.id;
 							var linkQ = "";
@@ -135,19 +143,23 @@ var Posts = React.createClass({
 						}
 					}, this);
 					//если это поиск, то необходимо расчитать цену за период для каждого объявления
-					this.calcAdvertsPricePeriod(resp.MESSAGE);
+					this.calcAdvertsPricePeriod(resp.MESSAGE.cards);					
 				}
 				//режим избранного
 				case(PostsModes.FAVORITES): {
 					//для избранного - просто затираем цену за период
-					this.calcAdvertsPricePeriod(resp.MESSAGE);
+					this.calcAdvertsPricePeriod(resp.MESSAGE.cards);
 					break;
 				}
 				//прочие режимы
 				default: {}
 			}
+			//добавим полученные объявления к существующим
+			resp.MESSAGE.cards.map(function (item, i) {
+				adverts.push(item);
+			});			
 			//теперь выставляем состояние компоненты
-			this.setState({adverts: resp.MESSAGE, advertsCnt: resp.MESSAGE.length, markers: markers, advertsReady: true, filterIsSet: true});
+			this.setState({adverts: adverts, advertsCnt: adverts.length, markers: markers, advertsReady: true, filterIsSet: true, advertsTotalCnt: resp.MESSAGE.count});
 		}
 	},
 	//получение ответа о смене статуса в избранном
@@ -252,6 +264,14 @@ var Posts = React.createClass({
 			var srvFilter = this.buildSrvAdvertsFilter();
 			if((srvFilter.swLat)&&(srvFilter.swLong)&&(srvFilter.neLat)&&(srvFilter.neLong)) {
 				this.setState({mapZoomReset: false});
+				if(this.state.pagesToSkip) {
+					srvFilter.limit = this.state.pagesToSkip * config.searchPageSize; 
+					srvFilter.skip = 0;
+					this.setState({page: this.state.pagesToSkip, pagesToSkip: null});					
+				} else {
+					srvFilter.limit = config.searchPageSize; 
+					srvFilter.skip = (this.state.page - 1) * config.searchPageSize;
+				}
 				this.props.onDisplayProgress(Utils.getStrResource({lang: this.props.language, code: "CLNT_COMMON_PROGRESS"}));			
 				var getPrms = {
 					language: this.props.language, 
@@ -314,7 +334,7 @@ var Posts = React.createClass({
 		tmp.priceFrom = filter.priceFrom;
 		tmp.priceTo = filter.priceTo;
 		tmp.price = filter.price;
-		this.setState({filterClnt: tmp}, function () {
+		this.setState({filterClnt: tmp, page: 1}, function () {
 			this.saveFilterState();
 			if(recalcSA) {
 				this.recalcSearchArea(this.findAndFilter);
@@ -325,7 +345,7 @@ var Posts = React.createClass({
 	},
 	//нажатие на поиск
 	onFind: function (find) {
-		this.setState({filterIsSet: true, mapZoomReset: true}, Utils.bind(function () {			
+		this.setState({filterIsSet: true, mapZoomReset: true, page: 1}, Utils.bind(function () {			
 			this.onFindChange(find, this.findAndFilter);
 		}, this));
 	},
@@ -349,7 +369,7 @@ var Posts = React.createClass({
 		tmp.priceFrom = "";
 		tmp.priceTo = "";
 		tmp.price = "";
-		this.setState({filterClnt: tmp, adverts: [], advertsCnt: 0, advertsReady: false, markers: [], filterIsSet: false}, function () {
+		this.setState({filterClnt: tmp, adverts: [], advertsCnt: 0, advertsReady: false, markers: [], filterIsSet: false, page: 1}, function () {
 			this.saveFilterState();
 		});
 	},
@@ -389,7 +409,7 @@ var Posts = React.createClass({
 		var tmp = {};
 		_.extend(tmp, this.state.filterClnt);
 		tmp.radius = radius;		
-		this.setState({filterClnt: tmp}, function () {
+		this.setState({filterClnt: tmp, page: 1}, function () {
 			this.saveFilterState();
 			this.recalcSearchArea(this.findAndFilter);
 		});
@@ -401,7 +421,7 @@ var Posts = React.createClass({
 		tmp.latitude = newPlace.center.lat();
 		tmp.longitude = newPlace.center.lng();
 		tmp.address = newPlace.address;
-		this.setState({filterClnt: tmp}, function () {
+		this.setState({filterClnt: tmp, page: 1}, function () {
 			this.saveFilterState();
 			this.recalcSearchArea(this.findAndFilter);
 		});		
@@ -425,22 +445,40 @@ var Posts = React.createClass({
 			mbTmp.swLong = newBounds.getSouthWest().lng();
 			mbTmp.neLat = newBounds.getNorthEast().lat();
 			mbTmp.neLong = newBounds.getNorthEast().lng();
-			this.setState({filterClnt: tmp, mapBounds: mbTmp}, function () {
+			this.setState({filterClnt: tmp, mapBounds: mbTmp, page: 1, mapZoom: newBounds.zoom}, function () {
 				this.saveFilterState();
 				this.findAndFilter();
 			});
 		}
 	},
-	//инициализация при подключении компонента к странице
+	//обработка нажатия на кнопку догрузки
+	handleMoreClick: function () {
+		var nextPage = this.state.page + 1;
+		Utils.saveObjectState("pagesDisplayed", nextPage);
+		this.setState({page: nextPage}, this.findAndFilter);
+	},
+	//инициализация при подключении компонента к странице (до)
+	componentWillMount: function () {
+		var pDspl = Utils.loadObjectState("pagesDisplayed");
+		var mZoom = Utils.loadObjectState("mapZoom");
+		this.setState({
+			pagesToSkip: pDspl, 
+			mapZoom: (mZoom||config.searchMapZoom)
+		});
+		Utils.deleteObjectState("pagesDisplayed");
+		Utils.deleteObjectState("mapZoom");
+	},
+	//инициализация при подключении компонента к странице (после)
 	componentDidMount: function () {
 		//инициализируем в зависимости от режима работы
 		switch(this.props.mode) {
 			//режим поиска
 			case(PostsModes.SEARCH): {				
 				$(".nano").nanoScroller();
+				
 				this.loadFilterState(Utils.bind(function () {
 					if(!$.isEmptyObject(this.buildSrvAdvertsFilter())) {
-						this.setState({filterIsSet: true}, this.findAndFilter);
+						this.setState({filterIsSet: true, page: 1}, this.findAndFilter);
 					}
 				}, this));
 				break;
@@ -460,6 +498,11 @@ var Posts = React.createClass({
 		Utils.fixFooter();		
 		$(".nano").nanoScroller();
 	},
+	//отключение компонента от страницы
+	componentWillUnmount: function () {
+		Utils.saveObjectState("pagesDisplayed", this.state.page);
+		Utils.saveObjectState("mapZoom", this.state.mapZoom);
+	},
 	//обновление свойств компонента
 	componentWillReceiveProps: function (newProps) {
 		//если произошел выход
@@ -469,7 +512,9 @@ var Posts = React.createClass({
 				//режим поиска
 				case(PostsModes.SEARCH): {
 					//выполним повторный поиск если есть что искать
-					this.findAndFilter(newProps.session.sessionInfo);
+					this.setState({page: 1}, Utils.bind(function() {
+						this.findAndFilter(newProps.session.sessionInfo);
+					}, this));
 					break;
 				}
 				//режим избранного
@@ -532,7 +577,7 @@ var Posts = React.createClass({
 				//счетчик результатов поиска
 				var postsSearchCounter;
 				if((this.state.filterIsSet)&&(this.state.advertsReady)) {
-					postsSearchCounter = <PostsSearchCounter language={this.props.language} cntFound={this.state.advertsCnt}/>
+					postsSearchCounter = <PostsSearchCounter language={this.props.language} cntFound={this.state.advertsTotalCnt} cntDspl={this.state.advertsCnt}/>
 				}
 				//карта
 				var map;				
@@ -558,10 +603,19 @@ var Posts = React.createClass({
 									mode={this.props.mode}
 									session={this.props.session}/>
 				}
+				//кнопка догрузки результата
+				var loadMoreBtn;
+				if((this.state.advertsTotalCnt > this.state.advertsCnt)&&(this.state.advertsReady)&&(this.state.advertsCnt > 0)) {					
+					loadMoreBtn =	<input className="w-button u-btn-primary block" 
+					                     type="button" 
+					                     onClick={this.handleMoreClick}
+										           value={Utils.getStrResource({lang: this.props.language, code: "UI_BTN_MORE"})}>
+									      </input>
+				}
 				//соберем финальный вид компонента
 				content =	<div className="w-section u-sect-page-cardlst">
 								<div>
-										{postsFindForm}					
+									{postsFindForm}					
 								</div>
 								<div className="w-row">
 									<div className="w-col w-col-7 w-col-stack u-col-cardlst1">
@@ -569,7 +623,9 @@ var Posts = React.createClass({
 										  <div className="nano-content">
 										  		{postsSearchCounter}
 												{postsFilterForm}		
-												{postsList}	
+												{postsList}
+												<div className="u-block-spacer"></div>
+												{loadMoreBtn}
 											</div>		
 										</div>	
 									</div>

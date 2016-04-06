@@ -292,6 +292,8 @@ var App = React.createClass({
 			function () {
 				Utils.deleteObjectState("sessionState");
 				Utils.deleteObjectState("filterParams");
+				Utils.deleteObjectState("pagesDisplayed");
+				Utils.deleteObjectState("mapZoom");
 				this.buildСontactUsForm();
 				this.processAfterAuth();
 			}

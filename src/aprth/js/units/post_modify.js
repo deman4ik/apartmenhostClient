@@ -107,31 +107,31 @@ var ModifyPost = React.createClass({
 			if(this.state.loadPicturesOnly) {
 				var postTmp = {};
 				_.extend(postTmp, this.state.post);
-				postTmp.pictures = _.without(resp.MESSAGE[0].apartment.pictures, _.findWhere(resp.MESSAGE[0].apartment.pictures, {id: "default"}))
+				postTmp.pictures = _.without(resp.MESSAGE.cards[0].apartment.pictures, _.findWhere(resp.MESSAGE.cards[0].apartment.pictures, {id: "default"}))
 				this.setState({post: postTmp});
 			} else {
-				var tmpPicts = _.without(resp.MESSAGE[0].apartment.pictures, _.findWhere(resp.MESSAGE[0].apartment.pictures, {id: "default"}));
+				var tmpPicts = _.without(resp.MESSAGE.cards[0].apartment.pictures, _.findWhere(resp.MESSAGE.cards[0].apartment.pictures, {id: "default"}));
 				var tmpPriceCatsList = [];
 				_.extend(tmpPriceCatsList, priceCats);
-				tmpPriceCatsList = _.difference(tmpPriceCatsList, _.pluck(resp.MESSAGE[0].genders, "name"));				
+				tmpPriceCatsList = _.difference(tmpPriceCatsList, _.pluck(resp.MESSAGE.cards[0].genders, "name"));				
 				this.setState({
 					priceCatsList: tmpPriceCatsList,
 					post: {
-						phone: resp.MESSAGE[0].user.phone,
+						phone: resp.MESSAGE.cards[0].user.phone,
 						priceCat: "",
 						priceCatVal: 0,
-						priceCats: resp.MESSAGE[0].genders,
-						apartType: resp.MESSAGE[0].apartment.type,
-						address: resp.MESSAGE[0].apartment.adress,
-						formattedAdress: resp.MESSAGE[0].apartment.formattedAdress,
-						latitude: resp.MESSAGE[0].apartment.latitude,
-						longitude: resp.MESSAGE[0].apartment.longitude,
+						priceCats: resp.MESSAGE.cards[0].genders,
+						apartType: resp.MESSAGE.cards[0].apartment.type,
+						address: resp.MESSAGE.cards[0].apartment.adress,
+						formattedAdress: resp.MESSAGE.cards[0].apartment.formattedAdress,
+						latitude: resp.MESSAGE.cards[0].apartment.latitude,
+						longitude: resp.MESSAGE.cards[0].apartment.longitude,
 						dFrom: "",
 						dTo: "",
-						dates: resp.MESSAGE[0].dates,
-						description: resp.MESSAGE[0].description,
-						options: resp.MESSAGE[0].apartment.options,
-						apartId: resp.MESSAGE[0].apartment.id,
+						dates: resp.MESSAGE.cards[0].dates,
+						description: resp.MESSAGE.cards[0].description,
+						options: resp.MESSAGE.cards[0].apartment.options,
+						apartId: resp.MESSAGE.cards[0].apartment.id,
 						pictures: tmpPicts,
 						picturesLeft: ((config.postMaxPictures - tmpPicts.length > 0)?(config.postMaxPictures - tmpPicts.length):0)
 					},

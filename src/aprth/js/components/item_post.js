@@ -41,15 +41,17 @@ var PostItem = React.createClass({
 		//дополнительные опции объявления
 		var advOptions 
 		if(this.props.item.apartment.options) {
-			if(!optionsFactory.isParseble(this.props.item.apartment.options)) {
+			var tmpOptions = this.props.item.apartment.options;
+			if(tmpOptions.length > 200) tmpOptions = tmpOptions.substr(0, 200) + "...";
+			if(!optionsFactory.isParseble(tmpOptions)) {
 				advOptions =	<div>
 									{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_EXTRAS"})}:&nbsp;
-									{this.props.item.apartment.options}
+									{tmpOptions}
 								</div>
 			} else {
 				advOptions =	<OptionsParser language={this.props.language}
 									title={Utils.getStrResource({lang: this.props.language, code: "UI_LBL_EXTRAS"}) + ":"}
-									options={optionsFactory.parse(this.props.item.apartment.options)}
+									options={optionsFactory.parse(tmpOptions)}
 									convertOptions={OptionsParserConvert.NO_CONVERT}
 									view={OptionsParserView.LIST}/>		
 			}

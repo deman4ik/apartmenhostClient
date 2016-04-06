@@ -170,7 +170,7 @@ var PostsFindForm = React.createClass({
 		    <div className="w-form u-form-wrapper">
 				<form className="w-clearfix u-form-body">
 					<div className="w-row u-row-search">
-						<div className="w-col w-col-5 has-icon-left">
+						<div className="w-col u-col-search-5 has-icon-left">
 						  <AddressInput classes={classesAdrInput}
 							name="address"
 							value={this.state.find.address}
@@ -178,7 +178,7 @@ var PostsFindForm = React.createClass({
 							onAddressChanged={this.handleAddrChange}/>
 						  <i className="u-form-field-icon glyphicon glyphicon-search"/>
 						</div>
-						<div className="w-col w-col-2" >
+						<div className="w-col u-col-search-2" >
 						    <OptionsSelector view={OptionsSelectorView.SELECT}
 							classes="w-select u-form-field"
 							language={this.props.language}
@@ -191,7 +191,7 @@ var PostsFindForm = React.createClass({
 							appendEmptyOption={true}
 							emptyOptionLabel={Utils.makeEmptyOptionLabel(Utils.getStrResource({lang: this.props.language, code: "MD_ITM_PET_TYPE"}))}/>
 						</div>						
-						<div className="w-col w-col-2">
+						<div className="w-col u-col-search-d w-col-small-3">
 						  <Calendar name="dFrom" 
 							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_FROM"})}
 							defaultValue={(this.state.find.dFrom)?(new Date(this.state.find.dFrom)):""}
@@ -199,7 +199,7 @@ var PostsFindForm = React.createClass({
 							language={this.props.language}
 							inputClasses={classesDateInputFrom}/>
 						</div>
-						<div className="w-col w-col-2">
+						<div className="w-col u-col-search-d w-col-small-3">
 						  <Calendar name="dTo" 
 							placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_DATE_TO"})}
 							defaultValue={(this.state.find.dTo)?(new Date(this.state.find.dTo)):""}
@@ -207,7 +207,7 @@ var PostsFindForm = React.createClass({
 							language={this.props.language}
 							inputClasses={classesDateInputTo}/>		
 						</div>
-						<div className="w-col w-col-1">
+						<div className="w-col u-col-search-1 w-col-small-3">
 						    <input className="w-button u-btn-primary nofloat"
 							type="button"
 							onClick={this.handleFindClick}

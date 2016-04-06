@@ -931,7 +931,7 @@ var Client = function (clientConfig) {
 							callBack(resp);
 						else {
 							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);						
-							resp.MESSAGE.map(function (item, i) {
+							resp.MESSAGE.cards.map(function (item, i) {
 								if(item.apartment) Utils.setApartmentDefaultPicture(item.apartment);
 								if(item.user) Utils.setProfileDefaultPicture(item.user);
 								if((item.reviews)&&(Array.isArray(item.reviews))) {
