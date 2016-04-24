@@ -40,7 +40,8 @@ var Client = function (clientConfig) {
 		article: "Article", //статьи
 		feedBack: "Feedback", //обратная связь и жалобы
 		phoneConfirmRequest: "Phone/ConfirmRequest", //запрос подтверждения телефона
-		phoneConfirm: "Phone/Confirm" //подтверждение телефона
+		phoneConfirm: "Phone/Confirm", //подтверждение телефона
+		unsubscribeConfirm: "Mail/Unsubscribe" //подтверждение отписки
 	}
 	//коды стандартных ответов сервера
 	var serverStdErrCodes = {
@@ -607,7 +608,30 @@ var Client = function (clientConfig) {
 						}));
 					return fillSrvStdReqData(serverActions.phoneConfirm, serverMethods.ins, prms.data);
 					break;
-				}				
+				}
+				//подтверждение отписки
+				case(serverActions.unsubscribeConfirm): {
+					if(!prms.data)
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "data"]
+						}));
+					if(!prms.data.code) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "code"]
+						}));
+					if(!prms.data.type) 
+						throw new Error(Utils.getStrResource({
+							lang: prms.language,
+							code: "CLNT_NO_ELEM",
+							values: ["ServerRequest", "type"]
+						}));
+					return fillSrvStdReqData(serverActions.unsubscribeConfirm, serverMethods.ins, prms.data);
+					break;
+				}
 				//неизвестное действие
 				default: {
 					throw new Error("Действие '" + prms.action + "' не поддерживается сервером!");
@@ -1598,6 +1622,32 @@ var Client = function (clientConfig) {
 				});
 			} catch (error) {
 				log(["PHONE CONFIRM ERROR", error]);
+				if(Utils.isFunction(callBack))
+					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
+			}
+		},
+		//подтверждение отписки от подписок
+		unsubscribeConfirm: function (prms, callBack) {
+			try {
+				execServerApi({
+					language: prms.language,
+					req: buildServerRequest({
+						language: prms.language,
+						action: serverActions.unsubscribeConfirm,
+						method: serverMethods.ins,
+						data: prms.data
+					}),
+					callBack: function (resp) {
+						if(resp.STATE == respStates.ERR)
+							callBack(resp);
+						else {
+							resp.MESSAGE = Utils.deSerialize(resp.MESSAGE);
+							callBack(resp);
+						}
+					}
+				});
+			} catch (error) {
+				log(["UNSUBSCRIBE CONFIRM ERROR", error]);
 				if(Utils.isFunction(callBack))
 					callBack(fillSrvStdRespData(respTypes.STD, respStates.ERR, error.message));
 			}
