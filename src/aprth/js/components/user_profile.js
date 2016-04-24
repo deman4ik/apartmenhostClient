@@ -344,7 +344,7 @@ var UserProfile = React.createClass({
 	//обработка изменения поля формы редактирования профиля
 	handleFormItemChange: function (e) {
 		var tmp = {};
-		_.extend(tmp, this.state.profileTmp)
+		_.extend(tmp, this.state.profileTmp);
 		tmp[e.target.id] = e.target.value;
 		this.setState({profileTmp: tmp});
 	},
@@ -390,6 +390,8 @@ var UserProfile = React.createClass({
 			data: {
 				id: this.state.profileTmp.id,
 				email: this.state.profileTmp.email,
+				emailNewsletter: this.state.profileTmp.emailNewsletter,
+				emailNotifications: this.state.profileTmp.emailNotifications,
 				firstName: this.state.profileTmp.firstName,
 				lastName: this.state.profileTmp.lastName,
 				gender: this.state.profileTmp.gender,
@@ -529,7 +531,31 @@ var UserProfile = React.createClass({
 									disabled="disabled"
 									value={this.state.profileTmp.email}
 									placeholder={Utils.getStrResource({lang: this.props.language, code: "UI_PLH_MAIL"})}
-									onChange={this.handleFormItemChange}/>									
+									onChange={this.handleFormItemChange}/>
+								<div className="w-checkbox">
+									<input className="w-checkbox-input"
+										type="checkbox"
+										ref="emailNewsletter"
+										id="emailNewsletter"
+										onChange={this.handleFormItemChange.bind(this, {target: {id: "emailNewsletter", value: !this.state.profileTmp.emailNewsletter}})}
+										checked={this.state.profileTmp.emailNewsletter}/>
+									<label className="w-form-label" 
+										onClick={this.handleFormItemChange.bind(this, {target: {id: "emailNewsletter", value: !this.state.profileTmp.emailNewsletter}})}>
+										{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_EMAIL_NEWS_LETTERS"})}		
+									</label>
+								</div>
+								<div className="w-checkbox">
+									<input className="w-checkbox-input"
+										type="checkbox"
+										ref="emailNotifications"
+										id="emailNotifications"
+										onChange={this.handleFormItemChange.bind(this, {target: {id: "emailNotifications", value: !this.state.profileTmp.emailNotifications}})}
+										checked={this.state.profileTmp.emailNotifications}/>
+									<label className="w-form-label" 
+										onClick={this.handleFormItemChange.bind(this, {target: {id: "emailNotifications", value: !this.state.profileTmp.emailNotifications}})}>
+										{Utils.getStrResource({lang: this.props.language, code: "UI_LBL_EMAIL_NOTIFICATIONS"})}										
+									</label>
+								</div>
 							</div>
 			} else {
 				userMail = <div><strong>{this.state.profile.email}</strong></div>

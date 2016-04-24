@@ -443,6 +443,7 @@ var routes = (
 		<Route name="post" handler={Post}  path="posts/:postId"/>
 		<Route name="register" handler={Register}/>
 		<Route name="confirm" handler={RegConfirm}/>
+		<Route name="unsubscr" handler={UnsusbscrConfirm}/>
 		<Route name="reset" handler={ResetPassConfirm}/>
 		<Route name="user" handler={ProfileView} path="user/:userId"/>		
 		<DefaultRoute handler={DefaultPage}/>
