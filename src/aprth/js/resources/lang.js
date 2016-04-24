@@ -345,7 +345,7 @@ var langs = [
 		CLNT_BAD_PHONE: "Номер телефона указан некорректно! Должен быть %1$s разрядным числом!",
 		CLNT_UNSUBSCR_DONE_NOTIFICATIONS: "Вы успешно отписаны от оповещений сервиса!",
 		CLNT_UNSUBSCR_DONE_NEWSLETTERS: "Вы успешно отписаны от новостных рассылок!",
-		CLNT_NO_SUBSRC_TYPE: "Не указаны параметр отписки!",
+		CLNT_NO_SUBSRC_TYPE: "Не указаны параметры отписки!",
 		CLNT_UNSUBSCR_NOTIFICATIONS: "Отписаться от оповещений сервиса?",
 		CLNT_UNSUBSCR_NEWSLETTERS: "Отписаться от новостных рассылок?",
 		//загрузчик картинок
